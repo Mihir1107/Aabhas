@@ -137,6 +137,69 @@ def grouped_bars(path, groups, categories, values, title, ylabel,
     Pathwrite(path, "\n".join(o))
 
 
+def scatter(path, x, y, title, xlabel, ylabel, band=None, diagonal=True,
+            colors=None, legend=None, width=900, height=560, note=None,
+            max_points=4000, seed=0):
+    """Scatter with an optional prediction-interval band."""
+    ml, mr, mt, mb = 84, 180, 46, 64
+    rng = np.random.default_rng(seed)
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    ok = np.isfinite(x) & np.isfinite(y)
+    x, y = x[ok], y[ok]
+    cl = None if colors is None else np.asarray(colors)[ok]
+    bd = None if band is None else np.asarray(band, float)[ok]
+    if len(x) > max_points:
+        idx = rng.choice(len(x), max_points, replace=False)
+        x, y = x[idx], y[idx]
+        cl = None if cl is None else cl[idx]
+        bd = None if bd is None else bd[idx]
+    lo = float(min(np.nanmin(x), np.nanmin(y)))
+    hi = float(max(np.nanmax(x), np.nanmax(y)))
+    pad = 0.05 * (hi - lo or 1)
+    lo, hi = lo - pad, hi + pad
+    sx = lambda v: ml + (v - lo) / (hi - lo) * (width - ml - mr)
+    sy = lambda v: height - mb - (v - lo) / (hi - lo) * (height - mb - mt)
+    o = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+         f'viewBox="0 0 {width} {height}" font-family="system-ui,-apple-system,sans-serif">',
+         f'<rect width="{width}" height="{height}" fill="#fff"/>',
+         f'<text x="{ml}" y="26" font-size="15" font-weight="600">{_esc(title)}</text>']
+    for v in np.linspace(lo, hi, 6):
+        o.append(f'<line x1="{ml}" y1="{sy(v):.1f}" x2="{width - mr}" y2="{sy(v):.1f}" stroke="#f0f0f0"/>')
+        o.append(f'<text x="{ml - 8}" y="{sy(v) + 4:.1f}" font-size="11" text-anchor="end" fill="#444">{v:.3g}</text>')
+        o.append(f'<line x1="{sx(v):.1f}" y1="{mt}" x2="{sx(v):.1f}" y2="{height - mb}" stroke="#f0f0f0"/>')
+        o.append(f'<text x="{sx(v):.1f}" y="{height - mb + 18}" font-size="11" text-anchor="middle" fill="#444">{v:.3g}</text>')
+    if bd is not None:
+        pts_u = " ".join(f"{sx(a):.1f},{sy(b):.1f}" for a, b in
+                         sorted(zip(x, bd), key=lambda t: t[0]))
+        o.append(f'<polyline points="{pts_u}" fill="none" stroke="#d62728" '
+                 f'stroke-width="1.2" opacity="0.55"/>')
+    for i in range(len(x)):
+        c = "#1f77b4" if cl is None else ("#d62728" if cl[i] else "#8fa8bd")
+        op = 0.5 if cl is None else (0.95 if cl[i] else 0.25)
+        o.append(f'<circle cx="{sx(x[i]):.1f}" cy="{sy(y[i]):.1f}" r="1.8" '
+                 f'fill="{c}" opacity="{op}"/>')
+    if diagonal:
+        o.append(f'<line x1="{sx(lo):.1f}" y1="{sy(lo):.1f}" x2="{sx(hi):.1f}" '
+                 f'y2="{sy(hi):.1f}" stroke="#333" stroke-width="1" stroke-dasharray="5,4"/>')
+        o.append(f'<text x="{width - mr - 60}" y="{sy(hi) + 40:.0f}" font-size="10.5" '
+                 f'fill="#555">perfect prediction</text>')
+    o.append(f'<line x1="{ml}" y1="{height - mb}" x2="{width - mr}" y2="{height - mb}" stroke="#333"/>')
+    o.append(f'<line x1="{ml}" y1="{mt}" x2="{ml}" y2="{height - mb}" stroke="#333"/>')
+    o.append(f'<text x="{(ml + width - mr) / 2:.0f}" y="{height - 16}" font-size="12" '
+             f'text-anchor="middle" fill="#222">{_esc(xlabel)}</text>')
+    o.append(f'<text x="20" y="{(mt + height - mb) / 2:.0f}" font-size="12" fill="#222" '
+             f'transform="rotate(-90 20 {(mt + height - mb) / 2:.0f})" text-anchor="middle">{_esc(ylabel)}</text>')
+    if legend:
+        for i, (lab, col) in enumerate(legend):
+            yy = mt + 8 + i * 19
+            o.append(f'<circle cx="{width - mr + 16}" cy="{yy}" r="4" fill="{col}"/>')
+            o.append(f'<text x="{width - mr + 26}" y="{yy + 4}" font-size="11" fill="#222">{_esc(lab)}</text>')
+    if note:
+        o.append(f'<text x="{ml}" y="{height - 2}" font-size="10.5" fill="#666">{_esc(note)}</text>')
+    o.append("</svg>")
+    Pathwrite(path, "\n".join(o))
+
+
 def Pathwrite(path, text):
     from pathlib import Path
     Path(path).write_text(text)

@@ -1,3 +1,4 @@
 data/burnin_measurements.csv
 __pycache__/
 .DS_Store
+.venv/

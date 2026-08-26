@@ -1,4 +1,4 @@
-# Module A, L0 to L4 — headline numbers
+# SIH26170 — headline numbers (Module A, Module B, L5 conformal)
 
 Dataset **`dataset-v1.1`** (commit `1ac9e59`). See `CHANGED_NUMBERS.md` for every figure that moved from v1.0. 120,000 parts in 240
 lots; 2,100 defective (1.75%). Lot-grouped split, never row-wise: train
@@ -14,37 +14,37 @@ single-parameter equivalent is roughly 30 points lower.
 
 ## The six numbers
 
-1. **L0, static datasheet limits: 0.0% recall, 100% escape rate.** Zero on
-   every injected type, defect and trap alike. This confirms the generator's
-   in-spec guarantee has no hole, and it is the strawman the whole ladder is
-   measured against.
+1. **L0, static datasheet limits: 0.0% recall, 100% escape rate.** Zero on every
+   injected type, defect and trap alike. The strawman the ladder is measured
+   against, and confirmation that the in-spec guarantee holds.
 
-2. **L1, AEC-Q001 dynamic PAT with MAD: 54.3% recall at 93% yield**
-   (PR-AUC 0.264, escape rate 45.7%). Static PAT on the same estimator gets
-   47.3%. This is the industry baseline we claim to beat.
+2. **Module A, AEC-Q001 dynamic PAT with MAD: 54.3% recall at 93% yield**
+   (PR-AUC 0.264, escape 45.7%). Union across 5 parameters x 4 checkpoints.
+   This is the industry baseline we claim to beat.
 
-3. **Cumulative C3 (L0+L1+L2+L3): 92.7% recall at 93% yield** (escape rate
-   7.3%, PR-AUC 0.800). Best single detector is LOF at 90.2% (PR-AUC 0.882).
-   Adding L4 on top gives C4 = 92.3%, i.e. **2 defective parts fewer out of
-   427** — the ladder plateaus at L3.
+3. **Module A cumulative C3 (L0+L1+L2+L3): 92.7% recall at 93% yield**
+   (escape 7.3%). Adding L4 gives 92.3% — 2 defective parts fewer out of 427,
+   so the ladder plateaus at L3. Escape rate falls 45.7% -> 7.3% at identical
+   yield cost.
 
-4. **Escape rate falls from 45.7% (C1) to 7.3% (C3) at the same 7% yield
-   loss** — a 6.3× reduction in test escapes at identical yield cost. Cost at
-   1000:1 falls from 196,651 to 32,651.
+4. **Module B early-warning MAE on v168, using 0 h and 24 h only:
+   0.61 uA (Iddq), 1.30 nA (leakage), 0.068 ns (delay), 0.68 mA (supply),
+   0.84 mV (vth shift)** — LightGBM, test lots. That is a 4.7x improvement on
+   the linear-extrapolation strawman (2.87 uA on Iddq). Adding the 96 h
+   checkpoint improves it a further 21-28%, and the two modes are never blended.
 
-5. **Dynamic PAT vs static PAT on a lot-wide process shift (Type VI, n=3,000):
-   static flags 59%, dynamic flags 6%.** Static PAT scraps 1,770 good parts
-   over a process excursion that is not a part defect. This is the single
-   cleanest justification for dynamic limits in the whole study.
+5. **Conformal risk control holds at every alpha from 1% to 20%, with no
+   statistically significant violation** (one-sided t-test over 40 lot-grouped
+   calibration splits; largest overshoot +0.5 SE). A **1% guaranteed escape
+   rate costs 42.7% yield loss** on the fused detector; 5% costs 11.6%; 10%
+   costs 4.4%. The escape rate is bounded, not merely low.
 
-6. **NEGATIVE RESULT — L4 does not beat L3, and Type III is now visible only
-   to the joint layers.** The cumulative ladder plateaus at L3 (C4 − C3 = −2
-   parts of 427). On mild Type IV, Mahalanobis+MCD still dominates every L4
-   method. And after the v1.1 fix, Type III catch drops to **0.0% for L2**,
-   1.7% for PCA T², 3.3% for LOF — while Mahalanobis+MCD holds **71.7%** and
-   the PCA Q-residual **66.7%**. In v1.0 roughly half of all Type III detection
-   was a construction artifact; removing it makes the central claim true
-   instead of merely apparent.
+6. **NEGATIVE RESULTS, three of them.** (a) L4 does not beat L3: the cumulative
+   ladder plateaus, and on mild Type IV Mahalanobis+MCD still beats every L4
+   method. (b) LightGBM does not beat Huber on MAE — they tie, and Huber is the
+   better default on interpretability and cost. (c) Module B's 95% prediction
+   intervals are **miscalibrated**, delivering 0.928-0.954 coverage against a
+   nominal 0.95; the conformal layer is what closes that gap.
 
 ## The ablation
 
@@ -160,10 +160,45 @@ lots (legitimate, because no detector was fitted on defective parts).
    torch is not installed here. It is a bottlenecked reconstruction, but it is
    not a modern deep autoencoder.
 
+## Module B and L5
+
+Full detail in `module_b.md` and `conformal.md`. Three things worth carrying
+into the deck:
+
+**The strawman check passed, and it is worth showing.** Linear extrapolation of
+the 0->24 h slope over-predicts v168 on every parameter, for 68.8-79.5% of good
+parts, over-shooting true drift by 80-138%. That is sub-linear saturating
+degradation made visible, and it is why rung 2 (power law) halves the error.
+
+**Survivorship bias, quantified in absolute units.** A model trained only on
+parts that survived to 168 h under-predicts the true 168 h value of pulled parts
+by **30.8 uA on Iddq, which is 62% of the entire datasheet limit** — and by
+41% of limit on leakage, 27% on vth shift. Those are the parts whose drift
+matters most.
+
+**The safety slope has to be lot-relative.** Rule (d) tested against the
+datasheet limit is inert (1.4% recall), because every injected defect is inside
+spec by construction. Against a lot-derived L_safe — the AEC-Q001 dynamic PAT
+limit at 168 h — the same rule gives 17.8% recall at 0.15% yield loss. Module
+B's value is not predicting limit violations, of which there are none. It is
+predicting abnormal drift *relative to peers*: the same static-versus-dynamic
+argument Module A makes, one derivative up.
+
+**Framing for the product-assurance question:**
+
+> MIL-STD-883 already uses PDA (Percent Defective Allowable) as a statistical
+> bound on lot quality that ISRO accepts as a screening criterion. Conformal
+> risk control provides the same class of statistically defensible bound,
+> applied to the escape rate of the AI system itself. It makes the model
+> auditable inside a product-assurance framework that already exists.
+
 ## Files
 
 `ablation.md` / `ablation.csv` — main table. `per_type.md` / `per_type.csv` —
 per type and per severity tier with Wilson intervals. `all_methods.csv` — every
 variant including contaminated-fit and leak comparisons.
 `estimator_comparison.csv`, `estimator_stability.csv`,
-`leave_one_lot_out.csv`. Figures `fig1`–`fig4b` as SVG.
+`leave_one_lot_out.csv`. Module B: `module_b.md`/`.csv`,
+`module_b_per_type.csv`, `module_b_by_lot.csv`, `safety_slopes_union.csv`.
+Conformal: `conformal.md`, `conformal_sweep.csv`,
+`conformal_significance.csv`. Figures `fig1`–`fig10` as SVG.

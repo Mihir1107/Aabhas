@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="system-ui,-apple-system,sans-serif">
+<rect width="900" height="520" fill="#fff"/>
+<text x="78" y="26" font-size="15" font-weight="600">Conformal risk control: empirical FNR vs the alpha calibrated for</text>
+<line x1="78.0" y1="46" x2="78.0" y2="458" stroke="#eee"/>
+<text x="78.0" y="476" font-size="11" text-anchor="middle" fill="#444">0</text>
+<line x1="204.4" y1="46" x2="204.4" y2="458" stroke="#eee"/>
+<text x="204.4" y="476" font-size="11" text-anchor="middle" fill="#444">4.2</text>
+<line x1="330.8" y1="46" x2="330.8" y2="458" stroke="#eee"/>
+<text x="330.8" y="476" font-size="11" text-anchor="middle" fill="#444">8.4</text>
+<line x1="457.2" y1="46" x2="457.2" y2="458" stroke="#eee"/>
+<text x="457.2" y="476" font-size="11" text-anchor="middle" fill="#444">12.6</text>
+<line x1="583.6" y1="46" x2="583.6" y2="458" stroke="#eee"/>
+<text x="583.6" y="476" font-size="11" text-anchor="middle" fill="#444">16.8</text>
+<line x1="710.0" y1="46" x2="710.0" y2="458" stroke="#eee"/>
+<text x="710.0" y="476" font-size="11" text-anchor="middle" fill="#444">21</text>
+<line x1="78" y1="458.0" x2="710" y2="458.0" stroke="#eee"/>
+<text x="70" y="462.0" font-size="11" text-anchor="end" fill="#444">0</text>
+<line x1="78" y1="375.6" x2="710" y2="375.6" stroke="#eee"/>
+<text x="70" y="379.6" font-size="11" text-anchor="end" fill="#444">5</text>
+<line x1="78" y1="293.2" x2="710" y2="293.2" stroke="#eee"/>
+<text x="70" y="297.2" font-size="11" text-anchor="end" fill="#444">10</text>
+<line x1="78" y1="210.8" x2="710" y2="210.8" stroke="#eee"/>
+<text x="70" y="214.8" font-size="11" text-anchor="end" fill="#444">15</text>
+<line x1="78" y1="128.4" x2="710" y2="128.4" stroke="#eee"/>
+<text x="70" y="132.4" font-size="11" text-anchor="end" fill="#444">20</text>
+<line x1="78" y1="46.0" x2="710" y2="46.0" stroke="#eee"/>
+<text x="70" y="50.0" font-size="11" text-anchor="end" fill="#444">25</text>
+<line x1="78" y1="458" x2="710" y2="458" stroke="#333"/>
+<line x1="78" y1="46" x2="78" y2="458" stroke="#333"/>
+<text x="394" y="504" font-size="12" text-anchor="middle" fill="#222">alpha: target bound on expected false-negative rate (%)</text>
+<text x="18" y="252" font-size="12" fill="#222" transform="rotate(-90 18 252)" text-anchor="middle">Empirical FNR on held-out lots (%)</text>
+<path d="M108.1,442.1 L138.2,425.9 L168.3,409.5 L228.5,376.2 L303.7,334.5 L379.0,297.3 L529.4,216.4 L679.9,137.9" fill="none" stroke="#1f77b4" stroke-width="2" stroke-dasharray=""/>
+<line x1="718" y1="52" x2="740" y2="52" stroke="#1f77b4" stroke-width="2.5"/>
+<text x="745" y="56" font-size="11" fill="#222">ModuleA_LOF</text>
+<path d="M108.1,429.7 L138.2,407.7 L168.3,387.9 L228.5,345.1 L303.7,305.5 L379.0,269.5 L529.4,172.2 L679.9,91.3" fill="none" stroke="#d62728" stroke-width="2" stroke-dasharray="4,3"/>
+<line x1="718" y1="71" x2="740" y2="71" stroke="#d62728" stroke-width="2.5"/>
+<text x="745" y="75" font-size="11" fill="#222">ModuleA_LOF p90</text>
+<path d="M108.1,444.8 L138.2,428.8 L168.3,410.2 L228.5,375.9 L303.7,332.0 L379.0,295.0 L529.4,216.0 L679.9,137.6" fill="none" stroke="#2ca02c" stroke-width="2" stroke-dasharray=""/>
+<line x1="718" y1="90" x2="740" y2="90" stroke="#2ca02c" stroke-width="2.5"/>
+<text x="745" y="94" font-size="11" fill="#222">ModuleA_fused_maxz</text>
+<path d="M108.1,433.0 L138.2,411.6 L168.3,382.1 L228.5,343.0 L303.7,295.4 L379.0,265.3 L529.4,180.1 L679.9,91.5" fill="none" stroke="#9467bd" stroke-width="2" stroke-dasharray="4,3"/>
+<line x1="718" y1="109" x2="740" y2="109" stroke="#9467bd" stroke-width="2.5"/>
+<text x="745" y="113" font-size="11" fill="#222">ModuleA_fused_maxz p90</text>
+<path d="M108.1,440.8 L138.2,424.7 L168.3,406.9 L228.5,376.0 L303.7,336.5 L379.0,294.5 L529.4,211.0 L679.9,131.4" fill="none" stroke="#ff7f0e" stroke-width="2" stroke-dasharray=""/>
+<line x1="718" y1="128" x2="740" y2="128" stroke="#ff7f0e" stroke-width="2.5"/>
+<text x="745" y="132" font-size="11" fill="#222">ModuleB_upper_bound_margin</text>
+<path d="M108.1,427.2 L138.2,411.0 L168.3,387.7 L228.5,353.7 L303.7,307.6 L379.0,251.0 L529.4,169.5 L679.9,70.2" fill="none" stroke="#17becf" stroke-width="2" stroke-dasharray="4,3"/>
+<line x1="718" y1="147" x2="740" y2="147" stroke="#17becf" stroke-width="2.5"/>
+<text x="745" y="151" font-size="11" fill="#222">ModuleB_upper_bound_margin p90</text>
+<path d="M108.1,441.5 L138.2,425.0 L168.3,408.6 L228.5,375.6 L303.7,334.4 L379.0,293.2 L529.4,210.8 L679.9,128.4" fill="none" stroke="#333" stroke-width="2" stroke-dasharray=""/>
+<line x1="718" y1="166" x2="740" y2="166" stroke="#333" stroke-width="2.5"/>
+<text x="745" y="170" font-size="11" fill="#222">y = x (the guarantee)</text>
+<text x="718" y="38" font-size="11" font-weight="600" fill="#222">Detector</text>
+</svg>
