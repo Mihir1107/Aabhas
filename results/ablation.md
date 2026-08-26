@@ -13,18 +13,18 @@ Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. 120000 parts, 2100 defectiv
 | rung | method | features | recall@93%yield | PR_AUC | AUROC | escape_rate_% | cost |
 |---|---|---|---|---|---|---|---|
 | L0 | Static datasheet limits | 5 params, observed checkpoints | n/a | n/a | n/a | 100.00 | 427000.00 |
-| L1a | DPAT static, MAD | 5 params x 4 cp, union, k=6 | 47.07 | 0.19 | 0.81 | 52.93 | 227651.00 |
+| L1a | DPAT static, MAD | 5 params x 4 cp, union, k=6 | 47.31 | 0.19 | 0.81 | 52.69 | 226651.00 |
 | L1b | DPAT dynamic, MAD | 5 params x 4 cp, union, k=6 | 54.33 | 0.26 | 0.84 | 45.67 | 196651.00 |
 | L1c | DPAT dynamic, all 4 estimators | union of MAD/IQR/p1p99/classical | 54.80 | 0.30 | 0.84 | 45.20 | 194651.00 |
-| L2 | DPAT on trajectory features | level z + 63 trajectory z | 80.33 | 0.72 | 0.90 | 19.67 | 85651.00 |
-| L3a | Mahalanobis + MCD | 5 raw params, per lot x checkpoint | 65.34 | 0.38 | 0.86 | 34.66 | 149651.00 |
-| L3b | PCA T2 + Q-residual | 83-feature design matrix | 90.16 | 0.79 | 0.95 | 9.84 | 43651.00 |
-| L3b-Q | PCA Q-residual alone | 83-feature design matrix | 81.73 | 0.64 | 0.91 | 18.27 | 79651.00 |
-| L3c | kNN distance | 83-feature design matrix | 87.59 | 0.83 | 0.94 | 12.41 | 54651.00 |
-| L4a | Isolation Forest | 83-feature design matrix | 67.68 | 0.20 | 0.88 | 32.32 | 139651.00 |
-| L4b | Autoencoder | 83-feature design matrix | 90.63 | 0.88 | 0.96 | 9.37 | 41651.00 |
-| L4b' | LOF | 83-feature design matrix | 91.10 | 0.89 | 0.96 | 8.90 | 39651.00 |
-| L4c | Union ensemble | 5 members, max percentile rank | 93.68 | 0.71 | 0.98 | 6.32 | 28651.00 |
+| L2 | DPAT on trajectory features | level z + 63 trajectory z | 79.16 | 0.71 | 0.89 | 20.84 | 90651.00 |
+| L3a | Mahalanobis + MCD | 5 raw params, per lot x checkpoint | 64.87 | 0.38 | 0.86 | 35.13 | 151651.00 |
+| L3b | PCA T2 + Q-residual | 83-feature design matrix | 88.99 | 0.78 | 0.94 | 11.01 | 48651.00 |
+| L3b-Q | PCA Q-residual alone | 83-feature design matrix | 81.26 | 0.64 | 0.91 | 18.74 | 81651.00 |
+| L3c | kNN distance | 83-feature design matrix | 86.42 | 0.82 | 0.94 | 13.58 | 59651.00 |
+| L4a | Isolation Forest | 83-feature design matrix | 68.15 | 0.20 | 0.88 | 31.85 | 137651.00 |
+| L4b | Autoencoder | 83-feature design matrix | 89.46 | 0.86 | 0.96 | 10.54 | 46651.00 |
+| L4b' | LOF | 83-feature design matrix | 90.16 | 0.88 | 0.96 | 9.84 | 43651.00 |
+| L4c | Union ensemble | 5 members, max percentile rank | 92.97 | 0.71 | 0.98 | 7.03 | 31651.00 |
 
 `cost` = 1000 x n_FN + 1 x n_FP at the 7% operating point. L0 has no continuous score, so its threshold-free metrics are n/a rather than faked.
 
@@ -32,25 +32,25 @@ Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. 120000 parts, 2100 defectiv
 
 | rung | method | cost_min | cost_min_YL_% | cost_min_recall_% |
 |---|---|---|---|---|
-| L1a | DPAT static, MAD | 22175.00 | 94.07 | 100.00 |
-| L1b | DPAT dynamic, MAD | 22134.00 | 93.90 | 100.00 |
-| L1c | DPAT dynamic, all 4 estimators | 22407.00 | 95.05 | 100.00 |
-| L2 | DPAT on trajectory features | 23565.00 | 99.97 | 100.00 |
-| L3a | Mahalanobis + MCD | 22963.00 | 97.41 | 100.00 |
-| L3b | PCA T2 + Q-residual | 23569.00 | 99.98 | 100.00 |
-| L3b-Q | PCA Q-residual alone | 23425.00 | 99.37 | 100.00 |
-| L3c | kNN distance | 23573.00 | 100.00 | 100.00 |
-| L4a | Isolation Forest | 23573.00 | 100.00 | 100.00 |
-| L4b | Autoencoder | 21880.00 | 67.37 | 98.59 |
-| L4b' | LOF | 23573.00 | 100.00 | 100.00 |
-| L4c | Union ensemble | 10028.00 | 25.57 | 99.06 |
+| L1a | DPAT static, MAD | 22174.00 | 94.07 | 100.00 |
+| L1b | DPAT dynamic, MAD | 21185.00 | 89.87 | 100.00 |
+| L1c | DPAT dynamic, all 4 estimators | 20402.00 | 86.55 | 100.00 |
+| L2 | DPAT on trajectory features | 23526.00 | 99.80 | 100.00 |
+| L3a | Mahalanobis + MCD | 22960.00 | 97.40 | 100.00 |
+| L3b | PCA T2 + Q-residual | 23526.00 | 99.80 | 100.00 |
+| L3b-Q | PCA Q-residual alone | 23426.00 | 99.38 | 100.00 |
+| L3c | kNN distance | 22881.00 | 97.06 | 100.00 |
+| L4a | Isolation Forest | 23202.00 | 98.43 | 100.00 |
+| L4b | Autoencoder | 20605.00 | 70.44 | 99.06 |
+| L4b' | LOF | 22977.00 | 67.78 | 98.36 |
+| L4c | Union ensemble | 11524.00 | 27.68 | 98.83 |
 
 ## DPAT estimator comparison
 
 | estimator | recall_fixed_k6_% | yield_loss_fixed_k6_% | recall_matched_overkill_% |
 |---|---|---|---|
 | MAD | 12.88 | 0.17 | 12.88 |
-| IQR | 12.18 | 0.16 | 13.11 |
+| IQR | 12.18 | 0.16 | 13.35 |
 | p1p99 | 10.07 | 0.01 | 22.25 |
 | classical | 9.60 | 0.05 | 17.33 |
 
@@ -59,11 +59,11 @@ Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. 120000 parts, 2100 defectiv
 | parameter | estimator | sigma_CV_% | limit_CV_% | corr(contamination, sigma) |
 |---|---|---|---|---|
 | iddq_ua | MAD | 22.36 | 21.83 | -0.12 |
-| iddq_ua | IQR | 22.45 | 21.88 | -0.13 |
+| iddq_ua | IQR | 22.47 | 21.89 | -0.13 |
 | iddq_ua | p1p99 | 23.71 | 21.91 | -0.01 |
 | iddq_ua | classical | 20.27 | 20.44 | -0.06 |
-| leakage_na | MAD | 24.80 | 24.49 | -0.14 |
-| leakage_na | IQR | 24.54 | 24.32 | -0.14 |
+| leakage_na | MAD | 24.83 | 24.50 | -0.14 |
+| leakage_na | IQR | 24.55 | 24.32 | -0.14 |
 | leakage_na | p1p99 | 25.61 | 23.85 | 0.03 |
 | leakage_na | classical | 21.66 | 22.11 | -0.01 |
 
@@ -73,4 +73,4 @@ Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. 120000 parts, 2100 defectiv
 |---|---|---|---|---|
 | L1_dynamic_MAD | 61.25 | 14.57 | 0.30 | 0.15 |
 | L3a_MCD | 66.72 | 7.14 | 0.42 | 0.14 |
-| L4d_AutoEnc | 91.88 | 10.72 | 0.85 | 0.12 |
+| L4d_AutoEnc | 93.99 | 8.27 | 0.86 | 0.11 |

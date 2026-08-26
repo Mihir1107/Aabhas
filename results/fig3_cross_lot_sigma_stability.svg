@@ -15,12 +15,12 @@
 <text x="70" y="50.0" font-size="11" text-anchor="end" fill="#444">29</text>
 <line x1="78" y1="442" x2="710" y2="442" stroke="#333"/>
 <rect x="98.6" y="133.3" width="60.5" height="308.7" fill="#1f77b4"/>
-<rect x="167.3" y="132.1" width="60.5" height="309.9" fill="#d62728"/>
+<rect x="167.3" y="131.8" width="60.5" height="310.2" fill="#d62728"/>
 <rect x="236.0" y="114.7" width="60.5" height="327.3" fill="#2ca02c"/>
 <rect x="304.7" y="162.2" width="60.5" height="279.8" fill="#9467bd"/>
 <text x="236.0" y="458" font-size="10.5" text-anchor="middle" fill="#444">iddq_ua</text>
-<rect x="414.6" y="99.7" width="60.5" height="342.3" fill="#1f77b4"/>
-<rect x="483.3" y="103.3" width="60.5" height="338.7" fill="#d62728"/>
+<rect x="414.6" y="99.3" width="60.5" height="342.7" fill="#1f77b4"/>
+<rect x="483.3" y="103.2" width="60.5" height="338.8" fill="#d62728"/>
 <rect x="552.0" y="88.4" width="60.5" height="353.6" fill="#2ca02c"/>
 <rect x="620.7" y="143.0" width="60.5" height="299.0" fill="#9467bd"/>
 <text x="552.0" y="458" font-size="10.5" text-anchor="middle" fill="#444">leakage_na</text>

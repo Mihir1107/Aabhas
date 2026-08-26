@@ -261,7 +261,55 @@ def main() -> None:
         "no fitting; L3b/L3c/L4 were fitted on GOOD parts of TRAIN lots only, so "
         "no defective part was ever seen during fitting. Test-lot-only figures "
         "are in per_type.csv.\n\n" + pv.round(1).reset_index().pipe(md) + "\n")
-    print("wrote ablation.csv/md, per_type.csv/md, estimator_comparison.csv, figures")
+    # ---------------- cumulative ablation ----------------
+    cum = pd.read_csv(OUT / "ablation_cumulative.csv")
+    fus = pd.read_csv(OUT / "fusion_comparison.csv")
+    pcum = pd.read_csv(OUT / "per_type_cumulative.csv")
+
+    mono = cum.dropna(subset=["recall@93%yield"])["recall@93%yield"]
+    is_mono = bool((mono.diff().dropna() >= -1e-9).all())
+    monotxt = ("The cumulative table climbs monotonically." if is_mono else
+               "**The cumulative table is NOT monotone.** See the diagnosis below.")
+
+    cbody = [
+        "# Cumulative ablation, C0 to C4", "",
+        f"Dataset `dataset-v1.1`. Each rung contains everything below it, fused "
+        f"at score level by max robust-z against the good reference. Test lots "
+        f"only (n={int(te.sum())}, {int(y[te].sum())} defective). Operating "
+        "point 7% yield loss.", "",
+        md(cum, ["rung", "contents", "recall@93%yield", "PR_AUC", "AUROC",
+                 "escape_rate_%", "cost"]), "",
+        monotxt, "",
+        "C0 is a binary rule with no ranking, so its threshold-free metrics are "
+        "n/a rather than faked.", "",
+        "## Ensemble fusion: decision level vs score level", "",
+        md(fus), "",
+        "## Per-type and per-tier, cumulative rungs (all lots)", "",
+    ]
+    pv = pcum[pcum.scope == "all lots"].pivot_table(
+        index=["defect_type", "severity"], columns="rung", values="flagged_%")
+    nn = pcum[pcum.scope == "all lots"].groupby(["defect_type", "severity"])["n"].first()
+    pv.insert(0, "n", nn)
+    cbody.append(pv.round(1).reset_index().pipe(md))
+    cbody.append("")
+    cbody.append("Type VI has **zero parts in the test set**; every Type VI figure "
+                 "in this repository is an ALL-LOTS number and is labelled as such. "
+                 "See `split_counts.csv`.")
+    (OUT / "ablation_cumulative.md").write_text("\n".join(cbody))
+
+    # cumulative curve plot
+    cc = np.load(OUT / "curves_cumulative.npz")
+    lbl = {"C1": "C1  L0+L1 (DPAT)", "C2": "C2  +L2 trajectory",
+           "C3": "C3  +L3 multivariate", "C4": "C4  +L4 unsupervised ML"}
+    ser = [{"x": cc[k][0] * 100, "y": cc[k][1] * 100, "label": lbl.get(k, k)}
+           for k in sorted(cc.files)]
+    pl.line_chart(OUT / "fig5_cumulative_ladder.svg", ser,
+                  "Cumulative ablation: recall vs yield loss (test lots, n=24,000)",
+                  "Yield loss: good parts rejected (%)  [log scale]",
+                  "Recall: defective parts caught (%)",
+                  xlim=(0.05, 100), ylim=(0, 100), logx=True, legend_title="Rung",
+                  annotations=[{"x": 7.0, "label": "93% yield goal"}])
+    print("wrote ablation.csv/md, per_type.csv/md, ablation_cumulative.md, figures")
 
 
 if __name__ == "__main__":

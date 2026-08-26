@@ -192,6 +192,54 @@ def autoencoder(X, fit_idx, hidden=(48, 12, 48), max_fit=40000, seed=0):
             pd.DataFrame(err, index=X.index, columns=X.columns))
 
 
+def normalise(s: pd.Series, how: str, ref: pd.Series | None = None) -> pd.Series:
+    """Put a detector score on a common scale so scores can be fused.
+
+    "rank"  percentile rank within the scored population. Distribution-free and
+            immune to one detector having a heavier tail than another.
+    "z"     robust z against the GOOD reference (median / MAD), which keeps
+            magnitude information a rank transform throws away.
+    """
+    if how == "rank":
+        return s.rank(pct=True)
+    r = s if ref is None else ref
+    med = float(np.median(r))
+    mad = 1.4826 * float(np.median(np.abs(r - med)))
+    return (s - med) / max(mad, 1e-12)
+
+
+def fuse(scores: dict[str, pd.Series], how: str,
+         good_mask: pd.Series | None = None,
+         weights: dict[str, float] | None = None) -> pd.Series:
+    """Score-level fusion.
+
+    A binary OR discards everything except "did this cross a threshold", which
+    is why the decision-level union scores well on recall at a fixed operating
+    point and badly on PR-AUC: PR-AUC integrates over the whole ranking, and a
+    near-binary signal has almost no ranking left to integrate.
+    """
+    ref = {k: (v[good_mask] if good_mask is not None else v)
+           for k, v in scores.items()}
+    if how == "max_rank":
+        n = {k: normalise(v, "rank") for k, v in scores.items()}
+        return pd.concat(n.values(), axis=1).max(axis=1)
+    if how == "mean_rank":
+        n = {k: normalise(v, "rank") for k, v in scores.items()}
+        return pd.concat(n.values(), axis=1).mean(axis=1)
+    if how == "max_z":
+        n = {k: normalise(v, "z", ref[k]) for k, v in scores.items()}
+        return pd.concat(n.values(), axis=1).max(axis=1)
+    if how == "weighted_mean_z":
+        w = weights or {k: 1.0 for k in scores}
+        tot = sum(w.values())
+        acc = None
+        for k, v in scores.items():
+            z = normalise(v, "z", ref[k]) * (w[k] / tot)
+            acc = z if acc is None else acc + z
+        return acc
+    raise ValueError(how)
+
+
 def union_ensemble(scores: dict[str, pd.Series], y_good_mask: pd.Series,
                    yield_loss: float) -> pd.Series:
     """Union rule: flag if ANY detector flags, each detector thresholded at the
