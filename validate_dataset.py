@@ -368,6 +368,75 @@ def assert_sublinear(ds: Dataset, rep: Report) -> pd.DataFrame:
     return df
 
 
+def assert_type3_smoothness(ds: Dataset, rep: Report) -> None:
+    """A8. Type III trajectories must be no smoother than a good part's.
+
+    v1.0 placed each Type III checkpoint at a deterministic lot quantile, and
+    lot quantiles move smoothly with t, so the parts inherited the smooth lot
+    curve and carried no independent per-checkpoint measurement noise. Their
+    trajectories were 3-5x smoother than a real part's and a trivial "too
+    smooth" rule recovered 45.8% of the class at 1% yield loss -- a construction
+    artifact leaking the single class that justifies the multivariate layer.
+
+    Smoothness statistic: RMS residual of each part's 4-point trajectory from a
+    per-part least-squares fit of {1, t^0.6}, averaged over parameters after
+    normalising each by the good population's median. Chosen over the
+    second-difference magnitude because it is what the original discriminator
+    used, so the numbers are directly comparable across versions.
+
+    Two-sided by design. Being reliably ROUGHER than a good part is just as much
+    a fingerprint as being smoother, so both tails are tested.
+    """
+    h2("A8. Type III trajectories are no smoother (and no rougher) than good parts")
+    t3 = ds.gt.loc[ds.gt["defect_type"] == "III_CENTRE_HIDER", "component_id"]
+    if t3.empty:
+        print("        (no Type III parts in this run)")
+        return
+    m = ds.meas.copy()
+    m.loc[m["measurement_status"] != "MEASURED", ds.params] = np.nan
+    w = m.pivot_table(index="component_id", columns="checkpoint_h",
+                      values=ds.params, dropna=False)
+    T = np.array(ds.checkpoints, dtype=float)
+    X = np.vstack([np.ones(len(T)), T ** 0.6]).T
+    cols = {}
+    for p in ds.params:
+        V = np.vstack([w[(p, t)].to_numpy() for t in T]).T
+        ok = np.isfinite(V).all(axis=1)
+        r = np.full(len(V), np.nan)
+        co, _, _, _ = np.linalg.lstsq(X, V[ok].T, rcond=None)
+        r[ok] = np.sqrt(((V[ok] - (X @ co).T) ** 2).mean(axis=1))
+        cols[p] = pd.Series(r, index=w.index)
+    rough = pd.DataFrame(cols)
+    ty = ds.gt.set_index("component_id")["defect_type"].reindex(rough.index)
+    norm = rough.div(rough[ty == "GOOD"].median(), axis=1).mean(axis=1)
+    g = norm[ty == "GOOD"].dropna()
+    s3 = norm[ty == "III_CENTRE_HIDER"].dropna()
+
+    ks = stats.ks_2samp(s3, g)
+    mw = stats.mannwhitneyu(s3, g)
+    print(f"        n Type III with a complete trajectory: {len(s3)}  "
+          f"(good reference n={len(g)})")
+    print(f"        roughness ratio, median: Type III {s3.median():.3f} vs "
+          f"good 1.000   [v1.0: 0.25]")
+    print(f"        Kolmogorov-Smirnov  D={ks.statistic:.4f}  p={ks.pvalue:.4f}")
+    print(f"        Mann-Whitney U                        p={mw.pvalue:.4f}")
+    rep.check("Type III roughness indistinguishable from good parts (KS p > 0.01)",
+              ks.pvalue > 0.01, f"p={ks.pvalue:.4f}")
+
+    smooth = 100 * float((s3 <= g.quantile(0.01)).mean())
+    roughc = 100 * float((s3 >= g.quantile(0.99)).mean())
+    print(f"\n        'too smooth' discriminator at 1% yield loss catches "
+          f"{smooth:.1f}% of Type III   [v1.0: 45.8%]")
+    print(f"        'too rough'  discriminator at 1% yield loss catches "
+          f"{roughc:.1f}% of Type III")
+    print("        Chance is 1.0% by construction, since the threshold is the "
+          "good population's\n        1st percentile.")
+    rep.check("'too smooth' rule is at chance (catches < 5% of Type III)",
+              smooth < 5.0, f"{smooth:.1f}%")
+    rep.check("'too rough' rule is at chance (catches < 5% of Type III)",
+              roughc < 5.0, f"{roughc:.1f}%")
+
+
 def assert_lot_separation(ds: Dataset, rep: Report) -> pd.DataFrame:
     h2("A7. Lots are genuinely different from each other")
     good = ds.gt.loc[ds.gt["defect_type"] == "GOOD", ["component_id", "lot_id"]]
@@ -1031,6 +1100,7 @@ def main() -> None:
     assert_censoring(ds, rep)
     assert_sublinear(ds, rep)
     assert_lot_separation(ds, rep)
+    assert_type3_smoothness(ds, rep)
 
     summary_tables(ds)
     cat = calibration_selftest(ds, rep)

@@ -229,7 +229,15 @@ class GeneratorConfig:
     type1_lambda_mult_range: tuple[float, float] = (5.0, 10.0)
     type1_v0_pull_sd: float = 0.8     # steep drifters are drawn low on v0
     type2_jump_range_in_D: tuple[float, float] = (2.5, 5.0)
-    type3_band_pct: float = 30.0      # must land within median +/- this many
+    # Widened from 30.0 in v1.0. Type III now carries the same per-checkpoint
+    # measurement noise as a good part, and that noise jitters the realised
+    # percentile, so the design target must sit further inside the band. 33.0 is
+    # the value that REPRODUCES v1.0's joint separation (median D^2 15.9 vs
+    # 16.4, 98.2nd vs 98.0th percentile of the good population) rather than
+    # improving on it: the re-baseline removes an artifact, it does not quietly
+    # make the hard class easier. The band is still the 17th-83rd percentile,
+    # i.e. squarely centre-of-distribution and invisible to any univariate rule.
+    type3_band_pct: float = 33.0      # must land within median +/- this many
                                       # percentile points on EVERY parameter
     # How far each centre-hider is pushed toward the box-constrained maximum
     # Mahalanobis distance. This is THE difficulty knob for the hardest class:
@@ -842,7 +850,8 @@ class BurnInGenerator:
         # ---------------- Type III: centre-hider -------------------------
         type3_report = None
         if (dtype == "III_CENTRE_HIDER").any():
-            type3_report = self._inject_centre_hiders(x, idx, dtype, realized, severity)
+            type3_report = self._inject_centre_hiders(x, idx, dtype, realized,
+                                                      severity, eps)
             mechanism[dtype == "III_CENTRE_HIDER"] = "LATENT_JOINT_INCONSISTENCY"
 
         # ---------------- physical measurement floor ---------------------
@@ -868,7 +877,7 @@ class BurnInGenerator:
                               realized, severity)
 
     # ------------------------------------------------------------------
-    def _inject_centre_hiders(self, x, idx, dtype, realized, severity):
+    def _inject_centre_hiders(self, x, idx, dtype, realized, severity, eps):
         """Type III construction.
 
         For each target part we take the *empirical* within-lot covariance of
@@ -884,6 +893,32 @@ class BurnInGenerator:
         hidden. A point sitting at the exact median of every parameter has
         Mahalanobis distance zero by definition, so a centre-hider must sit at
         the *edge* of whatever central band we allow it.
+
+        v1.1 MEASUREMENT NOISE FIX
+        --------------------------
+        v1.0 set each checkpoint's value to a deterministic lot quantile. Lot
+        quantiles move smoothly with t, so the part inherited the smooth lot
+        curve and carried NO independent per-checkpoint noise: its trajectories
+        were 3-5x smoother than a real part's, and a trivial "too smooth" rule
+        recovered 45.8% of Type III at 1% yield loss without any multivariate
+        reasoning.
+
+        The fix places the target as before and then adds the part's OWN
+        already-drawn eps -- the same array, the same draw, that every good part
+        uses -- so the noise distribution is identical by construction rather
+        than by resemblance. Nothing is resampled and nothing is truncated,
+        because truncating the noise to fit the band would put a detectable
+        signature back in.
+
+        The band is then honoured by shrinking the TARGET, never the noise:
+        given this part's realised eps, binary-search the largest scale s in
+        (0, 1] such that target(s) + eps sits inside the band at every
+        checkpoint and every parameter. That is deterministic given eps, so eps
+        keeps its exact distribution.
+
+        The cost is real and is reported: shrinking the target shrinks the joint
+        anomaly. Preserving the v1.0 Mahalanobis separation therefore requires a
+        wider design band, which is the trade this fix forces.
         """
         cfg = self.cfg
         rng = self._rng(17)
@@ -909,7 +944,24 @@ class BurnInGenerator:
             shrink = rng.uniform(cfg.type3_severity[j][1], cfg.type3_severity[j][2],
                                  size=self.P)
 
-            per_cp, d2s, ceilings, pcts = [], [], [], []
+            # ---- pass 0: ONE anomaly direction for the whole trajectory.
+            # v1.0 re-optimised the box vertex at every checkpoint from that
+            # checkpoint's own empirical covariance. The optimum is a sign
+            # pattern, and sampling noise makes it FLIP: a part could sit at the
+            # 80th percentile of prop_delay at 96 h and the 20th at 168 h. That
+            # is not a latent defect, it is an estimation artifact, and it is
+            # the dominant source of trajectory roughness once real measurement
+            # noise is added on top. A structural defect does not reverse sign
+            # between checkpoints, so the direction is now solved ONCE against
+            # the average within-lot correlation and held fixed.
+            corr_bar = np.mean([
+                (lambda cv: cv / np.outer(np.sqrt(np.diag(cv)), np.sqrt(np.diag(cv))))(
+                    np.cov(x[peers, tt, :], rowvar=False))
+                for tt in range(self.nT)], axis=0)
+            _, z_dir = max_box_mahalanobis(corr_bar, c, active)
+
+            # ---- pass 1: geometry that does not depend on the scale s
+            geom = []
             for ti in range(self.nT):
                 # direction from the CLEAN good population, so the shape of the
                 # anomaly is defined against an uncontaminated reference
@@ -920,8 +972,8 @@ class BurnInGenerator:
                 sd = np.sqrt(np.diag(cov))
                 corr = cov / np.outer(sd, sd)
                 inv = np.linalg.inv(corr)
-                d2_max, z_star = max_box_mahalanobis(cov, c, active)
-                z = z_star * shrink
+                d2_max = float(z_dir @ np.linalg.inv(corr_bar) @ z_dir)
+                z = z_dir * shrink
 
                 # placement by EMPIRICAL quantile of the whole lot, not by
                 # med + z*sd. The lot distribution is close to Gaussian but not
@@ -940,12 +992,61 @@ class BurnInGenerator:
                 lo_p = (50.0 - cfg.type3_band_pct + 0.5) / 100.0
                 hi_p = (50.0 + cfg.type3_band_pct - 0.5) / 100.0
                 pct = np.clip(pct, lo_p, hi_p)
-                vals = np.array([np.quantile(ref[:, j], pct[j]) for j in range(self.P)])
+                # value bounds implied by the band, at this checkpoint
+                band_lo = np.array([np.quantile(ref[:, j], lo_p) for j in range(self.P)])
+                band_hi = np.array([np.quantile(ref[:, j], hi_p) for j in range(self.P)])
+                geom.append({"ref": ref, "med": med, "sd": sd, "inv": inv,
+                             "z": z, "d2_max": float(d2_max),
+                             "band_lo": band_lo, "band_hi": band_hi})
 
-                z_real = (vals - med) / sd
-                d2s.append(float(z_real @ inv @ z_real))
-                ceilings.append(float(d2_max))
-                pcts.append([round(float(v) * 100, 2) for v in pct])
+            # ---- pass 2: largest target scale whose NOISY realisation still
+            # sits inside the band at every checkpoint and parameter.
+            e = eps[i]                                   # this part's own noise
+            spec_lo = self.lo + self.margin
+            spec_hi = self.hi - self.margin
+
+            def realise(scale: float):
+                out = np.empty((self.nT, self.P))
+                for tt, g in enumerate(geom):
+                    zz = g["z"] * scale
+                    pp = 0.5 * (1.0 + np.array(
+                        [math.erf(v / math.sqrt(2.0)) for v in zz]))
+                    pp = np.clip(pp, lo_p, hi_p)
+                    tgt = np.array([np.quantile(g["ref"][:, j], pp[j])
+                                    for j in range(self.P)])
+                    out[tt] = tgt + e[tt]
+                return out
+
+            def feasible(scale: float) -> bool:
+                v = realise(scale)
+                for tt, g in enumerate(geom):
+                    if (v[tt] < g["band_lo"] - 1e-12).any() or \
+                       (v[tt] > g["band_hi"] + 1e-12).any():
+                        return False
+                if (v < spec_lo).any() or (v > spec_hi).any():
+                    return False
+                return True
+
+            if feasible(1.0):
+                s_star = 1.0
+            else:
+                lo_s, hi_s = 0.0, 1.0
+                for _ in range(30):
+                    mid = 0.5 * (lo_s + hi_s)
+                    if feasible(mid):
+                        lo_s = mid
+                    else:
+                        hi_s = mid
+                s_star = lo_s
+            vals_all = realise(s_star)
+
+            per_cp, d2s, ceilings, pcts = [], [], [], []
+            for ti, g in enumerate(geom):
+                vals = vals_all[ti]
+                z_real = (vals - g["med"]) / g["sd"]
+                d2s.append(float(z_real @ g["inv"] @ z_real))
+                ceilings.append(g["d2_max"])
+                pcts.append([round(float(v), 2) for v in z_real])
                 per_cp.append(vals)
 
             off = np.array(per_cp) - x[i]
@@ -959,6 +1060,7 @@ class BurnInGenerator:
             x[i] = np.array(per_cp)
 
             realized[int(i)] = {
+                "noise_target_scale": round(float(s_star), 4),
                 "maha_d2_by_checkpoint": [round(v, 3) for v in d2s],
                 "maha_d2_box_ceiling": [round(v, 3) for v in ceilings],
                 "severity": names[j],
@@ -968,6 +1070,7 @@ class BurnInGenerator:
             report["parts"].append({
                 "component_id": str(idx["component_id"].iloc[int(i)]),
                 "severity": names[j],
+                "noise_target_scale": round(float(s_star), 4),
                 "d2": [round(v, 3) for v in d2s],
                 "d2_ceiling": [round(v, 3) for v in ceilings]})
         return report
