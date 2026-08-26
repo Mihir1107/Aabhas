@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="system-ui,-apple-system,sans-serif">
+<rect width="900" height="520" fill="#fff"/>
+<text x="78" y="26" font-size="15" font-weight="600">III_CENTRE_HIDER: catch rate by severity tier, at 7% yield loss</text>
+<line x1="78" y1="442.0" x2="710" y2="442.0" stroke="#eee"/>
+<text x="70" y="446.0" font-size="11" text-anchor="end" fill="#444">0</text>
+<line x1="78" y1="362.8" x2="710" y2="362.8" stroke="#eee"/>
+<text x="70" y="366.8" font-size="11" text-anchor="end" fill="#444">20</text>
+<line x1="78" y1="283.6" x2="710" y2="283.6" stroke="#eee"/>
+<text x="70" y="287.6" font-size="11" text-anchor="end" fill="#444">40</text>
+<line x1="78" y1="204.4" x2="710" y2="204.4" stroke="#eee"/>
+<text x="70" y="208.4" font-size="11" text-anchor="end" fill="#444">60</text>
+<line x1="78" y1="125.2" x2="710" y2="125.2" stroke="#eee"/>
+<text x="70" y="129.2" font-size="11" text-anchor="end" fill="#444">80</text>
+<line x1="78" y1="46.0" x2="710" y2="46.0" stroke="#eee"/>
+<text x="70" y="50.0" font-size="11" text-anchor="end" fill="#444">100</text>
+<line x1="78" y1="442" x2="710" y2="442" stroke="#333"/>
+<rect x="82.1" y="442.0" width="11.9" height="0.0" fill="#1f77b4"/>
+<rect x="95.6" y="442.0" width="11.9" height="0.0" fill="#d62728"/>
+<rect x="109.1" y="442.0" width="11.9" height="0.0" fill="#2ca02c"/>
+<text x="102.3" y="458" font-size="10.5" text-anchor="middle" fill="#444">L0</text>
+<rect x="130.7" y="442.0" width="11.9" height="0.0" fill="#1f77b4"/>
+<rect x="144.2" y="442.0" width="11.9" height="0.0" fill="#d62728"/>
+<rect x="157.7" y="423.1" width="11.9" height="18.9" fill="#2ca02c"/>
+<text x="150.9" y="458" font-size="10.5" text-anchor="middle" fill="#444">L1a</text>
+<rect x="179.3" y="442.0" width="11.9" height="0.0" fill="#1f77b4"/>
+<rect x="192.8" y="442.0" width="11.9" height="0.0" fill="#d62728"/>
+<rect x="206.3" y="442.0" width="11.9" height="0.0" fill="#2ca02c"/>
+<text x="199.5" y="458" font-size="10.5" text-anchor="middle" fill="#444">L1b</text>
+<rect x="227.9" y="442.0" width="11.9" height="0.0" fill="#1f77b4"/>
+<rect x="241.4" y="442.0" width="11.9" height="0.0" fill="#d62728"/>
+<rect x="254.9" y="442.0" width="11.9" height="0.0" fill="#2ca02c"/>
+<text x="248.2" y="458" font-size="10.5" text-anchor="middle" fill="#444">L1c</text>
+<rect x="276.5" y="185.8" width="11.9" height="256.2" fill="#1f77b4"/>
+<rect x="290.0" y="208.0" width="11.9" height="234.0" fill="#d62728"/>
+<rect x="303.5" y="291.1" width="11.9" height="150.9" fill="#2ca02c"/>
+<text x="296.8" y="458" font-size="10.5" text-anchor="middle" fill="#444">L2</text>
+<rect x="325.1" y="46.0" width="11.9" height="396.0" fill="#1f77b4"/>
+<rect x="338.6" y="100.0" width="11.9" height="342.0" fill="#d62728"/>
+<rect x="352.1" y="215.7" width="11.9" height="226.3" fill="#2ca02c"/>
+<text x="345.4" y="458" font-size="10.5" text-anchor="middle" fill="#444">L3a</text>
+<rect x="373.7" y="185.8" width="11.9" height="256.2" fill="#1f77b4"/>
+<rect x="387.2" y="208.0" width="11.9" height="234.0" fill="#d62728"/>
+<rect x="400.8" y="310.0" width="11.9" height="132.0" fill="#2ca02c"/>
+<text x="394.0" y="458" font-size="10.5" text-anchor="middle" fill="#444">L3b</text>
+<rect x="422.4" y="46.0" width="11.9" height="396.0" fill="#1f77b4"/>
+<rect x="435.9" y="100.0" width="11.9" height="342.0" fill="#d62728"/>
+<rect x="449.4" y="196.9" width="11.9" height="245.1" fill="#2ca02c"/>
+<text x="442.6" y="458" font-size="10.5" text-anchor="middle" fill="#444">L3b-Q</text>
+<rect x="471.0" y="185.8" width="11.9" height="256.2" fill="#1f77b4"/>
+<rect x="484.5" y="208.0" width="11.9" height="234.0" fill="#d62728"/>
+<rect x="498.0" y="310.0" width="11.9" height="132.0" fill="#2ca02c"/>
+<text x="491.2" y="458" font-size="10.5" text-anchor="middle" fill="#444">L3c</text>
+<rect x="519.6" y="348.8" width="11.9" height="93.2" fill="#1f77b4"/>
+<rect x="533.1" y="406.0" width="11.9" height="36.0" fill="#d62728"/>
+<rect x="546.6" y="423.1" width="11.9" height="18.9" fill="#2ca02c"/>
+<text x="539.8" y="458" font-size="10.5" text-anchor="middle" fill="#444">L4a</text>
+<rect x="568.2" y="185.8" width="11.9" height="256.2" fill="#1f77b4"/>
+<rect x="581.7" y="208.0" width="11.9" height="234.0" fill="#d62728"/>
+<rect x="595.2" y="328.9" width="11.9" height="113.1" fill="#2ca02c"/>
+<text x="588.5" y="458" font-size="10.5" text-anchor="middle" fill="#444">L4b</text>
+<rect x="616.8" y="185.8" width="11.9" height="256.2" fill="#1f77b4"/>
+<rect x="630.3" y="208.0" width="11.9" height="234.0" fill="#d62728"/>
+<rect x="643.8" y="310.0" width="11.9" height="132.0" fill="#2ca02c"/>
+<text x="637.1" y="458" font-size="10.5" text-anchor="middle" fill="#444">L4b'</text>
+<rect x="665.4" y="69.3" width="11.9" height="372.7" fill="#1f77b4"/>
+<rect x="678.9" y="100.0" width="11.9" height="342.0" fill="#d62728"/>
+<rect x="692.4" y="291.1" width="11.9" height="150.9" fill="#2ca02c"/>
+<text x="685.7" y="458" font-size="10.5" text-anchor="middle" fill="#444">L4c</text>
+<rect x="718" y="44" width="20" height="11" fill="#1f77b4"/>
+<text x="744" y="54" font-size="11" fill="#222">severe</text>
+<rect x="718" y="63" width="20" height="11" fill="#d62728"/>
+<text x="744" y="73" font-size="11" fill="#222">moderate</text>
+<rect x="718" y="82" width="20" height="11" fill="#2ca02c"/>
+<text x="744" y="92" font-size="11" fill="#222">mild</text>
+<text x="18" y="244" font-size="12" fill="#222" transform="rotate(-90 18 244)" text-anchor="middle">Defective parts caught (%)</text>
+<text x="78" y="506" font-size="10.5" fill="#666">All lots. n per tier: {'severe': 17, 'moderate': 22, 'mild': 21}. Mild is the tier the ML rungs are supposed to win.</text>
+</svg>

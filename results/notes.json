@@ -1,0 +1,21 @@
+{
+  "L0": "union across 5 params, observed checkpoints only",
+  "L1_static_MAD": "union across 5 params x 4 checkpoints, k=6",
+  "L1_dynamic_MAD": "union across 5 params x 4 checkpoints, k=6",
+  "L1_static_IQR": "union across 5 params x 4 checkpoints, k=6",
+  "L1_dynamic_IQR": "union across 5 params x 4 checkpoints, k=6",
+  "L1_static_p1p99": "union across 5 params x 4 checkpoints, k=6",
+  "L1_dynamic_p1p99": "union across 5 params x 4 checkpoints, k=6",
+  "L1_static_classical": "union across 5 params x 4 checkpoints, k=6",
+  "L1_dynamic_classical": "union across 5 params x 4 checkpoints, k=6",
+  "L2_drift": "max |lot-relative robust z| over trajectory features",
+  "L2_level": "max |lot-relative robust z| over level features",
+  "L2_both": "max of L2_level and L2_drift",
+  "L3a_MCD": "per lot x checkpoint, 5 raw params, median over checkpoints",
+  "L3b_T2": "Hotelling T2, 23 PCs (95% var), fit on train good parts",
+  "L3b_Q": "Q residual / SPE, 23 PCs",
+  "L4d_AutoEnc": "sklearn MLPRegressor fitted X->X, hidden (48,12,48); torch unavailable in this environment",
+  "L4e_Union": "union of L2_both, L3a_MCD, L3b_Q, IForest, AutoEnc; each member at 1.40% yield loss so the union's total budget is comparable to 7%",
+  "L4e_UnionRank": "max percentile-rank across the same five members",
+  "L4d_AutoEnc_WITH_censor_leak": "same model WITH censored_pulled in the features; P(defective|pulled)=1.0 so this books 17.1% recall for free. Reported to size the leak, not used."
+}

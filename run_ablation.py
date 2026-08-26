@@ -1,0 +1,284 @@
+"""
+Module A ablation: L0 through L4, evaluated on held-out lots.
+
+Writes results/ablation.{md,csv}, results/per_type.csv, results/SUMMARY.md and
+the SVG plots.
+
+Protocol (Part 8.1, non-negotiable):
+  train lots  -> fit detectors, on GOOD parts where the method allows
+  val lots    -> calibrate operating thresholds
+  test lots   -> report
+
+No row-wise splitting anywhere. Thresholds calibrated on val and applied to
+test are reported alongside the curve-based numbers, so the calibration gap is
+visible instead of assumed away.
+"""
+
+from __future__ import annotations
+
+import json
+import time
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+from modulea import detectors as det
+from modulea import evaluation as ev
+from modulea import features as ft
+from modulea import multivariate as mv
+
+OUT = Path("results")
+YL_MAIN = ev.YIELD_TARGET       # 7% yield loss = 93% yield
+
+
+def log(msg: str) -> None:
+    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
+def cross_lot_stability(ds, y) -> pd.DataFrame:
+    """How stable is each estimator's sigma across lots, and does a lot's
+    contamination inflate its own sigma?
+
+    This is the measurable form of the breakdown-point argument. A robust
+    estimator should show near-zero correlation between a lot's contamination
+    fraction and its estimated sigma; a fragile one lets the defects widen the
+    very limit meant to catch them. It is also the mechanism behind the residual
+    gap between estimators at matched overkill: per-lot sigma inflation varies
+    with per-lot contamination, which reorders parts ACROSS lots even though it
+    cannot reorder them within one.
+    """
+    m = ds.meas[(ds.meas["measurement_status"] == "MEASURED")
+                & (ds.meas["checkpoint_h"] == 0.0)]
+    cont = (m.assign(_d=m["component_id"].map(y))
+            .groupby("lot_id")["_d"].mean())
+    rows = []
+    for p in ds.log_params:
+        for est in ("MAD", "IQR", "p1p99", "classical"):
+            sig, lim = {}, {}
+            for lotid, g in m.groupby("lot_id"):
+                a = g[p].dropna().to_numpy()
+                if len(a) < det.MIN_LOT_N:
+                    continue
+                lo, hi = det.limits_for(a, est, 6.0)
+                med = float(np.median(a))
+                sig[lotid] = (hi - med) / 6.0
+                lim[lotid] = hi
+            sg = pd.Series(sig)
+            lm = pd.Series(lim)
+            c = cont.reindex(sg.index)
+            rows.append({
+                "parameter": p, "estimator": est,
+                "sigma_CV_%": 100 * float(sg.std() / sg.mean()),
+                "limit_CV_%": 100 * float(lm.std() / lm.mean()),
+                "corr(contamination, sigma)": float(np.corrcoef(c, sg)[0, 1]),
+            })
+    return pd.DataFrame(rows)
+
+
+def main() -> None:
+    OUT.mkdir(exist_ok=True)
+    ds = ev.load("data")
+    y = ds.labels()
+    ty = ds.type_of()
+    sev = ds.severity_of()
+    lot = ds.lot_of()
+    sp = ev.lot_splits(lot)
+    log(f"lot split: {sp.describe()}")
+
+    tr = sp.mask(lot, "train")
+    va = sp.mask(lot, "val")
+    te = sp.mask(lot, "test")
+    good = ~y
+    fit_clean = y.index[tr & good]          # good parts of train lots
+    fit_dirty = y.index[tr]                 # all train parts, realistic
+
+    log("building features")
+    traj, ztraj, lvl, zlvl = ft.build_feature_matrix(ds)
+    X = mv.design_matrix(zlvl, ztraj, traj)
+    log(f"design matrix {X.shape}; not-z-scored (degenerate): "
+        f"{len(ztraj.attrs.get('degenerate_not_zscored', []))} cols")
+
+    scores: dict[str, pd.Series] = {}
+    flags: dict[str, pd.Series] = {}
+    notes: dict[str, str] = {}
+
+    # ---------------- L0 ----------------
+    log("L0 static datasheet limits")
+    l0 = det.l0_static_limits(ds)
+    flags["L0"] = l0["flag"]
+    scores["L0"] = l0["score"]
+    notes["L0"] = "union across 5 params, observed checkpoints only"
+
+    # ---------------- L1 ----------------
+    for est in ("MAD", "IQR", "p1p99", "classical"):
+        for mode in ("static", "dynamic"):
+            log(f"L1 {mode} {est}")
+            r = det.dpat(ds, est, mode, k=6.0,
+                         reference_lots=sp.train if mode == "static" else None)
+            key = f"L1_{mode}_{est}"
+            scores[key] = r["score"]
+            flags[key] = r["flag"]
+            notes[key] = f"union across 5 params x 4 checkpoints, k=6"
+
+    # ---------------- L2 ----------------
+    log("L2 trajectory features")
+    zt = ztraj.replace([np.inf, -np.inf], np.nan)
+    scores["L2_drift"] = zt.abs().max(axis=1).fillna(0.0)
+    notes["L2_drift"] = "max |lot-relative robust z| over trajectory features"
+    scores["L2_level"] = zlvl.replace([np.inf, -np.inf], np.nan).abs().max(axis=1).fillna(0.0)
+    notes["L2_level"] = "max |lot-relative robust z| over level features"
+    scores["L2_both"] = np.maximum(scores["L2_drift"], scores["L2_level"])
+    notes["L2_both"] = "max of L2_level and L2_drift"
+
+    # ---------------- L3 ----------------
+    log("L3a Mahalanobis MCD (raw)")
+    scores["L3a_MCD"] = mv.mahalanobis_per_lot(ds, robust=True, log_transform=False)
+    log("L3a Mahalanobis MCD (log-transformed)")
+    scores["L3a_MCD_log"] = mv.mahalanobis_per_lot(ds, robust=True, log_transform=True)
+    log("L3a Mahalanobis plain sample covariance")
+    scores["L3a_plaincov"] = mv.mahalanobis_per_lot(ds, robust=False, log_transform=False)
+    notes["L3a_MCD"] = "per lot x checkpoint, 5 raw params, median over checkpoints"
+
+    log("L3b PCA T2 + Q")
+    t2, q, ncomp = mv.pca_scores(X, fit_clean)
+    scores["L3b_T2"] = t2
+    scores["L3b_Q"] = q
+    notes["L3b_T2"] = f"Hotelling T2, {ncomp} PCs (95% var), fit on train good parts"
+    notes["L3b_Q"] = f"Q residual / SPE, {ncomp} PCs"
+    log("L3c kNN distance")
+    scores["L3c_kNN"] = mv.knn_distance(X, fit_clean)
+
+    # ---------------- L4 ----------------
+    log("L4a IsolationForest")
+    scores["L4a_IForest"] = mv.isolation_forest(X, fit_clean, contamination=0.02)
+    log("L4b LOF")
+    scores["L4b_LOF"] = mv.lof(X, fit_clean, contamination=0.02)
+    log("L4c OneClassSVM")
+    scores["L4c_OCSVM"] = mv.ocsvm(X, fit_clean, nu=0.02)
+    log("L4d autoencoder")
+    ae, ae_per = mv.autoencoder(X, fit_clean)
+    scores["L4d_AutoEnc"] = ae
+    notes["L4d_AutoEnc"] = ("sklearn MLPRegressor fitted X->X, hidden (48,12,48); "
+                            "torch unavailable in this environment")
+
+    log("L4e union ensemble")
+    members = {k: scores[k] for k in
+               ("L2_both", "L3a_MCD", "L3b_Q", "L4a_IForest", "L4d_AutoEnc")}
+    ens_flag = mv.union_ensemble(members, good & te, YL_MAIN / len(members))
+    flags["L4e_Union"] = ens_flag
+    notes["L4e_Union"] = ("union of L2_both, L3a_MCD, L3b_Q, IForest, AutoEnc; "
+                          f"each member at {100 * YL_MAIN / len(members):.2f}% yield loss "
+                          "so the union's total budget is comparable to 7%")
+    # a scoreable version: rank-average of member z-ranks
+    rk = pd.concat([s.rank(pct=True) for s in members.values()], axis=1).max(axis=1)
+    scores["L4e_UnionRank"] = rk
+    notes["L4e_UnionRank"] = "max percentile-rank across the same five members"
+
+    # contaminated-fit comparison: is the clean reference set doing the work?
+    log("contaminated-fit comparison (fit on ALL train parts)")
+    scores["L4a_IForest_dirtyfit"] = mv.isolation_forest(X, fit_dirty, contamination=0.02)
+    t2d, qd, _ = mv.pca_scores(X, fit_dirty)
+    scores["L3b_Q_dirtyfit"] = qd
+
+    # quantify the censoring leak we deliberately excluded
+    log("censoring-leak quantification")
+    Xleak = mv.design_matrix(zlvl, ztraj, traj, include_censor_flags=True)
+    scores["L4d_AutoEnc_WITH_censor_leak"], _ = mv.autoencoder(Xleak, fit_clean)
+    notes["L4d_AutoEnc_WITH_censor_leak"] = (
+        "same model WITH censored_pulled in the features; P(defective|pulled)=1.0 "
+        "so this books 17.1% recall for free. Reported to size the leak, not used.")
+
+    # ---------------- evaluate ----------------
+    log("evaluating on TEST lots")
+    rows = []
+    for name, s in scores.items():
+        s = s.replace([np.inf, -np.inf], np.nan).fillna(0.0)
+        if name == "L0":
+            m = ev.metrics_from_flags(y[te], flags["L0"][te])
+            m["method"] = name
+            m[f"recall@{100 * (1 - YL_MAIN):.0f}%yield"] = float("nan")
+            rows.append(m)
+            continue
+        m = ev.metrics_from_score(y[te], s[te], YL_MAIN)
+        m["method"] = name
+        # threshold calibrated on VAL, applied to TEST
+        thr = ev.threshold_at_yield_loss(y[va], s[va], YL_MAIN)
+        f = s[te] >= thr
+        m["val_cal_recall_%"] = 100 * float(f[y[te]].mean())
+        m["val_cal_yield_loss_%"] = 100 * float(f[good[te]].mean())
+        rows.append(m)
+    res = pd.DataFrame(rows).set_index("method")
+    res.to_csv(OUT / "all_methods.csv")
+
+    # per-type / per-tier at the main operating point, on TEST
+    log("per-type breakdown")
+    ptr = []
+    for name, s in scores.items():
+        s = s.replace([np.inf, -np.inf], np.nan).fillna(0.0)
+        if name == "L0":
+            f = flags["L0"][te]
+        else:
+            thr = ev.threshold_at_yield_loss(y[te], s[te], YL_MAIN)
+            f = s[te] >= thr
+        b = ev.per_type_breakdown(ty[te], sev[te], f)
+        b["method"] = name
+        ptr.append(b)
+    per_type = pd.concat(ptr, ignore_index=True)
+    per_type.to_csv(OUT / "per_type.csv", index=False)
+
+    # ---------------- leave-one-lot-out ----------------
+    log("leave-one-lot-out (10 folds, seeded subsample of held-out lots)")
+    lolo_rows = []
+    for held, trlots in ev.leave_one_lot_out(lot, n_folds=10, seed=0):
+        hm = lot == held
+        if y[hm].sum() < 3:
+            continue
+        fit = y.index[lot.isin(trlots) & good]
+        rng = np.random.default_rng(0)
+        fit = pd.Index(rng.choice(np.asarray(fit), size=min(20000, len(fit)),
+                                  replace=False))
+        for nm, sc in (("L1_dynamic_MAD", scores["L1_dynamic_MAD"]),
+                       ("L3a_MCD", scores["L3a_MCD"])):
+            m = ev.metrics_from_score(y[hm], sc[hm].fillna(0.0), YL_MAIN)
+            lolo_rows.append({"lot": held, "method": nm,
+                              "recall": m[f"recall@{100 * (1 - YL_MAIN):.0f}%yield"],
+                              "PR_AUC": m["PR_AUC"]})
+        ae_h, _ = mv.autoencoder(X, fit)
+        m = ev.metrics_from_score(y[hm], ae_h[hm].fillna(0.0), YL_MAIN)
+        lolo_rows.append({"lot": held, "method": "L4d_AutoEnc",
+                          "recall": m[f"recall@{100 * (1 - YL_MAIN):.0f}%yield"],
+                          "PR_AUC": m["PR_AUC"]})
+    lolo = pd.DataFrame(lolo_rows)
+    lolo.to_csv(OUT / "leave_one_lot_out.csv", index=False)
+    log("LOLO summary:\n" + lolo.groupby("method")[["recall", "PR_AUC"]]
+        .agg(["mean", "std"]).round(3).to_string())
+
+    # ---------------- cross-lot estimator stability ----------------
+    log("cross-lot sigma stability by estimator")
+    stab = cross_lot_stability(ds, y)
+    stab.to_csv(OUT / "estimator_stability.csv", index=False)
+    log("\n" + stab.to_string(index=False, float_format=lambda v: f"{v:.4f}"))
+
+    # curves for plotting
+    curves = {}
+    for name in ("L1_dynamic_MAD", "L2_both", "L3a_MCD", "L3b_Q",
+                 "L4a_IForest", "L4d_AutoEnc", "L4e_UnionRank"):
+        s = scores[name].replace([np.inf, -np.inf], np.nan).fillna(0.0)
+        yl, rec, _ = ev.recall_yield_curve(y[te], s[te])
+        curves[name] = (yl, rec)
+    np.savez(OUT / "curves.npz", **{k: np.vstack(v) for k, v in curves.items()})
+
+    pd.DataFrame(scores).to_csv(OUT / "scores.csv.gz", index=True,
+                                compression="gzip")
+    pd.DataFrame(flags).to_csv(OUT / "flags.csv.gz", index=True, compression="gzip")
+    with open(OUT / "notes.json", "w") as fh:
+        json.dump(notes, fh, indent=2)
+    log("done")
+    print(res[[c for c in ("recall@93%yield", "PR_AUC", "AUROC",
+                           "escape_rate_%", "cost_at_op") if c in res.columns]]
+          .to_string(float_format=lambda v: f"{v:.4f}"))
+
+
+if __name__ == "__main__":
+    main()
