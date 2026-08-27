@@ -1,0 +1,18 @@
+Component: LOT233-C0222     Lot: LOT233     Board: LOT233-B03  Socket: (r3, c6)
+Decision: WATCH
+
+Absolute limit:      PASS (8.73 ns vs 10.0 ns max, prop_delay_ns)
+Lot-relative level:  +0.9 robust sigma vs lot median on leakage_na (median 26.46 nA, sigma 5.59 nA, n=499, MAD estimator; AEC-Q001 IQR/1.35 gives 5.70 nA)
+Drift 0h to 24h:     +1.483 mV on vth_shift_mv; lot median drift +1.001 mV, part is +0.6 robust sigma on the lot's drift distribution
+Drift rate:          0.0618 mV/h (lot median 0.0417 mV/h, 1.5x)
+Max interval jump:   +0.7 robust sigma on iddq_ua; largest interval change is 3.5x the median of the others (concentrated -> step)
+Predicted 168h:      0.522 mV (vth_shift_mv, from 0h and 24h only)
+95% upper bound:     2.303 mV -> within lot-derived safe limit 29.754 mV
+Joint anomaly:       Mahalanobis D2 = 23.0 (good-part 99th pct = 19.7); largest contribution leakage_na at 36% of the total
+Leakage/delay sign:  leakage +0.9 sigma, delay +0.7 sigma -- consistent with the lot's process locus
+Spatial check:       no neighbour clustering on board LOT233-B03 (2/64 flagged), component-specific
+Data quality:        all checkpoints valid
+
+Primary reason:      joint-distribution anomaly across parameters (univariately normal)
+Mechanism (HYPOTHESIS): localised defect not yet affecting timing paths; the class that escapes univariate screening [speculative]
+Recommended action:  Release, but tag the component ID for trend monitoring at the next screen. No rework.

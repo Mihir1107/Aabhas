@@ -1,0 +1,6 @@
+case,component_id,injected_type,decision,primary_reason,counterfactual,why_this_case
+01_Vb_extreme_level_PS_worked_example,LOT193-C0488,Vb_EXTREME_LEVEL,REVIEW,LEVEL,False,"the problem statement's own worked example: far outside the lot, inside spec"
+02_TypeIII_centre_hider_joint_only,LOT233-C0222,III_CENTRE_HIDER,WATCH,JOINT,True,invisible to every univariate and trajectory rule; caught only jointly
+03_TypeI_steep_drifter_moduleB,LOT203-C0246,I_STEEP_DRIFTER,REVIEW,DRIFT_RATE,False,abnormal drift rate; the case Module B is for
+04_TypeVa_trap_correct_NON_rejection,LOT192-C0144,Va_MILDLY_HIGH_STABLE,WATCH,NONE,False,elevated but self-consistent: the system explaining why it did NOT reject
+05_TypeVII_fixture_not_the_part,LOT213-C0256,VII_FIXTURE_ARTIFACT,FIXTURE_SUSPECT,SPATIAL,False,"this is your oven, not your part"

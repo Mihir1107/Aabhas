@@ -1,4 +1,4 @@
-# SIH26170 — headline numbers (Module A, Module B, L5 conformal)
+# SIH26170 — headline numbers (Module A, Module B, L5 conformal, explainability)
 
 Dataset **`dataset-v1.1`** (commit `1ac9e59`). See `CHANGED_NUMBERS.md` for every figure that moved from v1.0. 120,000 parts in 240
 lots; 2,100 defective (1.75%). Lot-grouped split, never row-wise: train
@@ -39,12 +39,24 @@ single-parameter equivalent is roughly 30 points lower.
    rate costs 42.7% yield loss** on the fused detector; 5% costs 11.6%; 10%
    costs 4.4%. The escape rate is bounded, not merely low.
 
-6. **NEGATIVE RESULTS, three of them.** (a) L4 does not beat L3: the cumulative
+6. **Explainability, made quantitative — the third scored axis.** Reason
+   correctness **73–100%** by defect class (weakest Type II at 73.3%);
+   explanation completeness **69.5%** for flagged parts and **100%** for
+   passes; counterfactual validity **100%** of those offered, offered for
+   26.7%; explanation stability under measurement noise **91.5%** overall and
+   **100%** on Types II, III, IV and VII. Five example QA disposition PDFs in
+   `reports/`.
+
+7. **NEGATIVE RESULTS, four of them.** (a) L4 does not beat L3: the cumulative
    ladder plateaus, and on mild Type IV Mahalanobis+MCD still beats every L4
    method. (b) LightGBM does not beat Huber on MAE — they tie, and Huber is the
    better default on interpretability and cost. (c) Module B's 95% prediction
    intervals are **miscalibrated**, delivering 0.928-0.954 coverage against a
-   nominal 0.95; the conformal layer is what closes that gap.
+   nominal 0.95; the conformal layer is what closes that gap. (d) SHAP on
+   LightGBM and an equally accurate Huber model **disagree about which features
+   matter** (rho=0.617), because `corr(v0, v24) = 0.989` makes the attribution
+   unidentifiable — which is why the deterministic Layer 1 rule text, not SHAP,
+   is what goes in front of an inspector.
 
 ## The ablation
 
@@ -192,6 +204,31 @@ argument Module A makes, one derivative up.
 > applied to the escape rate of the AI system itself. It makes the model
 > auditable inside a product-assurance framework that already exists.
 
+## Explainability
+
+Full detail in `explainability.md`. Three things for the deck:
+
+**The deliverable is a document, not a plot.** One-page QA disposition report
+per part: Layer 1 deterministic evidence where every number cites its
+comparison basis, the trajectory against the lot's robust envelope with the
+forecast band, detector attribution, SHAP, a validated counterfactual, a
+mechanism hypothesis explicitly labelled as a hypothesis, and a sign-off block.
+
+**The two examples that matter are the non-rejections.** Any system can explain
+a rejection. Case 04 explains why a benign high-but-stable part was *not*
+rejected; case 05 says *"this is your oven, not your part"* and raises a fixture
+investigation instead of scrapping 
+components. Six decision tiers, not a binary:
+PASS, WATCH, REVIEW, REJECT, MEASUREMENT_INVALID, FIXTURE_SUSPECT.
+
+**Only two mechanism mappings are marked well-founded**, and both rest on the
+same physics: heat raises leakage and *slows* a part, while the process corner
+makes leaky parts *fast*, so a fixture artifact and a process outlier move the
+leakage/delay correlation in opposite directions. Everything else in the table
+is labelled *plausible* or *speculative* on the page, and the joint-anomaly
+mapping is labelled *speculative* because a joint outlier says a part does not
+resemble its peers, not why.
+
 ## Files
 
 `ablation.md` / `ablation.csv` — main table. `per_type.md` / `per_type.csv` —
@@ -201,4 +238,7 @@ variant including contaminated-fit and leak comparisons.
 `leave_one_lot_out.csv`. Module B: `module_b.md`/`.csv`,
 `module_b_per_type.csv`, `module_b_by_lot.csv`, `safety_slopes_union.csv`.
 Conformal: `conformal.md`, `conformal_sweep.csv`,
-`conformal_significance.csv`. Figures `fig1`–`fig10` as SVG.
+`conformal_significance.csv`. Explainability: `explainability.md`, `explainability_metrics.json`,
+`explainability_reason.csv`, `explainability_stability.csv`,
+`report_examples.csv`, and five disposition PDFs in `reports/`.
+Figures `fig1`–`fig10` as SVG.

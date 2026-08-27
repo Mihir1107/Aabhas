@@ -1,0 +1,112 @@
+{
+  "reason_correctness": [
+    {
+      "defect_type": "I_STEEP_DRIFTER",
+      "n": 60,
+      "expected": "DRIFT_RATE/FORECAST",
+      "primary_correct_%": 100.0,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": ""
+    },
+    {
+      "defect_type": "II_STEP_DEFECT",
+      "n": 60,
+      "expected": "STEP",
+      "primary_correct_%": 73.33333333333333,
+      "primary_or_secondary_%": 76.66666666666667,
+      "top_wrong_reason": "DRIFT_RATE"
+    },
+    {
+      "defect_type": "III_CENTRE_HIDER",
+      "n": 1,
+      "expected": "JOINT",
+      "primary_correct_%": 100.0,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": ""
+    },
+    {
+      "defect_type": "IV_CORRELATION_BREAK",
+      "n": 40,
+      "expected": "JOINT",
+      "primary_correct_%": 95.0,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": "SPATIAL"
+    },
+    {
+      "defect_type": "Vb_EXTREME_LEVEL",
+      "n": 60,
+      "expected": "LEVEL",
+      "primary_correct_%": 88.33333333333333,
+      "primary_or_secondary_%": 98.33333333333333,
+      "top_wrong_reason": "JOINT"
+    },
+    {
+      "defect_type": "VII_FIXTURE_ARTIFACT",
+      "n": 60,
+      "expected": "SPATIAL",
+      "primary_correct_%": 100.0,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": ""
+    },
+    {
+      "defect_type": "GOOD",
+      "n": 60,
+      "expected": "PASS",
+      "primary_correct_%": 93.33333333333333,
+      "primary_or_secondary_%": 98.33333333333333,
+      "top_wrong_reason": "DATA_QUALITY"
+    },
+    {
+      "defect_type": "VI_LOT_SHIFT",
+      "n": 60,
+      "expected": "PASS (trap)",
+      "primary_correct_%": 95.0,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": ""
+    },
+    {
+      "defect_type": "Va_MILDLY_HIGH_STABLE",
+      "n": 60,
+      "expected": "PASS (trap)",
+      "primary_correct_%": 55.00000000000001,
+      "primary_or_secondary_%": 81.66666666666667,
+      "top_wrong_reason": "LEVEL"
+    }
+  ],
+  "completeness": {
+    "n_explained": 461,
+    "n_flagged": 292,
+    "flagged_complete_%": 69.52054794520548,
+    "passed_complete_%": 100.0,
+    "all_have_full_evidence_%": 93.27548806941431,
+    "flagged_with_primary_%": 98.63013698630137,
+    "flagged_with_mechanism_%": 69.86301369863014
+  },
+  "counterfactual": {
+    "n_flagged": 292,
+    "cf_found_%": 26.71232876712329,
+    "cf_validated_%": 26.71232876712329,
+    "cf_validated_given_found_%": 100.0,
+    "cf_found_univariate_driven_%": 29.943502824858758,
+    "cf_found_joint_driven_%": 2.272727272727273,
+    "n_univariate_driven": 177,
+    "n_joint_driven": 44
+  },
+  "stability": {
+    "n_parts": 120,
+    "n_repeats": 4,
+    "primary_reason_changed_%": 8.541666666666666,
+    "stable_%": 91.45833333333333
+  },
+  "stability_by_type": {
+    "GOOD": 17.5,
+    "III_CENTRE_HIDER": 0.0,
+    "II_STEP_DEFECT": 0.0,
+    "IV_CORRELATION_BREAK": 0.0,
+    "I_STEEP_DRIFTER": 11.5,
+    "VII_FIXTURE_ARTIFACT": 0.0,
+    "VI_LOT_SHIFT": 25.0,
+    "Va_MILDLY_HIGH_STABLE": 8.3,
+    "Vb_EXTREME_LEVEL": 1.7
+  }
+}
