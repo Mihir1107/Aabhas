@@ -148,6 +148,14 @@ Each rung includes everything below it. This is the build story.
 **Condition:** test lots, 7.00% yield loss at every rung, rungs fused by taking
 the strongest normalised signal. Source: `results/ablation_cumulative.csv`.
 
+**If you compare this table against `results/ablation.csv` and the numbers do not
+match, nothing is broken.** C1 and rung L1b are the same DPAT detector, but C1 is
+defined as "L0 plus L1" and therefore also carries the four genuinely good parts
+that fall outside datasheet limits by chance, which sit at the top of its
+ranking. That moves PR-AUC from 0.2644 to 0.2636 and AUROC from 0.8407 to 0.8330,
+while recall is identical at 54.33%. Pick one table for a given slide and stay in
+it.
+
 **State the plateau explicitly.** C4 is 2 defective parts below C3, out of 427.
 The confidence intervals overlap almost completely, [89.9, 94.8] against
 [89.3, 94.4]. The honest reading is **the ladder plateaus at L3**, not that L4
@@ -366,6 +374,22 @@ slide element that shows a proven bound rather than a measured average.
 - The explainability metrics, Section 1 item 5, as the "auditable" argument.
 - **Plot: `results/fig1_recall_vs_yield_loss.svg`** for the operating-point
   tradeoff.
+
+**Show both Type VI rows on the slide, with the 6 sigma row leading.** A judge
+who knows Part Average Testing will immediately wonder what happens at a matched
+budget, and having the answer already on the page is better than having it in
+your pocket:
+
+| Condition | Static PAT | Dynamic PAT |
+|---|---|---|
+| **Fixed 6 sigma (AEC-Q001 standard, what a fab deploys)** | **359 of 3,000** | **0** |
+| Matched to a 7% yield-loss budget (benchmarking convention) | 1,772 | 179 |
+
+The 6 sigma row leads because 6 sigma is what the standard specifies and
+therefore what actually gets deployed. The matched-budget row requires inventing
+a budget nobody set. This is the same distinction as the estimator comparison:
+fixed multiplier is deployment reality, matched overkill is a benchmarking
+convention.
 
 **Most important asset: the 359-versus-0 number.** It is the one figure a
 production manager will react to.

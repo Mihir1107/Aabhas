@@ -97,9 +97,9 @@ to **1.488 field-years**. The number is derived, never hardcoded: change `Ea`,
 as fractional drift *per field year*, then multiplied through the AF.
 
 Validator-confirmed on the shipped dataset: empirical beta recovers the
-configured beta to within **0.004**, every median trajectory is concave, and
-lot-to-lot **ICC is 0.31–0.43** — real lot shift, which is what makes limits
-need to be *dynamic*.
+configured beta to within **0.0023**, every median trajectory is concave, and
+lot-to-lot **ICC is 0.349 to 0.391**, which is real lot shift and is what makes
+limits need to be *dynamic*.
 
 ## Defect archetypes
 
@@ -112,7 +112,7 @@ afterwards. Asserted in the validator.
 |---|---|---|---|
 | I | Steep drifter, lambda 5–10× lot median, `v0` drawn low to stay in spec | defect | drift rate, Module B |
 | II | Nominal drift plus a discrete jump between two checkpoints | defect | max-interval-jump, monotonicity |
-| III | **Centre-hider**: inside the 20th–80th percentile on *every* parameter, anomalous only jointly | defect | multivariate only |
+| III | **Centre-hider**: inside the 17th–83rd percentile on *every* parameter, anomalous only jointly, and carrying the same measurement noise as a good part | defect | multivariate only |
 | IV | Correlation break: leaky *and* slow, which the process never produces | defect | Mahalanobis, PCA residual |
 | **Va** | Mildly elevated level (2–3σ) along the natural process direction, stable | **GOOD** | false-positive control |
 | **Vb** | Level far outside the lot (5.5–7.5σ) but inside datasheet limits, stable | **defect** | **Dynamic PAT — this is the PS's own worked example** |
@@ -248,14 +248,23 @@ That objection is correct on its face: 0.93 *was* chosen because it made Type
 III separable. `sweep_correlation.py` measures what actually happens at weaker,
 more conservative correlations.
 
-| target r | empirical r | box ceiling D² | good p99 D² | Type III catch @1% YL | AUROC | band needed |
+> **Provenance warning.** The table below was computed on **dataset v1.0**, with
+> the v1.0 Type III construction and a ±30 pp band. It has **not** been re-run
+> since the v1.1 measurement-noise fix, and `results/correlation_sweep.csv` is no
+> longer present. Do not quote these numbers. The qualitative conclusion (band
+> and correlation trade off directly) is independently confirmed by the v1.1
+> feasibility table above, which *is* current. Re-run `sweep_correlation.py` if
+> you need the figures.
+
+| target r | empirical r | box ceiling D² |
+ good p99 D² | Type III catch @1% YL | AUROC | band needed |
 |---|---|---|---|---|---|---|
 | 0.70 | 0.73 | 9.8 | 18.3 | 0.0% | 0.60 | ±42 pp |
 | 0.80 | 0.82 | 13.4 | 18.5 | 0.0% | 0.74 | ±39 pp |
 | 0.85 | 0.86 | 16.5 | 18.7 | 0.0% | 0.82 | ±36 pp |
 | **0.93** | 0.93 | 27.7 | 18.5 | **33.3%** | **0.93** | ±30 pp |
 
-**At the configured ±30 pp band, Type III separability does collapse below
+**[v1.0 numbers] At the ±30 pp band, Type III separability collapsed below
 r ≈ 0.93.** At r = 0.85 the ceiling (16.5) already sits below the good
 population's own 99th percentile (18.7), so a centre-hider inside that band is
 *less* anomalous than 1% of ordinary good parts.
@@ -274,7 +283,8 @@ So the honest claim is not "Type III needs r = 0.93". It is:
 > body of the distribution, hundreds of times closer to the median than any
 > DPAT limit, which sits past the 99.9999999th percentile.
 
-**Recommendation:** ship `r = 0.93 / ±30 pp` as the primary configuration
+**Recommendation (v1.0 wording, band since widened to ±33 pp):** ship
+`r = 0.93` as the primary configuration
 because it makes the strongest claim on the tightest band. If a reviewer
 challenges the correlation, `--leakage-corr 0.80 --type3-band 39` is one flag
 away, is verified, and concedes nothing that matters.
@@ -288,15 +298,17 @@ data all four estimators agree. Measured on our own data, per lot, at 0 h:
 
 | Estimator | limit inflation (clean MAD σ) | Vb catch @ fixed 6σ | Vb catch @ matched overkill |
 |---|---|---|---|
-| MAD | 0.14 | 29.5% | 64% |
-| IQR (AEC-Q001) | 0.15 | 29.5% | 60% |
-| p1/p99 variant | **1.39** | **4.5%** | 64% |
-| classical mean±6σ | 0.77 | 27.3% | 64% |
+| MAD | 0.175 | 38.1% | 57.0% |
+| IQR (AEC-Q001) | 0.167 | 37.5% | 57.7% |
+| p1/p99 variant | **1.298** | **16.9%** | 58.7% |
+| classical mean±6σ | 0.714 | 29.0% | 58.3% |
 
-The p1/p99 variant is inflated ~10× harder than MAD, and at a fixed 6σ it lets
-95% of the PS's canonical defect escape on Iddq versus 70% for MAD. It is
-computed *from* the top 1%, which is exactly where the defects live, so the
-outliers widen the very limit meant to catch them.
+(Iddq; the leakage figures are in the validator output and tell the same story.)
+
+The p1/p99 variant is inflated roughly 8× harder than MAD, and at a fixed 6σ it
+lets 83% of the problem statement's canonical defect escape on Iddq against 62%
+for MAD. It is computed *from* the top 1%, which is exactly where the defects
+live, so the outliers widen the very limit meant to catch them.
 
 **But read the last two columns together, because this is a claim that would
 not survive a judge.** At a fixed 6σ the estimators differ by 25 points of Vb
@@ -383,7 +395,7 @@ version.
   three shortcuts costs 0.01-0.02 of bias. They are documented in the code
   because the same traps apply to any drift feature built downstream.
 - `trajectories.svg` pools all lots, so Type III parts look off-centre there
-  even though each is inside its own lot's 20th–80th percentile. The
+  even though each is inside its own lot's 17th–83rd percentile. The
   percentile assertion is per-lot and is the authoritative check.
 
 ## Validation methodology note
