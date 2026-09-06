@@ -43,7 +43,7 @@ Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. 120000 parts, 2100 defectiv
 | L4a | Isolation Forest | 23202.00 | 98.43 | 100.00 |
 | L4b | Autoencoder | 20605.00 | 70.44 | 99.06 |
 | L4b' | LOF | 22977.00 | 67.78 | 98.36 |
-| L4c | Union ensemble | 11524.00 | 27.68 | 98.83 |
+| L4c | Union ensemble | 11525.00 | 27.68 | 98.83 |
 
 ## DPAT estimator comparison
 

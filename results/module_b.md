@@ -17,7 +17,7 @@ Yes, on every parameter. Between **68.8% and 79.5%** of good parts are over-pred
 | 3_huber | 0.6044 | 1.3103 | 0.0684 | 0.6838 | 0.8395 |
 | 4_gbm_mae | 0.6087 | 1.2959 | 0.0675 | 0.6768 | 0.8434 |
 | 5a_lgbm_q95 | 0.6087 | 1.2959 | 0.0675 | 0.6768 | 0.8434 |
-| 5b_quantile_forest | 0.6064 | 1.3132 | 0.0680 | 0.6854 | 0.8496 |
+| 5b_quantile_forest | 0.6063 | 1.3121 | 0.0681 | 0.6846 | 0.8486 |
 
 Recovered beta per parameter, fitted within training lots only: iddq_ua 0.609, leakage_na 0.574, prop_delay_ns 0.693, supply_current_ma 0.658, vth_shift_mv 0.557.
 
@@ -42,15 +42,15 @@ The real jump is rung 1 to rung 2 to rung 3: linear extrapolation to power law h
 | parameter | model | upper95_coverage | mean_upper_width |
 |---|---|---|---|
 | iddq_ua | 5a_lgbm_q95 | 0.9337 | 1.0327 |
-| iddq_ua | 5b_quantile_forest | 0.9400 | 1.1436 |
+| iddq_ua | 5b_quantile_forest | 0.9407 | 1.1358 |
 | leakage_na | 5a_lgbm_q95 | 0.9283 | 2.3927 |
-| leakage_na | 5b_quantile_forest | 0.9360 | 2.6047 |
+| leakage_na | 5b_quantile_forest | 0.9342 | 2.6206 |
 | prop_delay_ns | 5a_lgbm_q95 | 0.9462 | 0.1372 |
-| prop_delay_ns | 5b_quantile_forest | 0.9538 | 0.1532 |
+| prop_delay_ns | 5b_quantile_forest | 0.9541 | 0.1532 |
 | supply_current_ma | 5a_lgbm_q95 | 0.9391 | 1.3946 |
-| supply_current_ma | 5b_quantile_forest | 0.9462 | 1.5411 |
+| supply_current_ma | 5b_quantile_forest | 0.9471 | 1.5356 |
 | vth_shift_mv | 5a_lgbm_q95 | 0.9341 | 1.6632 |
-| vth_shift_mv | 5b_quantile_forest | 0.9444 | 1.8317 |
+| vth_shift_mv | 5b_quantile_forest | 0.9434 | 1.8225 |
 
 Nominal is 0.95. LightGBM's quantile objective delivers **0.928 to 0.946** (mean 0.936) and the quantile forest **0.936 to 0.954** (mean 0.944). Both are miscalibrated, both in the optimistic direction — the interval is too narrow, so the true value exceeds the 'worst case' more often than advertised. This is reported rather than presented as calibrated, and it is precisely the gap the conformal layer closes: conformal calibration gives a finite-sample guarantee where the quantile objective gives only an asymptotic hope.
 
@@ -85,10 +85,11 @@ Training with the datasheet limit as an observable lower-bound surrogate for pul
 | rule | recall_% | yield_loss_% | escape_rate_% | precision_% | cost |
 |---|---|---|---|---|---|
 | a_margin | 30.4450 | 0.5388 | 69.5550 | 50.5837 | 297127.0000 |
-| b_lot_slope | 28.1030 | 0.2630 | 71.8970 | 65.9341 | 307062.0000 |
+| b_lot_slope | 27.8689 | 0.2630 | 72.1311 | 65.7459 | 308062.0000 |
+| b_lot_slope_ORACLE | 28.1030 | 0.2630 | 71.8970 | 65.9341 | 307062.0000 |
 | c_mission | 63.9344 | 31.4470 | 36.0656 | 3.5519 | 161413.0000 |
 | d_upper_datasheet | 1.4052 | 0.0000 | 98.5948 | 100.0000 | 421000.0000 |
-| d_upper_lotsafe | 17.7986 | 0.1485 | 82.2014 | 68.4685 | 351035.0000 |
+| d_upper_lotsafe | 17.0960 | 0.2291 | 82.9040 | 57.4803 | 354054.0000 |
 
 **(a) margin consumption** and **(b) lot-derived** behave sensibly: 30.4% and 28.1% recall at 0.54% and 0.26% yield loss.
 
