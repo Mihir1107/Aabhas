@@ -51,6 +51,40 @@ def main():
     summ.to_csv(OUT / "conformal_summary.csv", index=False)
     print(summ.to_string(index=False, float_format=lambda v: f"{v:.4f}"))
 
+    # ---- significance of any overshoot
+    #
+    # `holds` above is a raw indicator: mean FNR at or under alpha. On a finite
+    # sweep it flips on noise, and a bare "it failed at one alpha" is as
+    # misleading as suppressing it. The guarantee is on the EXPECTED loss, so
+    # the question is whether an observed overshoot is larger than the spread of
+    # the 40 lot-grouped splits can explain.
+    #
+    # One-sided t-test, H0: E[FNR] <= alpha. A small p rejects, i.e. a real
+    # violation. This file backs the SUMMARY.md claim of "no statistically
+    # significant violation" and previously had NO generator in the repository
+    # at all -- it was a committed artifact no script produced.
+    from scipy import stats as _st
+    sig = []
+    for (name, a), g in res.groupby(["target", "alpha"]):
+        v = g["empirical_FNR"].to_numpy(float)
+        n = len(v)
+        se = float(v.std(ddof=1) / np.sqrt(n)) if n > 1 else float("nan")
+        excess = float(v.mean() - a)
+        t = excess / se if se and np.isfinite(se) and se > 0 else 0.0
+        pval = float(1.0 - _st.t.cdf(t, df=n - 1)) if n > 1 else float("nan")
+        sig.append({"target": name, "alpha": a, "n_splits": n,
+                    "mean_FNR": float(v.mean()), "SE": se, "excess": excess,
+                    "excess_in_SE": float(t), "p_one_sided": pval,
+                    "verdict": "holds" if pval > 0.05 else "VIOLATED"})
+    sigdf = pd.DataFrame(sig)
+    sigdf.to_csv(OUT / "conformal_significance.csv", index=False)
+    worst = sigdf.loc[sigdf["excess_in_SE"].idxmax()]
+    print("")
+    print(f"largest overshoot: {worst['target']} at alpha={worst['alpha']:.3f}, "
+          f"+{worst['excess_in_SE']:.2f} SE, p={worst['p_one_sided']:.3f}")
+    print(f"significant violations (p<=0.05): "
+          f"{int((sigdf['verdict'] == 'VIOLATED').sum())} of {len(sigdf)}")
+
     # ---- the guarantee plot
     ser = []
     for i, name in enumerate(targets):

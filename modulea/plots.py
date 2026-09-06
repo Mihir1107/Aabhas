@@ -202,4 +202,4 @@ def scatter(path, x, y, title, xlabel, ylabel, band=None, diagonal=True,
 
 def Pathwrite(path, text):
     from pathlib import Path
-    Path(path).write_text(text)
+    Path(path).write_text(text, encoding="utf-8")

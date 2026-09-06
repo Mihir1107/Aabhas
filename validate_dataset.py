@@ -122,7 +122,17 @@ class Dataset:
 
 
 def load(dirpath: Path) -> Dataset:
-    meas = pd.read_csv(dirpath / "burnin_measurements.csv")
+    # The plain CSV is gitignored and only the .gz is committed, so a fresh
+    # clone has the .gz alone. Fall back to it exactly as evaluation.load()
+    # does, or the first command the README tells a reviewer to run fails.
+    src = dirpath / "burnin_measurements.csv"
+    if not src.exists():
+        src = dirpath / "burnin_measurements.csv.gz"
+    if not src.exists():
+        raise FileNotFoundError(
+            f"no burnin_measurements.csv[.gz] in {dirpath}; "
+            "run `python generate_data.py` first")
+    meas = pd.read_csv(src)
     gt = pd.read_csv(dirpath / "ground_truth.csv")
     cfg = json.loads((dirpath / "config.json").read_text())
     return Dataset(meas, gt, cfg)
@@ -799,7 +809,7 @@ def write_trajectory_svg(ds: Dataset, path: Path) -> None:
         out.append(f'<text x="{W - 100}" y="{y + 4}" font-size="11" fill="#333">'
                    f'{tp.split("_")[0]}</text>')
     out.append('</svg>')
-    path.write_text("\n".join(out))
+    path.write_text("\n".join(out), encoding="utf-8")
     print(f"\n        trajectory plot written to {path}")
 
 
