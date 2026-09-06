@@ -45,6 +45,21 @@ TIER_SHORT = {"PASS": "PASS", "WATCH": "WATCH", "REVIEW": "REVIEW",
               "REJECT": "REJECT", "FIXTURE_SUSPECT": "FIXTURE",
               "MEASUREMENT_INVALID": "INVALID"}
 
+# Ground-truth archetype names in the PS's own vocabulary. The raw enum
+# truncates inside a metric tile and means nothing to anyone who has not read
+# the generator.
+TYPE_NAME = {
+    "GOOD": "Good part",
+    "I_STEEP_DRIFTER": "Type I - steep drifter",
+    "II_STEP_DEFECT": "Type II - step defect",
+    "III_CENTRE_HIDER": "Type III - centre-hider",
+    "IV_CORRELATION_BREAK": "Type IV - correlation break",
+    "Va_MILDLY_HIGH_STABLE": "Type Va - mildly high but stable (trap)",
+    "Vb_EXTREME_LEVEL": "Type Vb - extreme level, in spec",
+    "VI_LOT_SHIFT": "Type VI - whole-lot process shift (trap)",
+    "VII_FIXTURE_ARTIFACT": "Type VII - fixture artifact (trap)",
+}
+
 st.set_page_config(page_title="Burn-In Inspector", page_icon="\U0001f321\ufe0f",
                    layout="wide", initial_sidebar_state="expanded")
 
@@ -351,10 +366,23 @@ with tab_part:
                 is_def = bool(e.y[cid])
                 held = x["tier"] in ("REVIEW", "REJECT")
                 ok = is_def == held
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Injected type", truth)
-                c2.metric("Truly defective", "YES" if is_def else "no")
-                c3.metric("Severity", str(g.get("severity") or "\u2014"))
+                # Only Types III and IV carry a severity tier; for every
+                # other type `severity` is a float NaN, and NaN is truthy, so a
+                # plain `or` fallback rendered the literal string "nan".
+                def _field(v):
+                    t = "" if v is None else str(v).strip()
+                    return "not applicable to this type" if t.lower() in (
+                        "", "nan", "none") else t
+                sev = _field(g.get("severity"))
+                mech = _field(g.get("failure_mechanism"))
+                # st.metric truncates ("I_STEEP_D..."), and these strings are the
+                # payoff of the whole screen, so write them out in full.
+                st.markdown(
+                    f"**Injected type** &nbsp; {TYPE_NAME.get(truth, truth)}  "
+                    f"&nbsp;&nbsp;|&nbsp;&nbsp; **Truly defective** &nbsp; "
+                    f"{'YES' if is_def else 'no'}  "
+                    f"&nbsp;&nbsp;|&nbsp;&nbsp; **Severity** &nbsp; {sev}  "
+                    f"&nbsp;&nbsp;|&nbsp;&nbsp; **Mechanism** &nbsp; {mech}")
                 if ok and is_def:
                     st.success("Caught. Held before it could ship.")
                 elif ok:
