@@ -6,8 +6,8 @@ Lot-relative level:  -3.6 robust sigma vs lot median on prop_delay_ns (median 8.
 Drift 0h to 24h:     -0.333 mV on vth_shift_mv; lot median drift +0.926 mV, part is -1.6 robust sigma on the lot's drift distribution
 Drift rate:          -0.0139 mV/h (lot median 0.0386 mV/h, -0.4x)
 Max interval jump:   +0.6 robust sigma on prop_delay_ns; largest interval change is 2.9x the median of the others (spread -> progressive drift)
-Predicted 168h:      -7.645 mV (vth_shift_mv, from 0h and 24h only)
-95% upper bound:     -6.268 mV -> within lot-derived safe limit 31.023 mV
+Predicted 168h:      6.912 ns (prop_delay_ns, from 0h and 24h only)
+95% upper bound:     7.118 ns -> within lot-derived safe limit 10.000 ns
 Joint anomaly:       Mahalanobis D2 = 15.1 (good-part 99th pct = 18.1); largest contribution prop_delay_ns at 50% of the total
 Leakage/delay sign:  leakage +3.2 sigma, delay -3.6 sigma -- consistent with the lot's process locus
 Spatial check:       no neighbour clustering on board LOT192-B02 (0/64 flagged), component-specific

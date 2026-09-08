@@ -54,12 +54,7 @@ were computed on a 20-lot trial run, not on the frozen 240-lot dataset. On the
 frozen data the same measurements are 38.1% and 16.9%. The direction of the
 argument holds. The magnitudes do not. Do not quote the old table.
 
-**Trap 4. One number in Section 2, finding 2 is not in `results/`.** The
-Isolation Forest narrow-versus-wide feature test (41.7% versus 67.7%) was an
-exploratory diagnostic run during the v1.0 session. It was never saved to a
-results file and has not been re-run on v1.1. Either present it with the words
-"in an exploratory check on the earlier dataset version", or leave it out and
-use the Type III result on its own, which is stronger anyway.
+**Trap 4. The Isolation Forest narrow-versus-wide test now has a source file.** It previously existed only in a session transcript. Re-run on `dataset-v1.1`: the narrow 20-feature (level-only) matrix gives **42.2%** recall at 93% yield, the wide 83-feature design matrix gives **68.1%**. Source: `results/isoforest_feature_width.csv`. The older 41.7 / 67.7 pair was close but not reproducible and should not be quoted.
 
 ---
 
@@ -239,8 +234,8 @@ inert on this problem**: every defect we inject is inside the datasheet limits
 at every checkpoint by construction, which is what makes them hard, so a
 predicted worst case essentially never crosses an engineering limit. Measured,
 that rule catches **1.4%** of defects. Swap the datasheet limit for a
-batch-derived safe limit and the identical rule catches **17.8%**, at 0.15%
-yield loss with 68.5% precision. Source: `results/safety_slopes_union.csv`.
+batch-derived safe limit and the identical rule catches **17.1%**, at 0.23%
+yield loss with 57.5% precision. Source: `results/safety_slopes_union.csv`.
 
 **Slide line.** "Static limits fail on levels and fail again on drift rates. The
 same fix works both times: compare each part to the batch it was burned in with."

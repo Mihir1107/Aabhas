@@ -27,6 +27,43 @@ python3 validate_dataset.py --data data  # asserts, calibrates, prints a verdict
 python3 sweep_correlation.py                 # correlation sensitivity study
 ```
 
+### The demo
+
+```bash
+python -m streamlit run demo/app.py
+```
+
+A QA inspector's screen over any of the 48 held-out test lots: six-tier
+dispositions with the action to take, the evidence each rests on, trajectories
+against the lot's own dynamic PAT band, the Module B forecast, and a board map
+that shows when an anomaly is the chamber rather than the component. It calls
+the pipeline live, so it is not a snapshot. See `demo/README.md`.
+
+### Reproducing everything in `results/`
+
+The stages are ordered and each reads the previous one's output from `results/`.
+There is no single entry point, and running them out of order silently reuses
+stale artifacts -- which is exactly how `results/safety_slopes.csv` once came to
+disagree with `results/module_b.md`.
+
+```bash
+pip install -r requirements.txt   # lightgbm is REQUIRED, see the file
+python3 generate_data.py          # writes data/  (skip: data/ is committed)
+python3 validate_dataset.py       # 23 hard assertions + the calibration tables
+python3 run_ablation.py           # Module A, L0-L4      -> scores/flags/ablation
+python3 run_cumulative.py         # cumulative ladder C0-C4, score-level fusion
+python3 run_module_b.py           # Module B + upper bounds  (needs lightgbm)
+python3 run_slopes.py             # the four safety-slope rules (needs Module B)
+python3 run_conformal.py          # L5 risk control      (needs Module B + A)
+python3 run_explainability.py     # the four explainability metrics
+python3 make_reports.py           # the QA disposition PDFs in reports/
+```
+
+`run_module_b.py` writes `results/module_b_provenance.json` recording which
+gradient-boosting backend actually executed. Check it before quoting a Module B
+number: with lightgbm absent the code falls back to scikit-learn without
+warning and the figures shift (Iddq MAE 0.6087 -> 0.6102).
+
 Useful flags: `--seed`, `--lots`, `--parts-per-lot`, `--out`,
 `--types I,II,III` (stage defect types on/off), `--no-censoring`,
 `--leakage-corr`, `--type3-band`.
@@ -189,7 +226,11 @@ Robust-Mahalanobis recall versus yield-loss budget (threshold on good parts only
 
 - **The ladder climbs.** L1 (DPAT) owns Vb at 67.7%. L2 (trajectory) owns I and
   II, which DPAT sees at 6.3% and 0.2%. L3 (multivariate) owns III and IV, which
-  DPAT never sees at all.
+  DPAT never sees at all. **Name the detector, not the rung**, when you say this
+  out loud: on test lots Type III is carried by L3a (Mahalanobis+MCD, 50%) and
+  the PCA Q-residual alone (62.5%), while the combined L3b T²+Q — the strongest
+  method overall — catches **0.0%** of it. "L3 owns III" is true of two specific
+  detectors in that rung, not of the rung as a whole, and the test-lot n is 8.
 - **Type I: DPAT catches a meaningful but partial fraction**, 6.3% at 6σ and
   26.0% at 4σ. Not zero (the drift is real), not everything (it stays in spec).
 - **Type III: DPAT catches 0.00%** at 6σ in both dynamic and static mode, while
@@ -248,26 +289,27 @@ That objection is correct on its face: 0.93 *was* chosen because it made Type
 III separable. `sweep_correlation.py` measures what actually happens at weaker,
 more conservative correlations.
 
-> **Provenance warning.** The table below was computed on **dataset v1.0**, with
-> the v1.0 Type III construction and a ±30 pp band. It has **not** been re-run
-> since the v1.1 measurement-noise fix, and `results/correlation_sweep.csv` is no
-> longer present. Do not quote these numbers. The qualitative conclusion (band
-> and correlation trade off directly) is independently confirmed by the v1.1
-> feasibility table above, which *is* current. Re-run `sweep_correlation.py` if
-> you need the figures.
+Re-run on **dataset v1.1** (`python3 sweep_correlation.py`, 60 lots x 500
+parts, output in `data/correlation_sweep.csv`). These figures are current; the
+v1.0 table that used to sit here has been deleted rather than annotated.
 
-| target r | empirical r | box ceiling D² |
- good p99 D² | Type III catch @1% YL | AUROC | band needed |
+| target r | empirical r | box ceiling D² | good p99 D² | Type III catch @1% YL | AUROC | band needed |
 |---|---|---|---|---|---|---|
-| 0.70 | 0.73 | 9.8 | 18.3 | 0.0% | 0.60 | ±42 pp |
-| 0.80 | 0.82 | 13.4 | 18.5 | 0.0% | 0.74 | ±39 pp |
-| 0.85 | 0.86 | 16.5 | 18.7 | 0.0% | 0.82 | ±36 pp |
-| **0.93** | 0.93 | 27.7 | 18.5 | **33.3%** | **0.93** | ±30 pp |
+| 0.70 | 0.73 | 12.6 | 18.3 | 0.0% | 0.61 | ±42 pp |
+| 0.80 | 0.82 | 17.2 | 18.5 | 0.0% | 0.76 | ±39 pp |
+| 0.85 | 0.86 | 21.2 | 18.7 | 0.0% | 0.85 | ±36 pp |
+| **0.93** | 0.93 | 35.6 | 18.5 | **20.0%** | **0.95** | ±30 pp |
 
-**[v1.0 numbers] At the ±30 pp band, Type III separability collapsed below
-r ≈ 0.93.** At r = 0.85 the ceiling (16.5) already sits below the good
-population's own 99th percentile (18.7), so a centre-hider inside that band is
-*less* anomalous than 1% of ordinary good parts.
+The sweep runs a smaller dataset than the shipped one, so at 500 DPPM it
+contains **15 Type III parts**; the catch column is 3/15 at r = 0.93 and 0/15
+everywhere else. Quote the AUROC and the ceiling-vs-p99 comparison, which are
+computed on the whole population, rather than the catch percentage.
+
+**At the ±30 pp band, Type III separability collapses below r ≈ 0.93.** At
+r = 0.85 the ceiling (21.2) is barely above the good population's own 99th
+percentile (18.7), and at r = 0.80 it sits below it (17.2 vs 18.5) — so a
+centre-hider inside that band is *less* anomalous than 1% of ordinary good
+parts, and no detector can recover it.
 
 But that is not the whole answer, because the band and the correlation trade
 off directly — the ceiling scales with `c(band)²`. The last column is the
@@ -283,8 +325,7 @@ So the honest claim is not "Type III needs r = 0.93". It is:
 > body of the distribution, hundreds of times closer to the median than any
 > DPAT limit, which sits past the 99.9999999th percentile.
 
-**Recommendation (v1.0 wording, band since widened to ±33 pp):** ship
-`r = 0.93` as the primary configuration
+**Recommendation:** ship `r = 0.93` as the primary configuration
 because it makes the strongest claim on the tightest band. If a reviewer
 challenges the correlation, `--leakage-corr 0.80 --type3-band 39` is one flag
 away, is verified, and concedes nothing that matters.
@@ -311,8 +352,10 @@ for MAD. It is computed *from* the top 1%, which is exactly where the defects
 live, so the outliers widen the very limit meant to catch them.
 
 **But read the last two columns together, because this is a claim that would
-not survive a judge.** At a fixed 6σ the estimators differ by 25 points of Vb
-catch; at matched overkill they differ by 2. Within a single lot the estimator
+not survive a judge.** At a fixed 6σ the estimators differ by 21 points of Vb
+catch on Iddq (38.1 vs 16.9 in the table above; `validate_dataset.py` prints 18
+as the figure aggregated across both log-normal parameters, and that printed
+number is the one to quote); at matched overkill they differ by 2. Within a single lot the estimator
 cannot reorder parts at all — the median and sigma are per-lot constants — so
 it *cannot* change the achievable recall-versus-yield-loss curve. What it
 changes is where a fixed, standard-specified limit lands and how stable that

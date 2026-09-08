@@ -73,7 +73,7 @@ def main():
         pdf = OUT / f"{name}.pdf"
         build_report(e, pol, x, cf.text(cid, x.tier, c), det, shap, pdf,
                      MODEL_VERSION, param_focus=p)
-        (OUT / f"{name}.txt").write_text(x.rule_text())
+        (OUT / f"{name}.txt").write_text(x.rule_text(), encoding="utf-8")
         rows.append({"case": name, "component_id": cid, "injected_type": t,
                      "decision": x.tier, "primary_reason": x.primary,
                      "counterfactual": c is not None, "why_this_case": why})

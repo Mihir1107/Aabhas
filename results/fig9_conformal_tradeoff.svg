@@ -35,7 +35,7 @@
 <path d="M102.2,282.2 L131.4,359.8 L165.3,382.9 L227.9,410.1 L308.1,429.1 L375.7,439.7 L519.9,451.4 L663.2,454.0" fill="none" stroke="#d62728" stroke-width="2" stroke-dasharray=""/>
 <line x1="718" y1="71" x2="740" y2="71" stroke="#d62728" stroke-width="2.5"/>
 <text x="745" y="75" font-size="11" fill="#222">ModuleA_fused_maxz</text>
-<path d="M109.5,46.2 L138.9,46.9 L171.2,48.4 L227.8,52.7 L299.8,63.7 L376.6,81.1 L529.1,137.3 L674.5,198.7" fill="none" stroke="#2ca02c" stroke-width="2" stroke-dasharray=""/>
+<path d="M108.7,46.0 L138.9,46.0 L169.0,46.0 L226.7,46.7 L299.6,51.4 L374.1,65.5 L522.2,128.5 L669.4,205.8" fill="none" stroke="#2ca02c" stroke-width="2" stroke-dasharray=""/>
 <line x1="718" y1="90" x2="740" y2="90" stroke="#2ca02c" stroke-width="2.5"/>
 <text x="745" y="94" font-size="11" fill="#222">ModuleB_upper_bound_margin</text>
 <text x="718" y="38" font-size="11" font-weight="600" fill="#222">Detector</text>

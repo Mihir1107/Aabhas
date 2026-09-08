@@ -119,6 +119,46 @@ def main() -> None:
           all(h not in tr for h, tr in folds))
     check("training sets have 239 lots", all(len(tr) == 239 for _, tr in folds))
 
+    print("\n=== 11. every runner calls functions that actually exist ===")
+    # run_module_b.py called mb.slope_mission_based() for several commits after
+    # that function was renamed to project_to_mission(). Python only notices at
+    # the call site, 180 lines into a 20-minute script, so the crash landed
+    # AFTER module_b.csv was written and BEFORE the safety slopes and the
+    # prediction files the conformal stage consumes. The published artifacts and
+    # the code that claims to produce them silently diverged for four commits.
+    # This resolves every modulea/explain attribute a runner references,
+    # statically, in under a second.
+    import ast as _ast, importlib as _il, pathlib as _pl
+    root = _pl.Path(__file__).resolve().parent.parent
+    scripts = sorted(root.glob("run_*.py")) + sorted(root.glob("make_*.py")) + \
+        [root / "sweep_correlation.py", root / "validate_dataset.py"]
+    missing = []
+    for f in scripts:
+        if not f.exists():
+            continue
+        tree = _ast.parse(f.read_text(encoding="utf-8"))
+        alias = {}
+        for n in _ast.walk(tree):
+            if isinstance(n, _ast.ImportFrom) and n.module and \
+                    n.module.split(".")[0] in ("modulea", "explain"):
+                for a in n.names:
+                    alias[a.asname or a.name] = f"{n.module}.{a.name}"
+            elif isinstance(n, _ast.Import):
+                for a in n.names:
+                    if a.name.split(".")[0] in ("modulea", "explain"):
+                        alias[a.asname or a.name] = a.name
+        for n in _ast.walk(tree):
+            if isinstance(n, _ast.Attribute) and isinstance(n.value, _ast.Name) \
+                    and n.value.id in alias:
+                try:
+                    mod = _il.import_module(alias[n.value.id])
+                except Exception:
+                    continue
+                if not hasattr(mod, n.attr):
+                    missing.append(f"{f.name}:{n.lineno} {n.value.id}.{n.attr}")
+    check(f"no runner references a missing function ({len(scripts)} scripts)",
+          not missing, "; ".join(missing))
+
     print("\n" + ("ALL HARNESS SELF-TESTS PASSED" if ok else "HARNESS SELF-TESTS FAILED"))
     raise SystemExit(0 if ok else 1)
 

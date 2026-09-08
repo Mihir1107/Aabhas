@@ -102,6 +102,22 @@ def main():
                    "primary_or_secondary_%": 100 * float(not_rejected.mean()),
                    "top_wrong_reason": (s.loc[~not_rejected, "primary"].mode().iat[0]
                                         if (~not_rejected).any() else "")})
+    # Type III is 500 DPPM by design, so only a handful are ever flagged and its
+    # own row is not quotable alone (n = 1 on the frozen run). III and IV share
+    # the same expected reason, so the pooled JOINT class is the defensible
+    # aggregate and is emitted explicitly rather than left for a reader to
+    # compute.
+    _j = [r for r in rc if r["defect_type"] in
+          ("III_CENTRE_HIDER", "IV_CORRELATION_BREAK")]
+    if len(_j) == 2:
+        n_j = sum(r["n"] for r in _j)
+        rc.append({
+            "defect_type": "JOINT_POOLED_III_IV", "n": n_j, "expected": "JOINT",
+            "primary_correct_%": 100 * sum(
+                r["n"] * r["primary_correct_%"] / 100 for r in _j) / n_j,
+            "primary_or_secondary_%": 100 * sum(
+                r["n"] * r["primary_or_secondary_%"] / 100 for r in _j) / n_j,
+            "top_wrong_reason": "(pooled -- quote this, not Type III alone)"})
     reason = pd.DataFrame(rc)
 
     # ---------------- 2. completeness ----------------
@@ -181,7 +197,8 @@ def main():
                "completeness": comp, "counterfactual": cfm,
                "stability": stab,
                "stability_by_type": by_type.to_dict()},
-              open(OUT / "explainability_metrics.json", "w"), indent=2, default=str)
+              open(OUT / "explainability_metrics.json", "w", encoding="utf-8"),
+              indent=2, default=str)
     reason.to_csv(OUT / "explainability_reason.csv", index=False)
 
     print("\n=== 1. REASON CORRECTNESS ===")

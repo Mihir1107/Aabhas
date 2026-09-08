@@ -1,0 +1,36 @@
+# Verified working set, recorded from a live interpreter on Python
+# 3.12.5 (AMD64).
+#
+# lightgbm is REQUIRED, not optional. modulea/drift_models.py try-imports it and
+# falls back to sklearn's HistGradientBoostingRegressor when it is missing, with
+# no warning. The fallback changes the published figures: Iddq MAE 0.6087 with
+# lightgbm (matching results/module_b.md), 0.6102 without. Verified on this
+# environment by re-running the fit both ways.
+#
+# Every Module B run writes results/module_b_provenance.json recording which
+# backend actually executed, so no published number rests on an assumption
+# about the environment.
+
+numpy==2.4.4
+pandas==2.3.3
+scipy==1.18.0
+scikit-learn==1.9.0
+PyYAML==6.0.3
+lightgbm==4.7.0
+streamlit==1.58.0
+reportlab==5.0.1
+
+# streamlit runs the QA inspector demo:  streamlit run demo/app.py
+# It loads the pipeline live rather than a frozen export, so the app reflects
+# whatever results/ currently holds.
+
+# reportlab is REQUIRED by make_reports.py, which renders the QA disposition
+# PDFs in reports/ -- the explainability deliverable. It was undeclared: the
+# README's dependency list never mentioned it and the stage died with
+# ModuleNotFoundError on a clean environment.
+
+# quantile-forest is REQUIRED to reproduce rung 5b. Absent,
+# drift_models.QuantileForest falls back to an in-house leaf-quantile
+# implementation over sklearn's RandomForest, and the 5b MAE and interval
+# coverage both shift.
+quantile-forest==1.4.2

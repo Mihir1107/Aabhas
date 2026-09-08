@@ -188,13 +188,28 @@ class PartExplanation:
         S["curvature_z"] = cz
         S["accelerating_leakage"] = cz > 3.0
 
-        # Module B forecast
+        # Module B forecast.
+        #
+        # Report the forecast for the parameter that actually DRIVES the
+        # disposition, not merely the one that drifted most. On a level-driven
+        # flag (Type Vb, the PS's own worked example) the two differ: the part
+        # is flagged on leakage_na at +16 sigma while the largest drift z sits
+        # on vth_shift_mv, and forecasting vth_shift there put a calm number
+        # under an alarming one and read to an inspector as a contradiction.
+        # Governing parameter = whichever of level / drift is the stronger
+        # anomaly, falling back to the other when one is absent.
+        gov = dp
+        lz, lp = abs(S.get("level_sigma", 0.0) or 0.0), S.get("level_param")
+        if lp and (not dp or lz > abs(dz)):
+            gov = lp
+        gov = gov or e.params[0]
+        S["forecast_param"] = gov
         for p in e.params:
             if cid in e.mb_point.index and np.isfinite(e.mb_point.loc[cid, p]):
                 pt = float(e.mb_point.loc[cid, p])
                 ub = float(e.mb_upper.loc[cid, p])
                 ls = float(e.l_safe[p].get(cid, np.nan))
-                if p == (dp or e.params[0]):
+                if p == gov:
                     u = UNITS[p]
                     L.append(("Predicted 168h", f"{pt:.3f} {u} ({p}, from 0h and 24h only)"))
                     L.append(("95% upper bound",

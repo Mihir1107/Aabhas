@@ -33,6 +33,7 @@ from modulea import features as ft
 EARLY_CHECKPOINTS = (0.0, 24.0)
 MID_CHECKPOINTS = (0.0, 24.0, 96.0)
 TARGET_H = 168.0
+MIN_HISTORY_PARTS = 1000   # >= 2 full lots of 168 h history before L_safe is trusted
 
 BANNED_SUBSTRINGS = ("_t96", "_t168", "v96", "v168", "d2", "d3", "s2", "s3",
                      "censor", "pulled", "defect", "severity", "true_v")
@@ -178,7 +179,8 @@ def project_to_mission(ds, X: pd.DataFrame, p: str, beta: float,
     return X[f"{p}__v0"] + lam * (t_eq ** beta)
 
 
-def lot_safe_limit(ds, p: str, n_sigma: float = 6.0) -> pd.Series:
+def lot_safe_limit(ds, p: str, n_sigma: float = 6.0,
+                   reference: str = "prior") -> pd.Series:
     """Lot-derived L_safe at 168 h: the AEC-Q001 dynamic PAT upper limit.
 
     Using the DATASHEET limit as L_safe makes rule (d) inert on this dataset:
@@ -188,16 +190,79 @@ def lot_safe_limit(ds, p: str, n_sigma: float = 6.0) -> pd.Series:
     through -- and it says the useful safe limit for Module B is the same
     lot-relative limit Module A uses, not the engineering limit.
 
+    `reference` decides WHERE the 168 h distribution comes from, and the choice
+    is not cosmetic:
+
+        "prior"  pooled 168 h readings of all CHRONOLOGICALLY EARLIER lots.
+                 This is the only causally available option. Module B decides at
+                 24 h, and a lot's own 168 h readings do not exist for another
+                 six days -- using them to set that lot's limit is time travel.
+                 Lot ids sort in production order, so "earlier" is a plain sort.
+        "own"    the lot's own 168 h readings. Retained ONLY so the optimism of
+                 the causally impossible version is measurable. Do not ship it.
+
+    The earliest lots have no history to draw on. Rather than silently falling
+    back to their own future, they get the first lot that does have a usable
+    reference, and lots with fewer than MIN_HISTORY_PARTS of history are
+    reported as NaN by the caller rather than guessed at.
+
     Clipped to the datasheet limit, since a PAT limit never loosens one.
     """
+    if reference not in ("prior", "own"):
+        raise ValueError("reference must be 'prior' or 'own'")
     m = ds.meas[(ds.meas["measurement_status"] == "MEASURED")
                 & (ds.meas["checkpoint_h"] == TARGET_H)]
-    g = m.groupby("lot_id")[p]
-    med = g.median()
-    q1, q3 = g.quantile(0.25), g.quantile(0.75)
-    lim = med + n_sigma * (q3 - q1) / 1.35
-    lim = np.minimum(lim, ds.limits[p][1])
-    return ds.lot_of().map(lim)
+
+    def _lim(vals: np.ndarray) -> float:
+        med = float(np.median(vals))
+        q1, q3 = np.quantile(vals, 0.25), np.quantile(vals, 0.75)
+        return min(med + n_sigma * (q3 - q1) / 1.35, ds.limits[p][1])
+
+    if reference == "own":
+        g = m.groupby("lot_id")[p]
+        med, q1, q3 = g.median(), g.quantile(0.25), g.quantile(0.75)
+        lim = np.minimum(med + n_sigma * (q3 - q1) / 1.35, ds.limits[p][1])
+        return ds.lot_of().map(lim)
+
+    # Causal, and still lot-RELATIVE. Naively pooling every prior lot's 168 h
+    # readings would work causally but throws away the whole point of a dynamic
+    # limit: pooled across lots the spread absorbs the lot-to-lot shift that
+    # DPAT exists to remove, and the limit comes out ~20% looser.
+    #
+    # So take the two pieces from where each is actually available:
+    #   sigma   the WITHIN-lot 168 h spread, estimated per prior lot and
+    #           aggregated with a median across lots (never pooled)
+    #   centre  this lot's OWN 24 h median -- known at decision time -- carried
+    #           forward by the typical 24h->168h median drift of prior lots
+    m24 = ds.meas[(ds.meas["measurement_status"] == "MEASURED")
+                  & (ds.meas["checkpoint_h"] == 24.0)]
+    med168 = m.groupby("lot_id")[p].median()
+    med24 = m24.groupby("lot_id")[p].median()
+    sig168 = m.groupby("lot_id")[p].apply(
+        lambda a: (np.quantile(a, 0.75) - np.quantile(a, 0.25)) / 1.35)
+
+    by_lot = {k: v.to_numpy() for k, v in m.groupby("lot_id")[p]}
+    lots = sorted(m["lot_id"].unique())
+    out, first_valid = {}, None
+    for i, lotid in enumerate(lots):
+        prior = lots[:i]
+        n_hist = int(sum(len(by_lot[k]) for k in prior))
+        if n_hist >= MIN_HISTORY_PARTS:
+            sigma = float(np.median([sig168[k] for k in prior]))
+            drift = float(np.median([med168[k] - med24[k] for k in prior]))
+            centre = float(med24.get(lotid, np.nan)) + drift
+            out[lotid] = min(centre + n_sigma * sigma, ds.limits[p][1])
+            if first_valid is None:
+                first_valid = out[lotid]
+        else:
+            out[lotid] = np.nan
+    # cold start: the earliest lots inherit the first limit history can support
+    for lotid in lots:
+        if np.isnan(out[lotid]):
+            out[lotid] = first_valid if first_valid is not None else np.nan
+        else:
+            break
+    return ds.lot_of().map(pd.Series(out))
 
 
 def flag_confidence_adjusted(upper: pd.Series, ds, p: str,

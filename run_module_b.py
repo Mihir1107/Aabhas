@@ -50,6 +50,27 @@ def main() -> None:
     log(f"split: {sp.describe()}")
     log(f"LightGBM={USE_LGB}  quantile-forest={USE_QF}")
 
+    # Both GBM and the quantile model fall back silently to sklearn when their
+    # library is absent, and the fallback produces slightly different numbers.
+    # Persist which path actually ran so no published figure has to be
+    # attributed to a library on trust.
+    import platform
+    import sklearn
+    prov = {"gbm_backend": "lightgbm" if USE_LGB else
+            "sklearn.HistGradientBoostingRegressor",
+            "quantile_backend": "quantile-forest" if USE_QF else
+            "sklearn.RandomForestRegressor (in-house leaf quantiles)",
+            "python": platform.python_version(),
+            "numpy": np.__version__, "pandas": pd.__version__,
+            "scikit_learn": sklearn.__version__}
+    if USE_LGB:
+        import lightgbm
+        prov["lightgbm"] = lightgbm.__version__
+    (OUT / "module_b_provenance.json").write_text(json.dumps(prov, indent=2),
+                                                  encoding="utf-8")
+    log("backend provenance -> results/module_b_provenance.json: "
+        + prov["gbm_backend"])
+
     obs, true = mb.targets(ds)
     censored = gt["censor_status_168h"].reindex(obs.index) == "PULLED_FAILED"
     survivor = obs[ds.params[0]].notna() & ~censored
@@ -179,19 +200,35 @@ def main() -> None:
     lots_df.to_csv(OUT / "module_b_by_lot.csv", index=False)
 
     # ---------------- safety slopes ----------------
+    # Rule (b) reference is built WITHOUT the labels. Using `~y_def` as the
+    # healthy mask is an oracle: production has no such column. At 1.75%
+    # contamination a median/MAD over every part in the lot is nearly the same
+    # estimate -- that is the entire point of a robust estimator -- so the
+    # oracle version is computed alongside purely to report the delta.
     Xe = mb.build_features(ds, "early")
-    healthy = ~y_def
+    all_parts = pd.Series(True, index=Xe.index)
+    healthy_oracle = ~y_def
     srows = []
     for p in ds.params:
+        pw_s = dm.PowerLaw(p)
+        beta_s = pw_s.fit_beta(wide, lot, ds.checkpoints, Xe.index[tr])
         sa = mb.slope_margin_consumption(ds, Xe, p)
-        sb = mb.slope_lot_derived(ds, Xe, p, healthy)
-        sc = mb.slope_mission_based(ds, p)
+        sb = mb.slope_lot_derived(ds, Xe, p, all_parts)
+        sb_or = mb.slope_lot_derived(ds, Xe, p, healthy_oracle)
+        # (c) projects to end-of-mission with the power law and compares the
+        # VALUE against the limit. Comparing an early slope to a mission-average
+        # rate is apples to oranges, because sub-linear drift makes the early
+        # slope over-state the long-run rate.
+        vm = mb.project_to_mission(ds, Xe, p, beta_s)
         ub = bounds[("early", p, "5a_lgbm_q95")]
         fd = mb.flag_confidence_adjusted(ub, ds, p)
         fb = Xe[f"{p}__s1"] > sb
+        fb_or = Xe[f"{p}__s1"] > sb_or
         fa = Xe[f"{p}__s1"] > sa
-        fc = Xe[f"{p}__s1"] > sc
-        srows.append({"parameter": p, "mission_slope_c": sc,
+        fc = vm > ds.limits[p][1]
+        srows.append({"parameter": p, "beta": beta_s,
+                      "flag_b_oracle_%": 100 * float(fb_or[te].mean()),
+                      "b_oracle_recall_%": 100 * float(fb_or[te & y_def].mean()),
                       "flag_a_margin_%": 100 * float(fa[te].mean()),
                       "flag_b_lot_%": 100 * float(fb[te].mean()),
                       "flag_c_mission_%": 100 * float(fc[te].mean()),
@@ -210,7 +247,7 @@ def main() -> None:
     fb_any = pd.Series(False, index=Xe.index)
     fd_any = pd.Series(False, index=Xe.index)
     for p in ds.params:
-        sb = mb.slope_lot_derived(ds, Xe, p, healthy)
+        sb = mb.slope_lot_derived(ds, Xe, p, all_parts)
         fb_any |= (Xe[f"{p}__s1"] > sb).fillna(False)
         fd_any |= mb.flag_confidence_adjusted(
             bounds[("early", p, "5a_lgbm_q95")], ds, p).fillna(False)

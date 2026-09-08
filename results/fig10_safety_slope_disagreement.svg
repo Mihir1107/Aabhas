@@ -14,15 +14,15 @@
 <line x1="78" y1="46.0" x2="710" y2="46.0" stroke="#eee"/>
 <text x="70" y="50.0" font-size="11" text-anchor="end" fill="#444">100</text>
 <line x1="78" y1="442" x2="710" y2="442" stroke="#333"/>
-<rect x="98.6" y="415.1" width="60.5" height="26.9" fill="#1f77b4"/>
-<rect x="167.3" y="357.6" width="60.5" height="84.4" fill="#d62728"/>
-<rect x="236.0" y="398.4" width="60.5" height="43.6" fill="#2ca02c"/>
-<rect x="304.7" y="200.9" width="60.5" height="241.1" fill="#9467bd"/>
+<rect x="98.6" y="417.0" width="60.5" height="25.0" fill="#1f77b4"/>
+<rect x="167.3" y="356.7" width="60.5" height="85.3" fill="#d62728"/>
+<rect x="236.0" y="399.3" width="60.5" height="42.7" fill="#2ca02c"/>
+<rect x="304.7" y="199.0" width="60.5" height="243.0" fill="#9467bd"/>
 <text x="236.0" y="458" font-size="10.5" text-anchor="middle" fill="#444">defective parts</text>
-<rect x="414.6" y="442.0" width="60.5" height="0.0" fill="#1f77b4"/>
-<rect x="483.3" y="441.0" width="60.5" height="1.0" fill="#d62728"/>
-<rect x="552.0" y="441.4" width="60.5" height="0.6" fill="#2ca02c"/>
-<rect x="620.7" y="47.6" width="60.5" height="394.4" fill="#9467bd"/>
+<rect x="414.6" y="441.9" width="60.5" height="0.1" fill="#1f77b4"/>
+<rect x="483.3" y="441.1" width="60.5" height="0.9" fill="#d62728"/>
+<rect x="552.0" y="441.2" width="60.5" height="0.8" fill="#2ca02c"/>
+<rect x="620.7" y="47.8" width="60.5" height="394.2" fill="#9467bd"/>
 <text x="552.0" y="458" font-size="10.5" text-anchor="middle" fill="#444">good parts</text>
 <rect x="718" y="44" width="20" height="11" fill="#1f77b4"/>
 <text x="744" y="54" font-size="11" fill="#222">flagged by both</text>

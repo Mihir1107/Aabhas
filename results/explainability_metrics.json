@@ -71,6 +71,14 @@
       "primary_correct_%": 55.00000000000001,
       "primary_or_secondary_%": 81.66666666666667,
       "top_wrong_reason": "LEVEL"
+    },
+    {
+      "defect_type": "JOINT_POOLED_III_IV",
+      "n": 41,
+      "expected": "JOINT",
+      "primary_correct_%": 95.1219512195122,
+      "primary_or_secondary_%": 100.0,
+      "top_wrong_reason": "(pooled -- quote this, not Type III alone)"
     }
   ],
   "completeness": {

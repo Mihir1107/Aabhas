@@ -41,10 +41,10 @@
 <path d="M108.1,433.0 L138.2,411.6 L168.3,382.1 L228.5,343.0 L303.7,295.4 L379.0,265.3 L529.4,180.1 L679.9,91.5" fill="none" stroke="#9467bd" stroke-width="2" stroke-dasharray="4,3"/>
 <line x1="718" y1="109" x2="740" y2="109" stroke="#9467bd" stroke-width="2.5"/>
 <text x="745" y="113" font-size="11" fill="#222">ModuleA_fused_maxz p90</text>
-<path d="M108.1,440.8 L138.2,424.7 L168.3,406.9 L228.5,376.0 L303.7,336.5 L379.0,294.5 L529.4,211.0 L679.9,131.4" fill="none" stroke="#ff7f0e" stroke-width="2" stroke-dasharray=""/>
+<path d="M108.1,441.2 L138.2,424.6 L168.3,408.1 L228.5,376.6 L303.7,336.7 L379.0,295.8 L529.4,214.7 L679.9,134.2" fill="none" stroke="#ff7f0e" stroke-width="2" stroke-dasharray=""/>
 <line x1="718" y1="128" x2="740" y2="128" stroke="#ff7f0e" stroke-width="2.5"/>
 <text x="745" y="132" font-size="11" fill="#222">ModuleB_upper_bound_margin</text>
-<path d="M108.1,427.2 L138.2,411.0 L168.3,387.7 L228.5,353.7 L303.7,307.6 L379.0,251.0 L529.4,169.5 L679.9,70.2" fill="none" stroke="#17becf" stroke-width="2" stroke-dasharray="4,3"/>
+<path d="M108.1,428.9 L138.2,412.8 L168.3,391.9 L228.5,354.0 L303.7,306.2 L379.0,265.5 L529.4,169.7 L679.9,78.7" fill="none" stroke="#17becf" stroke-width="2" stroke-dasharray="4,3"/>
 <line x1="718" y1="147" x2="740" y2="147" stroke="#17becf" stroke-width="2.5"/>
 <text x="745" y="151" font-size="11" fill="#222">ModuleB_upper_bound_margin p90</text>
 <path d="M108.1,441.5 L138.2,425.0 L168.3,408.6 L228.5,375.6 L303.7,334.4 L379.0,293.2 L529.4,210.8 L679.9,128.4" fill="none" stroke="#333" stroke-width="2" stroke-dasharray=""/>

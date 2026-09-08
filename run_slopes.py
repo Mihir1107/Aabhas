@@ -11,19 +11,25 @@ def main():
     X = mb.build_features(ds, "early")
     ub = pd.read_csv(OUT / "moduleb_upper_early.csv.gz", index_col=0)
     wide = ft.wide_frame(ds)
-    healthy = ~y
+    # No labels in a deployed rule: the lot reference is robust enough to be
+    # built from every part in the lot. The oracle variant is kept alongside so
+    # the delta is reportable rather than assumed.
+    all_parts = pd.Series(True, index=X.index)
+    healthy_oracle = ~y
     rows = []
     flags = {}
     for p in ds.params:
         pw = dm.PowerLaw(p); beta = pw.fit_beta(wide, lot, ds.checkpoints, X.index[tr])
         sa = mb.slope_margin_consumption(ds, X, p)
-        sb = mb.slope_lot_derived(ds, X, p, healthy)
+        sb = mb.slope_lot_derived(ds, X, p, all_parts)
+        sb_or = mb.slope_lot_derived(ds, X, p, healthy_oracle)
         vm = mb.project_to_mission(ds, X, p, beta)
         lsafe = mb.lot_safe_limit(ds, p)
         u = ub[p].reindex(X.index)
         f = {
             "a_margin": (X[f"{p}__s1"] > sa).fillna(False),
             "b_lot_slope": (X[f"{p}__s1"] > sb).fillna(False),
+            "b_lot_slope_ORACLE": (X[f"{p}__s1"] > sb_or).fillna(False),
             "c_mission": (vm > ds.limits[p][1]).fillna(False),
             "d_upper_datasheet": mb.flag_confidence_adjusted(u, ds, p).fillna(False),
             "d_upper_lotsafe": mb.flag_confidence_adjusted(u, ds, p, l_safe=lsafe).fillna(False),

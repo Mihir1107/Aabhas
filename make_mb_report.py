@@ -194,7 +194,7 @@ def main():
         "production window.", "",
         "Full per-type and per-tier MAE in `module_b_per_type.csv`.", "",
     ]
-    (OUT / "module_b.md").write_text("\n".join(body))
+    (OUT / "module_b.md").write_text("\n".join(body), encoding="utf-8")
     print("wrote module_b.md, fig6, fig7, fig10")
 
 

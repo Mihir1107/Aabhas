@@ -1262,10 +1262,12 @@ def main() -> None:
         },
     }
     plain = json.loads(json.dumps(meta, default=_jsonable))
-    (out / "config.json").write_text(json.dumps(plain, indent=2))
+    (out / "config.json").write_text(json.dumps(plain, indent=2),
+                                     encoding="utf-8")
     import yaml   # deliberately not wrapped: a run whose config cannot be
                   # written is not a reproducible run, and should fail loudly
-    (out / "config.yaml").write_text(yaml.safe_dump(plain, sort_keys=False))
+    (out / "config.yaml").write_text(yaml.safe_dump(plain, sort_keys=False),
+                                     encoding="utf-8")
 
     h = hashlib.sha256((out / "burnin_measurements.csv").read_bytes()).hexdigest()[:16]
     print(f"lots={cfg.n_lots} parts={len(gt)} rows={len(meas)} AF={gen.af:.2f} "

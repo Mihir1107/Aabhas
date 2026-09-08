@@ -248,7 +248,7 @@ def main() -> None:
            .round(3).reset_index().pipe(
                lambda d: d.set_axis([" ".join(c).strip() for c in d.columns], axis=1))), "",
     ]
-    (OUT / "ablation.md").write_text("\n".join(body))
+    (OUT / "ablation.md").write_text("\n".join(body), encoding="utf-8")
 
     pv = per[per.scope == "all lots"].pivot_table(
         index=["defect_type", "severity"], columns="rung", values="flagged_%")
@@ -260,7 +260,8 @@ def main() -> None:
         "Scope: ALL lots, for statistical power. Detectors L0/L1/L2/L3a require "
         "no fitting; L3b/L3c/L4 were fitted on GOOD parts of TRAIN lots only, so "
         "no defective part was ever seen during fitting. Test-lot-only figures "
-        "are in per_type.csv.\n\n" + pv.round(1).reset_index().pipe(md) + "\n")
+        "are in per_type.csv.\n\n" + pv.round(1).reset_index().pipe(md) + "\n",
+        encoding="utf-8")
     # ---------------- cumulative ablation ----------------
     cum = pd.read_csv(OUT / "ablation_cumulative.csv")
     fus = pd.read_csv(OUT / "fusion_comparison.csv")
@@ -295,7 +296,7 @@ def main() -> None:
     cbody.append("Type VI has **zero parts in the test set**; every Type VI figure "
                  "in this repository is an ALL-LOTS number and is labelled as such. "
                  "See `split_counts.csv`.")
-    (OUT / "ablation_cumulative.md").write_text("\n".join(cbody))
+    (OUT / "ablation_cumulative.md").write_text("\n".join(cbody), encoding="utf-8")
 
     # cumulative curve plot
     cc = np.load(OUT / "curves_cumulative.npz")

@@ -40,11 +40,18 @@ single-parameter equivalent is roughly 30 points lower.
    costs 4.4%. The escape rate is bounded, not merely low.
 
 6. **Explainability, made quantitative — the third scored axis.** Reason
-   correctness **73–100%** by defect class (weakest Type II at 73.3%);
+   correctness **73–100% on defective classes** (weakest Type II at 73.3%;
+   Type III's 100% is on **n = 1** flagged part and is not quotable on its own —
+   pooled with Type IV as a JOINT class it is 95.1% on n = 41). On the traps,
+   which are labelled GOOD, the system fully passes **95.0% of Type VI but only
+   55.0% of Va**, with 81.7% of Va avoiding rejection. State the Va number
+   yourself; it is in the table a judge will read;
    explanation completeness **69.5%** for flagged parts and **100%** for
    passes; counterfactual validity **100%** of those offered, offered for
    26.7%; explanation stability under measurement noise **91.5%** overall and
-   **100%** on Types II, III, IV and VII. Five example QA disposition PDFs in
+   **100%** on Types II, IV and VII (n = 13 parts each; Type III is 100%
+   here too but on a single part, as above — do not list it alongside the
+   others). Five example QA disposition PDFs in
    `reports/`.
 
 7. **NEGATIVE RESULTS, four of them.** (a) L4 does not beat L3: the cumulative
@@ -114,13 +121,14 @@ parameter's own scale. L2 PR-AUC went 0.080 → 0.719.
 
 **We contradict ITC 2020 on Isolation Forest.** They report Isolation Forest
 and the autoencoder leading, with the Gaussian model trailing. Here Isolation
-Forest is the *worst* L4 method (67.7%, PR-AUC 0.196) and catches **0.0% of
+Forest is the *worst* L4 method (68.1%, PR-AUC 0.199) and catches **0.0% of
 Type III**. This is not a bug and it is not reordered: an axis-parallel
 isolation method cannot isolate a point that is central on every individual
 axis, which is the definition of a centre-hider. Our dataset deliberately
 over-weights that class relative to real production data, so the ordering
 differs for a structural reason. Tested on both a narrow 20-feature and a wide
-83-feature matrix; Isolation Forest is worse on the narrow one (41.7%), so it
+83-feature matrix; Isolation Forest is worse on the narrow one (42.2% vs
+68.1%, `results/isoforest_feature_width.csv`), so it
 is not a dimensionality artifact.
 
 **Fusion buys recall and costs ranking quality, and score-level fusion does
@@ -157,7 +165,7 @@ lots (legitimate, because no detector was fitted on defective parts).
 2. **Unsupervised detectors are fitted on known-good parts.** Production has no
    such oracle, so this is a favour we grant the ML rungs. Measured both ways,
    it turns out not to matter and in one case to hurt: fitting Isolation Forest
-   on all train parts (1.75% contaminated) scores **74.9%** against **67.7%**
+   on all train parts (1.75% contaminated) scores **74.9%** against **68.1%**
    for the clean fit, and the PCA Q-residual loses only 2 points (81.7% → 79.4%).
    The clean-reference assumption is therefore not doing the work, which is the
    reassuring answer. Both variants are in `all_methods.csv`.
@@ -191,7 +199,11 @@ matters most.
 **The safety slope has to be lot-relative.** Rule (d) tested against the
 datasheet limit is inert (1.4% recall), because every injected defect is inside
 spec by construction. Against a lot-derived L_safe — the AEC-Q001 dynamic PAT
-limit at 168 h — the same rule gives 17.8% recall at 0.15% yield loss. Module
+limit at 168 h — the same rule gives 17.1% recall at 0.23% yield loss.
+(That limit is now built from PRIOR lots only. Deriving it from the lot's own
+168 h readings scores 17.8% at 0.15%, but Module B decides at 24 h and those
+readings do not exist for another six days, so the causal version is the one
+that ships and the 0.7-point gap is the honest cost of not using them.) Module
 B's value is not predicting limit violations, of which there are none. It is
 predicting abnormal drift *relative to peers*: the same static-versus-dynamic
 argument Module A makes, one derivative up.

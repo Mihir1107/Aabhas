@@ -23,6 +23,7 @@ error from a neural network.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -33,7 +34,14 @@ from modulea import evaluation as ev
 from modulea import features as ft
 from modulea import moduleb as mb
 
-RESULTS = Path("results")
+# Anchored to the repository root rather than the working directory. As a bare
+# relative path this resolved against wherever the process happened to start, so
+# anything launched from a subdirectory -- the Streamlit app in demo/ being the
+# obvious case -- died with FileNotFoundError on results/scores.csv.gz. Set
+# AABHAS_RESULTS to point somewhere else.
+_ROOT = Path(__file__).resolve().parent.parent
+RESULTS = Path(os.environ.get("AABHAS_RESULTS", _ROOT / "results"))
+DATA = Path(os.environ.get("AABHAS_DATA", _ROOT / "data"))
 IQR_TO_SIGMA = 1.35
 MAD_TO_SIGMA = 1.4826
 
@@ -41,7 +49,8 @@ MAD_TO_SIGMA = 1.4826
 class Evidence:
     """Everything needed to explain any part, loaded once."""
 
-    def __init__(self, datadir: str = "data"):
+    def __init__(self, datadir: str | Path | None = None):
+        datadir = DATA if datadir is None else datadir
         self.ds = ds = ev.load(datadir)
         self.params = ds.params
         self.checkpoints = ds.checkpoints

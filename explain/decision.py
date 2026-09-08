@@ -66,6 +66,11 @@ class DecisionPolicy:
                           for c in self.detector_cols + [self.fused_col]}
         self.review_budget = review_budget
         self.watch_budget = watch_budget
+        # Computed once. `fired()` is called for every part in a lot and this
+        # median is over the whole 120k-row score frame; recomputing it per call
+        # made a 500-part worklist take minutes instead of seconds. The value
+        # does not depend on the component, so the result is identical.
+        self._median = self.e.scores[self.detector_cols].median()
 
     def fired(self, cid: str, level: str = "review") -> dict[str, float]:
         """Which detectors fired, and by how much, in a normalised space.
@@ -77,7 +82,7 @@ class DecisionPolicy:
         unanswerable.
         """
         thr = self.thr_review if level == "review" else self.thr_watch
-        med = self.e.scores[self.detector_cols].median()
+        med = self._median
         out = {}
         for c in self.detector_cols:
             v = float(self.e.scores.loc[cid, c])
