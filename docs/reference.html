@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reference | Burn-in screening</title>
+<meta name="description" content="Repository map, glossary and references">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html" aria-current="page"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>a1d6a8e</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Reference</p>
+<h1>Repository map, glossary and references</h1>
+<div class="col">
+<h2>Where things live</h2>
+<div class="tbl"><table><thead><tr><th>Path</th><th>What it is</th></tr></thead><tbody><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/generate_data.py"><code>generate_data.py</code></a></td><td>Synthetic dataset generator</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/validate_dataset.py"><code>validate_dataset.py</code></a></td><td>Dataset assertions and calibration</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/evaluation.py"><code>modulea/evaluation.py</code></a></td><td>Harness: loading, lot splits, metrics</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/detectors.py"><code>modulea/detectors.py</code></a></td><td>L0 limits and L1 PAT</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/features.py"><code>modulea/features.py</code></a></td><td>L2 trajectory features, lot-relative z</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/multivariate.py"><code>modulea/multivariate.py</code></a></td><td>L3/L4 detectors and fusion</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/moduleb.py"><code>modulea/moduleb.py</code></a></td><td>Module B features, leak guard, safe limits</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/drift_models.py"><code>modulea/drift_models.py</code></a></td><td>Module B model ladder</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/conformal.py"><code>modulea/conformal.py</code></a></td><td>Conformal risk control</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/decision.py"><code>explain/decision.py</code></a></td><td>Six-tier decision policy</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/evidence.py"><code>explain/evidence.py</code></a></td><td>Per-part evidence, spatial and thermal checks</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/rules.py"><code>explain/rules.py</code></a></td><td>Layer 1 rule text</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/counterfactual.py"><code>explain/counterfactual.py</code></a></td><td>Validated counterfactuals</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/report.py"><code>explain/report.py</code></a></td><td>One-page PDF report</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/demo/app.py"><code>demo/app.py</code></a></td><td>Streamlit inspector</td></tr><tr><td><a href="https://github.com/Mihir1107/Aabhas/blob/main/results/PRESENTATION_PACKAGE.md"><code>results/PRESENTATION_PACKAGE.md</code></a></td><td>Every slide number with its condition</td></tr></tbody></table></div>
+<p>Full tree: <a href="https://github.com/Mihir1107/Aabhas/tree/main">https://github.com/Mihir1107/Aabhas</a>.</p>
+<h2>Glossary</h2>
+<div class="tbl"><table><thead><tr><th>Term</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>DPAT / PAT</strong></td><td>Part Average Testing, AEC-Q001: limits from a lot's own robust statistics.</td></tr><tr><td><strong>Yield loss</strong></td><td>Percentage of good parts rejected.</td></tr><tr><td><strong>Escape rate</strong></td><td>Percentage of defective parts passed; 100 minus recall.</td></tr><tr><td><strong>Lot</strong></td><td>One manufacturing batch, 500 components here.</td></tr><tr><td><strong>MCD</strong></td><td>Minimum Covariance Determinant, a robust covariance estimate.</td></tr><tr><td><strong>Robust sigma</strong></td><td>MAD &#215; 1.4826, or IQR / 1.35 as AEC-Q001 specifies.</td></tr><tr><td><strong>Trap</strong></td><td>A good part built to look anomalous, so over-flagging is punished.</td></tr><tr><td><strong>Centre-hider</strong></td><td>A defect central on every parameter and anomalous only jointly.</td></tr></tbody></table></div>
+<h2>References</h2>
+<ol><li>AEC-Q001 Rev-D, Guidelines for Part Average Testing, Automotive Electronics Council.</li><li>MIL-STD-883, Method 1015 (burn-in) and PDA screening criteria.</li><li>Hu, Nguyen, He and Li, ITC 2020: industrial study of escaped latent defects and anomaly detectors.</li><li>Angelopoulos, Bates, Fisch, Lei and Schuster, Conformal Risk Control, ICLR 2024 (arXiv:2208.02814).</li><li>Rousseeuw and Van Driessen, A fast algorithm for the Minimum Covariance Determinant estimator, Technometrics 1999.</li><li>Meinshausen, Quantile Regression Forests, JMLR 2006.</li></ol>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="limitations.html"><small>Previous</small>Limitations &amp; audit</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

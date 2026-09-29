@@ -36,10 +36,13 @@ fitted on — and work the triage list.
   visible rather than asserted.
 - **Module B's 168 h forecast** from 0 h and 24 h only, against a safe limit
   derived from prior lots.
-- **Board map**, which is the one to demo. Try **LOT238**: 44 components come
+- **Board map**, which is the one to demo. Try **LOT238**: 35 components come
   back `FIXTURE_SUSPECT` and on the socket grid they visibly cluster by
-  position. That is the system declining to scrap 44 good parts because the
-  anomaly tracks the oven, not the components. **LOT192** has a real chamber
+  position. That is the system declining to scrap 35 good parts because the
+  anomaly tracks the oven, not the components. A flagged part is only called
+  `FIXTURE_SUSPECT` when its board is clustered **and** its own shift since 0 h
+  has the thermal sign (leakage up, delay up, vth down), so a real defect on a
+  busy board is still dispositioned as a component. **LOT192** has a real chamber
   trip, and shows the system refusing to disposition on invalid readings.
 - **Reveal ground truth**, hidden until pressed. Read the evidence, decide,
   then check whether the system was right.

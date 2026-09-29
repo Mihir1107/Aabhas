@@ -170,10 +170,17 @@ class PartExplanation:
             conc = (float(np.max(fin) / max(np.median(np.sort(fin)[:-1]), 1e-12))
                     if len(fin) >= 3 else np.nan)
             S["jump_concentration"] = conc
-            L.append(("Max interval jump",
-                      f"{jz:+.1f} robust sigma on {jp}; largest interval change is "
-                      f"{conc:.1f}x the median of the others "
-                      f"({'concentrated -> step' if np.isfinite(conc) and conc > 3.0 else 'spread -> progressive drift'})"))
+            if np.isfinite(conc):
+                shape = (f"largest interval change is {conc:.1f}x the median of the "
+                         "others ("
+                         + ("concentrated -> step" if conc > 3.0 else
+                            "spread -> progressive drift") + ")")
+            else:
+                # fewer than three measured intervals (a pulled or tripped part):
+                # step versus drift cannot be told apart, so say so rather than
+                # printing "nanx"
+                shape = "too few measured intervals to tell a step from a drift"
+            L.append(("Max interval jump", f"{jz:+.1f} robust sigma on {jp}; {shape}"))
             S["max_jump_z"] = jz
             S["step_detected"] = bool(jz > 6.0 and np.isfinite(conc) and conc > 3.0)
 
@@ -271,16 +278,22 @@ class PartExplanation:
 
         # spatial
         sp = self.spatial
-        L.append(("Spatial check",
-                  (f"{sp['n_flagged_on_board']} of {sp['n_on_board']} components "
+        th = e.thermal_signature(cid) if sp["clustered"] else None
+        fixture = bool(sp["clustered"] and th["thermal"])
+        if not sp["clustered"]:
+            txt = (f"no neighbour clustering on board {sp['board_id']} "
+                   f"({sp['n_flagged_on_board']}/{sp['n_on_board']} flagged), "
+                   "component-specific")
+        else:
+            txt = (f"{sp['n_flagged_on_board']} of {sp['n_on_board']} components "
                    f"on board {sp['board_id']} flagged (expected "
-                   f"{sp['expected_flagged']:.1f}, p={sp['p_value']:.1e}) -- "
-                   "CLUSTERED, suspect fixture")
-                  if sp["clustered"] else
-                  f"no neighbour clustering on board {sp['board_id']} "
-                  f"({sp['n_flagged_on_board']}/{sp['n_on_board']} flagged), "
-                  "component-specific"))
-        S["spatial_clustered"] = sp["clustered"]
+                   f"{sp['expected_flagged']:.1f}, p={sp['p_value']:.1e}); shift "
+                   f"since 0 h: leakage {th['leakage_shift_z']:+.1f}, delay "
+                   f"{th['delay_shift_z']:+.1f}, vth {th['vth_shift_z']:+.1f} sigma -- "
+                   + ("THERMAL signature, suspect fixture" if fixture else
+                      "not the thermal signature, treated as the component"))
+        L.append(("Spatial check", txt))
+        S["spatial_clustered"] = fixture
         S["n_flagged_on_board"] = sp["n_flagged_on_board"]
         S["board_id"] = sp["board_id"]
 

@@ -1,14 +1,14 @@
 Component: LOT193-C0488     Lot: LOT193     Board: LOT193-B07  Socket: (r5, c0)
 Decision: REVIEW
 
-Absolute limit:      PASS (97.00 nA vs 100.0 nA max, leakage_na)
-Lot-relative level:  +16.2 robust sigma vs lot median on leakage_na (median 22.64 nA, sigma 4.60 nA, n=500, MAD estimator; AEC-Q001 IQR/1.35 gives 4.80 nA)
-Drift 0h to 24h:     +0.043 mV on vth_shift_mv; lot median drift +1.014 mV, part is -1.2 robust sigma on the lot's drift distribution
-Drift rate:          0.0018 mV/h (lot median 0.0423 mV/h, 0.0x)
-Predicted 168h:      96.759 nA (leakage_na, from 0h and 24h only)
-95% upper bound:     97.000 nA -> EXCEEDS lot-derived safe limit 59.983 nA
-Joint anomaly:       Mahalanobis D2 = 888.6 (good-part 99th pct = 16.8); largest contribution leakage_na at 52% of the total
-Leakage/delay sign:  leakage +16.2 sigma, delay -1.1 sigma -- consistent with the lot's process locus
+Absolute limit:      PASS (95.12 nA vs 100.0 nA max, leakage_na)
+Lot-relative level:  +15.7 robust sigma vs lot median on leakage_na (median 22.64 nA, sigma 4.60 nA, n=500, MAD estimator; AEC-Q001 IQR/1.35 gives 4.80 nA)
+Drift 0h to 24h:     +0.069 mV on vth_shift_mv; lot median drift +1.014 mV, part is -1.2 robust sigma on the lot's drift distribution
+Drift rate:          0.0029 mV/h (lot median 0.0423 mV/h, 0.1x)
+Predicted 168h:      92.348 nA (leakage_na, from 0h and 24h only)
+95% upper bound:     95.308 nA -> EXCEEDS lot-derived safe limit 59.983 nA
+Joint anomaly:       Mahalanobis D2 = 844.1 (good-part 99th pct = 19.2); largest contribution leakage_na at 52% of the total
+Leakage/delay sign:  leakage +15.7 sigma, delay -1.1 sigma -- consistent with the lot's process locus
 Spatial check:       no neighbour clustering on board LOT193-B07 (2/52 flagged), component-specific
 Data quality:        all checkpoints valid
 

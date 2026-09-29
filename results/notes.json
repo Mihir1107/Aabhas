@@ -9,7 +9,7 @@
   "L1_static_classical": "union across 5 params x 4 checkpoints, k=6",
   "L1_dynamic_classical": "union across 5 params x 4 checkpoints, k=6",
   "L2_drift": "max |lot-relative robust z| over trajectory features",
-  "L2_level": "max |lot-relative robust z| over level features",
+  "L2_level": "max |lot-relative robust z| over level features. NOT an independent rung: this is numerically IDENTICAL to L1_dynamic_MAD (same recall, PR-AUC and AUROC to 4dp at every yield-loss budget), because both reduce to the same per-lot median/MAD comparison on the same values. It is kept only as the level half of L2_both. Do not present the two as separate detectors.",
   "L2_both": "max of L2_level and L2_drift",
   "L3a_MCD": "per lot x checkpoint, 5 raw params, median over checkpoints",
   "L3b_T2": "Hotelling T2, 23 PCs (95% var), fit on train good parts",

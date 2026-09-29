@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The dataset | Burn-in screening</title>
+<meta name="description" content="A synthetic burn-in dataset with hidden ground truth">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html" aria-current="page"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>a1d6a8e</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 2</p>
+<h1>A synthetic burn-in dataset with hidden ground truth</h1>
+<div class="col">
+<p class="lede">240 lots of 500 components, 120,000 parts, four checkpoints
+each. Measurements and ground truth live in separate files, and nothing in the measurement file
+carries a label.</p>
+
+<div class="facts"><div class="fact "><div class="v">120,000</div><div class="l">Components</div><div class="c">240 lots &#215; 500 parts, 8&#215;8 socket boards</div></div><div class="fact "><div class="v">1.75%</div><div class="l">Genuine defect prevalence</div><div class="c">2,100 parts of Types I&#8211;IV and Vb</div></div><div class="fact "><div class="v">60</div><div class="l">Centre-hiders</div><div class="c">500 DPPM, the realistic rate, kept rather than inflated</div></div><div class="fact "><div class="v">24 / 24</div><div class="l">Validator assertions passing</div><div class="c"><a href="https://github.com/Mihir1107/Aabhas/blob/main/validate_dataset.py"><code>validate_dataset.py</code></a> on dataset-v1.2</div></div></div>
+
+<h2>The good-part model</h2>
+<pre><code>x(i,t)   = &#956;_lot(t) + u_lot + u_i + &#949;(i,t)
+&#956;_lot(t) = v0 + &#955;&#183;t^&#946;          &#946; in [0.5, 1.0], saturating</code></pre>
+<p>Lot-level random effects on both the starting level and the drift rate, a component-level
+effect, and independent measurement noise at 12% of the part-to-part spread (a plausible gauge
+R&amp;R). Cross-parameter correlation comes from a two-factor model: factor 1 is the process corner
+(fast and leaky versus slow and tight), factor 2 is oxide and defect density. That guarantees a
+positive-definite correlation matrix and gives every correlation a physical name. Drift magnitudes
+are set per field-year and multiplied through the Arrhenius factor.</p>
+
+<h2>Eight archetypes, three of them traps</h2>
+<div class="tbl"><table><thead><tr><th>Type</th><th>Name</th><th>Signature</th><th>Label</th><th class="num">Parts</th><th>Meant to be caught by</th></tr></thead><tbody><tr><td><strong>I</strong></td><td>Steep drifter</td><td>Drift rate 5&#8211;10&#215; the lot median, starting low to stay in spec</td><td>defect</td><td class="num">720</td><td>drift features, Module B</td></tr><tr><td><strong>II</strong></td><td>Step defect</td><td>Normal drift plus a discrete jump between two checkpoints</td><td>defect</td><td class="num">600</td><td>interval-jump features</td></tr><tr><td><strong>III</strong></td><td>Centre-hider</td><td>Inside the 17th&#8211;83th percentile on every parameter, anomalous only jointly</td><td>defect</td><td class="num">60</td><td>multivariate only</td></tr><tr><td><strong>IV</strong></td><td>Correlation break</td><td>Leaky and slow, a combination the process never produces</td><td>defect</td><td class="num">420</td><td>Mahalanobis, PCA residual</td></tr><tr><td><strong>Vb</strong></td><td>Extreme level, in spec</td><td>5.5&#8211;7.5&#963; outside the lot, still inside the datasheet limit</td><td>defect</td><td class="num">300</td><td>dynamic PAT (the PS example)</td></tr><tr><td><strong>Va</strong></td><td>Mildly high, stable</td><td>2&#8211;3&#963; high along the natural process corner, stable</td><td>trap: good</td><td class="num">1,800</td><td>punishes level-only rules</td></tr><tr><td><strong>VI</strong></td><td>Whole-lot process shift</td><td>The whole lot shifted by a process excursion</td><td>trap: good</td><td class="num">3,000</td><td>punishes static limits</td></tr><tr><td><strong>VII</strong></td><td>Fixture artifact</td><td>Socket thermal gradient on a burn-in board</td><td>trap: good</td><td class="num">640</td><td>needs the spatial check</td></tr></tbody></table></div>
+<p>Types I and II are driven by a named failure mechanism (junction leakage, NBTI, interconnect
+RC, ionic contamination) that decides which parameters move. Types III and IV carry a severity
+tier, roughly a third each, so the mild tier can escape the multivariate layer and the ML rungs
+have something left to win. The traps are labelled <strong>good</strong>: flagging one is yield loss.</p>
+
+<h2>Constraints enforced by construction</h2>
+<ul>
+<li><strong>In spec, always.</strong> Every injected part is shrunk toward its lot's median
+trajectory until it fits inside the datasheet limits at every measured checkpoint. Nothing is
+filtered afterwards.</li>
+<li><strong>No fingerprint from that shrink.</strong> New in dataset-v1.2: an active shrink
+is pulled back by a random factor, so shrunk parts no longer land exactly on the boundary.
+Assertion A1b checks that an "exactly on the cap" rule catches under 1% of defects.</li>
+<li><strong>Honest censoring.</strong> 360 parts fail hard between 96 and 168 h and are
+pulled (<code>PULLED_FAILED</code>); their latent 168 h value exists only in ground truth.
+Separately, chamber trips and tester faults lose readings for non-part reasons
+(<code>MISSING_EQUIPMENT</code>), including on good parts, so "no 168 h value" is not a label.</li>
+<li><strong>Centre-hiders carry real noise.</strong> Type III parts use the same measurement-noise
+draw as every other part, and their anomaly direction is held fixed across checkpoints.
+Assertion A8 checks their roughness is indistinguishable from good parts (two-sided).</li>
+</ul>
+
+<h2>The Type III feasibility ceiling</h2>
+<p>A centre-hider must be univariately central and jointly anomalous, and those pull against each
+other: a point at the exact median of every parameter has Mahalanobis distance zero. The
+validator computes the exact maximum reachable joint distance inside each percentile band (the
+maximum of <code>z&#7488;R&#8315;&#185;z</code> over a box sits at a vertex, so checking all 2&#8309;
+sign patterns is exact). Inside &#177;25 percentile points the most anomalous point that exists is
+less extreme than hundreds of ordinary good parts, so no detector could ever find it. The
+configured band is &#177;33 points, the tightest with usable headroom.</p>
+<p>The correlation that makes this work, corr(Iddq, leakage) = 0.93, was chosen, and a
+reviewer is right to challenge it. <a href="https://github.com/Mihir1107/Aabhas/blob/main/sweep_correlation.py"><code>sweep_correlation.py</code></a> measures what happens at weaker
+correlations: the centre-hider stays constructible at any correlation, and the correlation only
+decides how wide the band has to be. Even the widest band the sweep asks for (8th&#8211;92nd
+percentile) is far inside any PAT limit.</p>
+
+<h2>Split by lot, in production order</h2>
+<p>Components from one lot share a lot random effect, so a row-wise split leaks lot information
+into the test set and inflates every score. Splits are chronological by lot:</p>
+<div class="tbl"><table><caption>Source: results/split_counts.csv. All six Type VI lots fall in train or validation, so every Type VI figure on this site is an all-lots number.</caption><thead><tr><th>Split</th><th class="num">Lots</th><th class="num">Parts</th><th class="num">Defective</th><th class="num">Type III</th><th class="num">Type VI</th></tr></thead><tbody><tr><td>train</td><td class="num">144</td><td class="num">72,000</td><td class="num">1220</td><td class="num">37</td><td class="num">2500</td></tr><tr><td>val</td><td class="num">48</td><td class="num">24,000</td><td class="num">453</td><td class="num">15</td><td class="num">500</td></tr><tr><td>test</td><td class="num">48</td><td class="num">24,000</td><td class="num">427</td><td class="num">8</td><td class="num">0</td></tr></tbody></table></div>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="problem.html"><small>Previous</small>The problem</a><a class="next" href="module-a.html"><small>Next</small>Module A</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

@@ -85,7 +85,12 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
                    title=f"{p} trajectory vs lot {e.lot[cid]}",
                    subtitle="envelope = lot median +/- 3 robust sigma (MAD); "
                             "forecast from 0 h and 24 h only")
-    drawing = _svg_drawing(svg, 118.0)
+    drawing = _svg_drawing(svg, 100.0)      # sized so the report stays one page
+    if drawing is None:
+        # v1.1's PDFs were built without svglib and shipped with no chart at
+        # all; the report's central figure must never vanish silently.
+        raise RuntimeError("trajectory chart could not be rendered; install svglib "
+                           "(pip install -r requirements.txt)")
 
     doc = SimpleDocTemplate(str(out_pdf), pagesize=A4,
                             leftMargin=13 * mm, rightMargin=13 * mm,
@@ -96,16 +101,20 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
         "<b>QA DISPOSITION REPORT</b> &nbsp;&nbsp; burn-in parametric screening",
         ParagraphStyle("t", parent=ss["Heading2"], fontSize=12, spaceAfter=2)))
     meta = e.ds.meas[e.ds.meas["component_id"] == cid].iloc[0]
+    # Model version gets a full-width row of its own: in a 28 mm cell it ran
+    # into the timestamp beside it and both became unreadable.
     hdr = [["Component", cid, "Lot", e.lot[cid], "Board", meta["board_id"]],
            ["Socket", f"r{int(meta['socket_row'])} c{int(meta['socket_col'])}",
-            "Model version", model_version, "Generated",
-            __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M")]]
-    tb = Table(hdr, colWidths=[20 * mm, 38 * mm, 22 * mm, 28 * mm, 20 * mm, 36 * mm])
+            "Generated",
+            __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M"), "", ""],
+           ["Model version", model_version, "", "", "", ""]]
+    tb = Table(hdr, colWidths=[22 * mm, 36 * mm, 20 * mm, 30 * mm, 18 * mm, 38 * mm])
     tb.setStyle(TableStyle([
         ("FONTSIZE", (0, 0), (-1, -1), 7),
         ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#666666")),
         ("TEXTCOLOR", (2, 0), (2, -1), colors.HexColor("#666666")),
         ("TEXTCOLOR", (4, 0), (4, -1), colors.HexColor("#666666")),
+        ("SPAN", (1, 2), (-1, 2)),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 1), ("TOPPADDING", (0, 0), (-1, -1), 1)]))
     S.append(tb)
     dt = Table([[Paragraph(f"<b>DECISION: {x.tier}</b>", ParagraphStyle(

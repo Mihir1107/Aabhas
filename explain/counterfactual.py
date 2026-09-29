@@ -1,18 +1,24 @@
 """
-Counterfactual: the smallest single-feature change that flips the decision.
+Counterfactual: the smallest single-measurement change that clears the
+rule-based evidence.
 
-    "This part would have moved from REVIEW to PASS if the 24 h leakage had
-     been at or below 18.2 nA."
+    "The rule-based evidence would no longer flag this part if leakage at
+     24 h had been at or below 18.2 nA."
 
-Directly actionable, and the one explanation an inspector can immediately sanity
-check against the physical part.
+Directly actionable, and the one explanation an inspector can sanity check
+against the physical part.
 
-EVERY COUNTERFACTUAL IS VALIDATED BY APPLYING IT. The candidate value is found
-by bisection on the actual scoring pipeline, then the modified measurement is
-pushed back through the same pipeline and the decision is recomputed. If the
-decision does not actually flip, the counterfactual is discarded rather than
-reported. A counterfactual that does not flip when applied is worse than none,
-because it invites an inspector to act on it and see nothing happen.
+SCOPE, stated plainly. The counterfactual is computed against the RULE LAYER --
+the lot-relative robust z (6 sigma) and the robust Mahalanobis D^2 against the
+training-lot reference -- because those can be recomputed exactly from the raw
+measurements. The fitted L2-L4 detectors behind the fused score are not
+re-evaluated (that needs the model objects), so a counterfactual says "the
+rules would stop firing", not "the tier would become PASS".
+
+VALIDATION. The candidate value is found by bisection, then applied, and the
+WHOLE record is re-checked: every checkpoint must clear both rules. If another
+checkpoint still fires, a one-value change cannot clear the part and the
+counterfactual is discarded rather than reported.
 """
 
 from __future__ import annotations
@@ -53,9 +59,8 @@ class CounterfactualEngine:
         inv = np.linalg.inv(mcd.covariance_)
         med = np.median(X, axis=0)
         mad = 1.4826 * np.median(np.abs(X - med), axis=0)
-        d2_all = mcd.mahalanobis(X)
-        good = self.e.gt["defect_type"].reindex(s["component_id"].to_numpy()) == "GOOD"
-        p99 = float(np.quantile(d2_all[good.to_numpy()], 0.99))
+        # same label-free reference the rule text quotes (training-lot goods)
+        p99 = self.e.d2_reference(t)
         out = (mcd.location_, inv, med, mad, p99)
         self._cache[key] = out
         return out
@@ -92,6 +97,7 @@ class CounterfactualEngine:
         lot = e.lot[cid]
         end = max(e.checkpoints)
         best = None
+        drivers = []                          # checkpoints where the rules fire
         for t in e.checkpoints:
             try:
                 loc, inv, med, mad, p99 = self._lot_ref(lot, t)
@@ -103,6 +109,7 @@ class CounterfactualEngine:
                 continue
             if base["max_abs_z"] < z_thr and base["d2"] < p99:
                 continue                      # this checkpoint is not the driver
+            drivers.append(t)
             for j, p in enumerate(e.params):
                 cur = float(e.wide.loc[cid, (p, t)])
                 if not np.isfinite(cur):
@@ -128,6 +135,15 @@ class CounterfactualEngine:
                             "delta_sigma": rel, "unit": UNITS[p],
                             "direction": "at or below" if cur > target else "at or above",
                             "validated": bool(validated)}
+        # VALIDATE AGAINST THE WHOLE RECORD, not just the edited checkpoint.
+        # A single-value change can only clear the rule layer if that
+        # checkpoint is the ONLY one on which the rules fire; if two
+        # checkpoints drive the flag, editing one leaves the part flagged and
+        # the counterfactual would be a false promise. v1.1 re-checked only
+        # the edited checkpoint, which made its 100% validity a tautology.
+        if best is not None:
+            best["validated"] = bool(best["validated"]
+                                     and drivers == [best["checkpoint_h"]])
         if best is not None and not best["validated"]:
             return None
         return best
@@ -136,7 +152,8 @@ class CounterfactualEngine:
         if cf is None:
             return ("No single-parameter change clears the rules; the evidence is "
                     "distributed across several measurements.")
-        return (f"This part would have moved from {tier} to PASS if "
+        return (f"The rule-based evidence (6 robust sigma univariate and the "
+                f"joint-D2 reference) would no longer flag this part if "
                 f"{cf['parameter']} at {cf['checkpoint_h']:.0f} h had been "
                 f"{cf['direction']} {cf['required']:.3f} {cf['unit']} "
                 f"(measured {cf['current']:.3f} {cf['unit']}, a change of "

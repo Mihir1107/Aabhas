@@ -54,7 +54,7 @@ def main() -> None:
 
     out = {
         "meta": {
-            "dataset": e.ds.cfg.get("version", "dataset-v1.1"),
+            "dataset": e.ds.cfg.get("version", "dataset"),
             "commit": commit,
             "generated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "lots": DEMO_LOTS,
@@ -115,13 +115,17 @@ def main() -> None:
                 "d2": _f(x.d2), "d2_p99": _f(x.d2_p99),
                 "mb": mb,
                 "lines": [[a, b] for a, b in x.lines],
-                "hypotheses": [h[0] if isinstance(h, (list, tuple)) else str(h)
+                # mechanism dicts -> "hypothesis [confidence]"; str(dict)
+                # used to leak the raw Python repr onto the screen
+                "hypotheses": [f"{h['hypothesis']} [{h['confidence']}]"
                                for h in x.hypotheses],
                 # revealed only after the inspector decides; never an input
                 "truth": {"defect_type": str(g["defect_type"]),
                           "is_defective": bool(e.y[cid]),
-                          "severity": str(g.get("severity", "") or ""),
-                          "mechanism": str(g.get("failure_mechanism", "") or "")},
+                          # NaN is truthy, so `or ""` rendered "nan"
+                          "severity": "" if pd.isna(g.get("severity")) else str(g["severity"]),
+                          "mechanism": "" if pd.isna(g.get("failure_mechanism"))
+                          else str(g["failure_mechanism"])},
             })
             if (k + 1) % 100 == 0:
                 print(f"  {lot}: {k+1}/{len(ids)}  ({time.time()-t0:.0f}s)",

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The problem | Burn-in screening</title>
+<meta name="description" content="Why a part that passes every limit can still fail">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html" aria-current="page"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>a1d6a8e</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 1</p>
+<h1>Why a part that passes every limit can still fail</h1>
+<div class="col">
+<p class="lede">Datasheet limits answer one question: is this part inside the envelope the
+design allows? They cannot answer the question burn-in exists for: is this part unlike its
+siblings in a way that predicts early failure?</p>
+
+<h2>Burn-in, briefly</h2>
+<p>Burn-in operates components under elevated temperature and bias to precipitate infant-mortality
+failures before they reach a mission. The acceleration comes from the Arrhenius relation:</p>
+<pre><code>AF = exp[ (Ea / k) &#183; (1/T_use &#8722; 1/T_stress) ]</code></pre>
+<p>At Ea = 0.7 eV, 125 &#176;C stress against 55 &#176;C use, the
+generator computes <strong>AF = 77.66</strong>, so 168 hours of burn-in stands in for
+<strong>1.488 field-years</strong>. The number is derived, never hard-coded: change
+the activation energy or either temperature and the whole dataset re-scales.</p>
+
+<h2>The five measured parameters</h2>
+<div class="tbl"><table><thead><tr><th>Parameter</th><th>Unit</th><th>Datasheet limits</th><th>Distribution</th><th>Direction</th></tr></thead><tbody><tr><td><code>iddq_ua</code></td><td>&#181;A</td><td>0 to 50</td><td>log-normal</td><td>higher is worse</td></tr><tr><td><code>leakage_na</code></td><td>nA</td><td>0 to 100</td><td>log-normal</td><td>higher is worse</td></tr><tr><td><code>prop_delay_ns</code></td><td>ns</td><td>6 to 10</td><td>Gaussian</td><td>higher is worse</td></tr><tr><td><code>supply_current_ma</code></td><td>mA</td><td>30 to 65</td><td>Gaussian</td><td>higher is worse</td></tr><tr><td><code>vth_shift_mv</code></td><td>mV</td><td>-50 to 50</td><td>Gaussian</td><td>two-sided</td></tr></tbody></table></div>
+<p>Quiescent current and input leakage are log-normal because real leakage distributions are
+strongly right-skewed. That choice matters later: it is what lets the robust-estimator argument be
+demonstrated on our own data instead of asserted.</p>
+
+<h2>The problem statement's worked example</h2>
+<p>The problem statement illustrates the task with a lot averaging about 10 &#181;A and one part at
+45 &#181;A, against a 50 &#181;A datasheet maximum. The part passes. It is also obviously not like
+its siblings. That is a <em>level</em> anomaly, and the industry-standard answer to it is
+<strong>Part Average Testing</strong> (AEC-Q001): recompute limits from each lot's own robust
+statistics, <code>median &#177; 6&#183;(Q3&#8722;Q1)/1.35</code>, clipped so they can never loosen
+a datasheet limit.</p>
+<p>We implement that as the baseline and then ask what it structurally cannot see:</p>
+<ul>
+<li><strong>Drift.</strong> A part that starts low and climbs fast is inside any level limit at
+every checkpoint. Its <em>rate</em> is the anomaly.</li>
+<li><strong>Joint anomalies.</strong> Published industrial data (ITC 2020) found escaped latent
+defects sitting near the <em>centre</em> of the distribution on every individual parameter. A
+part can be ordinary on each axis and impossible in combination: leaky <em>and</em> slow, when
+the process makes leaky parts fast.</li>
+<li><strong>The chamber.</strong> A thermal gradient across a burn-in board makes good parts look
+anomalous. Rejecting them is pure yield loss.</li>
+<li><strong>The future.</strong> Burn-in stops at 168 h. What matters is where the part is going.</li>
+</ul>
+<div class="note mask"><b>The design constraint.</b> Every injected defect in our dataset is inside the datasheet limits at every measured checkpoint. A static limit therefore catches 0% of them, which is asserted by the validator. Any detection must come from comparing a part to its peers, its own trajectory, or the joint distribution.</div>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="index.html"><small>Previous</small>Overview</a><a class="next" href="dataset.html"><small>Next</small>The dataset</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

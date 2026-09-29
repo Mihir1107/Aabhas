@@ -66,6 +66,14 @@ class DecisionPolicy:
                           for c in self.detector_cols + [self.fused_col]}
         self.review_budget = review_budget
         self.watch_budget = watch_budget
+        # The fused score is a max over ten detectors, so its good-part tail is
+        # the union of every member's tail and the 2% REVIEW threshold sits
+        # high. A centre-hider is caught by the joint detector (L3a, robust
+        # Mahalanobis) and by little else, so under a fused-only rule it lands
+        # in WATCH -- "release" -- almost every time: 1 of 60 reached REVIEW in
+        # v1.1. The joint detector therefore gets its OWN review branch at the
+        # same 2% budget, calibrated the same way on validation good parts.
+        self.joint_col = "L3a_MCD"
         # Computed once. `fired()` is called for every part in a lot and this
         # median is over the whole 120k-row score frame; recomputing it per call
         # made a 500-part worklist take minutes instead of seconds. The value
@@ -118,21 +126,41 @@ class DecisionPolicy:
             return row
 
         fused = float(e.scores.loc[cid, self.fused_col])
-        strong = fused >= self.thr_review[self.fused_col]
+        joint = float(e.scores.loc[cid, self.joint_col])
+        joint_hit = joint >= self.thr_review[self.joint_col]
+        strong = fused >= self.thr_review[self.fused_col] or joint_hit
         weak = fused >= self.thr_watch[self.fused_col]
 
         # 4. spatial gate: is this the chamber rather than the component?
+        #
+        # Board clustering alone is NOT enough to excuse a part. In v1.1 it
+        # was, and 12 genuine test-lot defects were told "do NOT reject"
+        # because they happened to sit on a board with other flags. The
+        # excuse now also requires the part's OWN shift since 0 h to carry the
+        # thermal signature -- leakage up, delay up, vth down, all three --
+        # which is what heat does and what the process corner does not
+        # (a leaky process-corner part is FAST). The 0 h reading is taken on
+        # the bench before the oven, so a fixture effect is absent there.
         if (strong or weak) and flagged_pool is not None:
             sp = e.spatial_check(cid, flagged_pool)
             if sp["clustered"]:
-                row["tier"] = "FIXTURE_SUSPECT"
+                th = e.thermal_signature(cid)
                 row["spatial"] = sp
+                row["thermal"] = th
+                if th["thermal"]:
+                    row["tier"] = "FIXTURE_SUSPECT"
+                    row["reasons"].append(
+                        f"{sp['n_flagged_on_board']} of {sp['n_on_board']} components on "
+                        f"board {sp['board_id']} are flagged (expected "
+                        f"{sp['expected_flagged']:.1f}, p={sp['p_value']:.1e}), and this "
+                        "part's shift since 0 h has the thermal sign (leakage up, "
+                        "delay up, vth down); the anomaly tracks the oven, not the "
+                        "component")
+                    return row
                 row["reasons"].append(
-                    f"{sp['n_flagged_on_board']} of {sp['n_on_board']} components on "
-                    f"board {sp['board_id']} are flagged (expected "
-                    f"{sp['expected_flagged']:.1f}, p={sp['p_value']:.1e}); the "
-                    "anomaly tracks board position, not the component")
-                return row
+                    f"board {sp['board_id']} is clustered, but this part's own shift "
+                    "does not carry the thermal signature, so it is dispositioned "
+                    "as a component")
 
         # 5. Module B forecast against a lot-derived safe limit
         mb_breach = []
@@ -147,6 +175,10 @@ class DecisionPolicy:
                 f"forecast 95% upper bound on {p} at 168 h is {u:.3f}, above the "
                 f"lot-derived safe limit {ls:.3f}")
 
+        if joint_hit and fused < self.thr_review[self.fused_col]:
+            row["reasons"].append(
+                "joint-distribution detector (robust Mahalanobis) past its own "
+                f"{100 * self.review_budget:.0f}% review threshold")
         if strong:
             row["tier"] = "REVIEW"
         elif weak or mb_breach:
