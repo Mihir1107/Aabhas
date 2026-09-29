@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module B | Burn-in screening</title>
+<meta name="description" content="Module B: forecasting the 168 h value from the first 24 h">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html" aria-current="page"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 4</p>
+<h1>Module B: forecasting the 168 h value from the first 24 hours</h1>
+<div class="col">
+<p class="lede">If the 0 h and 24 h readings already say where a part is heading, the decision
+can move six days earlier. Module B forecasts each parameter's 168 h value, puts an upper bound
+on it, and compares that bound to a safe limit.</p>
+
+<h2>Two modes, never blended</h2>
+<p><strong>Early-warning mode</strong> sees 0 h and 24 h only; it is the headline. <strong>Mid-test
+mode</strong> adds 96 h. <a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/moduleb.py"><code>modulea/moduleb.py</code></a> refuses to build an early-mode feature matrix
+containing any 96 h, 168 h, censoring or label-derived column, so the separation is mechanical.
+Features are the readings, the 0&#8594;24 h change and rate, the lot's median at each visible
+checkpoint, and lot-relative robust z-scores of level and drift.</p>
+
+<h2>The model ladder</h2>
+<div class="tbl"><table><caption>Mean absolute error on the true 168 h value, early-warning mode, test lots. Source: results/module_b.csv.</caption><thead><tr><th>Model</th><th class="num"><code>iddq_ua</code></th><th class="num"><code>leakage_na</code></th><th class="num"><code>prop_delay_ns</code></th><th class="num"><code>supply_current_ma</code></th><th class="num"><code>vth_shift_mv</code></th></tr></thead><tbody><tr><td>1. Linear extrapolation</td><td class="num">2.868</td><td class="num">6.929</td><td class="num">0.313</td><td class="num">3.329</td><td class="num">5.135</td></tr><tr><td>2. Power law, &#946; from training lots</td><td class="num">1.167</td><td class="num">2.378</td><td class="num">0.147</td><td class="num">1.359</td><td class="num">1.513</td></tr><tr><td>3. Huber regression</td><td class="num">0.604</td><td class="num">1.310</td><td class="num">0.068</td><td class="num">0.684</td><td class="num">0.839</td></tr><tr><td>4. LightGBM, MAE objective</td><td class="num">0.610</td><td class="num">1.297</td><td class="num">0.067</td><td class="num">0.677</td><td class="num">0.842</td></tr><tr><td>5b. Quantile forest (point)</td><td class="num">0.606</td><td class="num">1.312</td><td class="num">0.068</td><td class="num">0.685</td><td class="num">0.848</td></tr></tbody></table></div>
+<p>Linear extrapolation over-predicts, as it must: degradation here is sub-linear
+(&#946; between 0.5 and 1), so the early slope overstates the long-run rate. That check is a gate on
+the generator and the features agreeing. LightGBM improves on it 4.7&#215; on Iddq. Huber
+regression ties LightGBM, which says the remaining signal is close to linear once the power-law
+structure is in the features. Adding the 96 h reading improves error a further
+22&#8211;28%.</p>
+
+<h2>Always both columns: good and defective</h2>
+<div class="tbl"><table><caption>LightGBM, early-warning mode, test lots.</caption><thead><tr><th>Parameter</th><th class="num">MAE, all</th><th class="num">Good parts</th><th class="num">Defective parts</th><th class="num">Ratio</th></tr></thead><tbody><tr><td><code>iddq_ua</code></td><td class="num">0.610 &#181;A</td><td class="num">0.481</td><td class="num">7.753</td><td class="num">16.1&#215;</td></tr><tr><td><code>leakage_na</code></td><td class="num">1.297 nA</td><td class="num">1.110</td><td class="num">11.642</td><td class="num">10.5&#215;</td></tr><tr><td><code>prop_delay_ns</code></td><td class="num">0.067 ns</td><td class="num">0.062</td><td class="num">0.387</td><td class="num">6.3&#215;</td></tr><tr><td><code>supply_current_ma</code></td><td class="num">0.677 mA</td><td class="num">0.621</td><td class="num">3.786</td><td class="num">6.1&#215;</td></tr><tr><td><code>vth_shift_mv</code></td><td class="num">0.842 mV</td><td class="num">0.780</td><td class="num">4.231</td><td class="num">5.4&#215;</td></tr></tbody></table></div>
+<div class="note heat"><b>Why this matters.</b> Error on defective parts is several times larger than on good parts. That is expected, because defective parts are the ones departing from the population the model learned, but it means a single headline MAE is a misleading summary for a safety application.</div>
+<figure><div class="plate"><img src="assets/fig/fig6_pred_vs_actual.svg" alt="Predicted versus actual 168 h values" loading="lazy"></div><figcaption>Predicted against actual 168 h value, early mode, test lots.</figcaption></figure>
+
+<h2>Upper bounds are optimistic, and we say so</h2>
+<p>The decision uses a 95% upper bound, not the point forecast: for a safety call the plausible worst
+case is what matters. Delivered coverage on test lots is 0.926&#8211;0.948
+for LightGBM's quantile objective and 0.936&#8211;0.954
+for a quantile forest, against a nominal 0.95. Both are slightly too narrow. That is the gap the
+<a href="guarantee.html">conformal layer</a> closes.</p>
+
+<h2>Survivorship bias, in absolute units</h2>
+<p>A model trained only on parts that survive to 168 h has never seen the worst drifters. On the
+88 pulled parts in the test lots it under-predicts Iddq by
+<strong>30.9 &#181;A</strong>, which is
+62% of the whole datasheet limit.
+Substituting the datasheet limit as a stand-in target for pulled parts recovers only
+0.6 &#181;A of it. The proper fix is a
+censored-regression loss that treats those parts as "known to exceed"; it is scoped as next work.</p>
+
+<h2>The safety slope must be lot-relative too</h2>
+<div class="tbl"><table><caption>Test lots. Source: results/safety_slopes_union.csv.</caption><thead><tr><th>Rule (union over five parameters)</th><th class="num">Recall</th><th class="num">Yield loss</th><th class="num">Precision</th></tr></thead><tbody><tr><td>(a) margin consumption: slope vs remaining headroom</td><td class="num">29.7%</td><td class="num">0.54%</td><td class="num">50.0%</td></tr><tr><td>(b) lot-derived slope limit, median + 6 MAD-&amp;#963;</td><td class="num">27.6%</td><td class="num">0.26%</td><td class="num">65.6%</td></tr><tr><td>(c) power-law projection to a 15-year mission</td><td class="num">63.0%</td><td class="num">31.46%</td><td class="num">3.5%</td></tr><tr><td>(d) 95% upper bound vs datasheet limit</td><td class="num">0.9%</td><td class="num">0.00%</td><td class="num">100.0%</td></tr><tr><td>(d) 95% upper bound vs lot-derived safe limit</td><td class="num">16.2%</td><td class="num">0.25%</td><td class="num">54.3%</td></tr></tbody></table></div>
+<p>Against the datasheet limit the upper-bound rule is almost inert, because every defect is in
+spec by construction. Against a <strong>lot-derived safe limit</strong> (the AEC-Q001 dynamic PAT
+limit at 168 h) the same rule catches 16.2% at
+0.25% yield loss. That safe limit is built only from
+information available at 24 h: the within-lot 168 h spread of <em>earlier</em> lots, centred on this
+lot's own 24 h median carried forward by the typical drift of earlier lots. Using a lot's own 168 h
+readings would be time travel. It is the Module A argument one derivative up: compare a part to
+the batch it was burned in with, not to a fixed number.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="module-a.html"><small>Previous</small>Module A</a><a class="next" href="guarantee.html"><small>Next</small>Escape-rate bound</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

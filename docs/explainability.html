@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explainability | Burn-in screening</title>
+<meta name="description" content="Explanations an inspector can check by hand">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html" aria-current="page"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 7</p>
+<h1>Explanations an inspector can check by hand</h1>
+<div class="col">
+<p class="lede">The deliverable is not a SHAP chart. It is a one-page disposition report a QA
+inspector can act on and a group head can sign, with every number carrying the comparison it was
+made against.</p>
+
+<h2>Three layers</h2>
+<ol>
+<li><strong>Deterministic rule text</strong> (<a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/rules.py"><code>explain/rules.py</code></a>). From the worked-example
+report: <em>"+15.7 robust sigma vs lot median on leakage_na (median 22.64 nA, sigma 4.60 nA, n=500, MAD estimator; AEC-Q001 IQR/1.35 gives 4.80 nA)"</em>. Every figure carries the median, spread, sample size
+and estimator it was computed from, so the inspector can recompute it. This is the layer put in front
+of the inspector.</li>
+<li><strong>Model attribution</strong> (<a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/attribution.py"><code>explain/attribution.py</code></a>). Which detectors fired and
+how far past their own threshold, plus exact TreeSHAP on the Module B model, labelled as supporting
+evidence.</li>
+<li><strong>Failure-mechanism hypothesis</strong> (<a href="https://github.com/Mihir1107/Aabhas/blob/main/explain/mechanisms.py"><code>explain/mechanisms.py</code></a>), explicitly for
+the failure-analysis engineer and never a diagnosis. Each carries a confidence label; only the
+thermal-versus-process sign test is marked well-founded.</li>
+</ol>
+
+<h2>The five example reports</h2>
+<div class="tbl"><table><thead><tr><th>Case</th><th>Component</th><th>Decision</th><th>Why this case</th></tr></thead><tbody><tr><td><a href="assets/reports/01_Vb_extreme_level_PS_worked_example.pdf">Vb extreme level PS worked example</a></td><td><code>LOT193-C0488</code></td><td><span class="chip" style="background:var(--t-review)">Review</span></td><td>the problem statement&#x27;s own worked example: far outside the lot, inside spec</td></tr><tr><td><a href="assets/reports/02_TypeIII_centre_hider_joint_only.pdf">TypeIII centre hider joint only</a></td><td><code>LOT233-C0222</code></td><td><span class="chip" style="background:var(--t-review)">Review</span></td><td>invisible to every univariate and trajectory rule; caught only jointly</td></tr><tr><td><a href="assets/reports/03_TypeI_steep_drifter_moduleB.pdf">TypeI steep drifter moduleB</a></td><td><code>LOT203-C0246</code></td><td><span class="chip" style="background:var(--t-review)">Review</span></td><td>abnormal drift rate; the case Module B is for</td></tr><tr><td><a href="assets/reports/04_TypeVa_trap_correct_NON_rejection.pdf">TypeVa trap correct NON rejection</a></td><td><code>LOT192-C0144</code></td><td><span class="chip" style="background:var(--t-watch)">Watch</span></td><td>elevated but self-consistent: the system explaining why it did NOT reject</td></tr><tr><td><a href="assets/reports/05_TypeVII_fixture_not_the_part.pdf">TypeVII fixture not the part</a></td><td><code>LOT213-C0256</code></td><td><span class="chip" style="background:var(--t-fixture)">Fixture suspect</span></td><td>this is your oven, not your part</td></tr></tbody></table></div>
+<p>Any system can explain a rejection. The two that matter are the non-rejections: a benign
+high-but-stable part the system declines to scrap, and a fixture artifact where the report says
+"this is your oven, not your part". Reports are rebuilt by <a href="https://github.com/Mihir1107/Aabhas/blob/main/make_reports.py"><code>make_reports.py</code></a>.</p>
+
+<h2>Four measured metrics</h2>
+<h3>Reason correctness</h3>
+<p>Ground truth carries each part's injected type, so whether the stated primary reason matches the
+fault is measurable.</p>
+<div class="tbl"><table><thead><tr><th>Flagged defect class</th><th>Correct reason</th><th class="num">n</th><th class="num">Primary correct</th><th class="num">Primary or secondary</th></tr></thead><tbody><tr><td>Steep drifter</td><td>drift rate or forecast</td><td class="num">60</td><td class="num">100.0%</td><td class="num">100.0%</td></tr><tr><td>Step defect</td><td>discrete step</td><td class="num">60</td><td class="num">76.7%</td><td class="num">76.7%</td></tr><tr><td>Correlation break</td><td>joint anomaly</td><td class="num">40</td><td class="num">100.0%</td><td class="num">100.0%</td></tr><tr><td>Extreme level, in spec</td><td>elevated level</td><td class="num">60</td><td class="num">93.3%</td><td class="num">98.3%</td></tr><tr><td>Fixture artifact</td><td>board clustering</td><td class="num">60</td><td class="num">93.3%</td><td class="num">93.3%</td></tr><tr><td>Types III + IV pooled</td><td>joint anomaly (III and IV pooled)</td><td class="num">41</td><td class="num">100.0%</td><td class="num">100.0%</td></tr></tbody></table></div>
+<div class="tbl"><table><caption>Source: results/explainability_metrics.json. Type III alone is n = 1 flagged part in the sample and is shown pooled with Type IV.</caption><thead><tr><th>Should not be rejected</th><th class="num">n</th><th class="num">Fully passed</th><th class="num">Not held</th></tr></thead><tbody><tr><td>Good part</td><td class="num">60</td><td class="num">93.3%</td><td class="num">98.3%</td></tr><tr><td>Whole-lot process shift</td><td class="num">60</td><td class="num">95.0%</td><td class="num">98.3%</td></tr><tr><td>Mildly high, stable</td><td class="num">60</td><td class="num">51.7%</td><td class="num">66.7%</td></tr></tbody></table></div>
+<h3>Completeness</h3>
+<p>68.8% of flagged parts carry a full justification (every evidence line,
+a primary reason and a mechanism hypothesis); 100% of passed parts carry the
+full evidence set, for which "no rule fired" is itself the complete explanation.</p>
+<h3>Counterfactuals</h3>
+<p>For 7.9% of flagged parts the system finds the smallest single-measurement change
+after which the <em>rule layer</em> (6 robust-sigma univariate and the joint-D&#178; reference) would no
+longer flag the part, and it validates that change against every checkpoint of the record, discarding
+it if any other checkpoint still fires. Counterfactuals exist far more often for parts flagged on one
+measurement (11.8%) than for joint anomalies
+(0.0%); a part anomalous only in combination has no single value to
+change, which is the definition of that class. The fused ML detectors are not re-evaluated, so a
+counterfactual says the rules would stop firing, not that the tier would become pass.</p>
+<h3>Stability</h3>
+<p>Re-drawing every measurement at the dataset's own noise level four times, the primary reason is
+unchanged for 90.0% of 120 parts. Scope: the rule layer is recomputed on
+the perturbed data; detector scores and tiers are held at their original values.</p>
+
+<h2>Two attribution methods disagree</h2>
+<p>SHAP on the LightGBM drift model and the coefficients of an equally accurate Huber model rank
+features differently: Spearman &#961; = 0.62 (p = 0.077)
+over 9 Iddq features. The 0 h and 24 h readings are 0.987
+correlated, and dropping the 0 h reading changes test error from 0.6103 to
+0.6094 &#181;A. When two inputs are near-duplicates the credit split between them
+is a property of the model, not the physics. That is why the rule text, which an inspector can
+recompute, is the record, and SHAP is labelled as supporting evidence on the page.
+Source: <a href="https://github.com/Mihir1107/Aabhas/blob/main/results/attribution_comparison.csv"><code>results/attribution_comparison.csv</code></a>.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="decisions.html"><small>Previous</small>Decision layer</a><a class="next" href="demo.html"><small>Next</small>Inspector demo</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

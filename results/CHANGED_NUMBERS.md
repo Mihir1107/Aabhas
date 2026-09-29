@@ -1,4 +1,85 @@
-# What changed between dataset v1.0 and v1.1
+# What changed: v1.1 to v1.2 (final audit), then v1.0 to v1.1
+
+Machine-readable: `changed_numbers_v1_2.csv` (this section) and
+`changed_numbers.csv` (the v1.0 to v1.1 section below).
+
+## v1.1 to v1.2: the final pre-submission audit
+
+Two kinds of change, and they move different numbers.
+
+**1. A dataset artifact, fixed in the generator (`dataset-v1.2`).** The in-spec
+shrink put every over-limit injection at *exactly* `limit - 3% margin`: 158
+readings at 97.000 nA and 139 at 9.880 ns. A rule "value equals the cap" caught
+about 12% of defects at near-zero yield loss without detecting anything, the
+same family of shortcut as the v1.0 Type III smoothness leak. An active shrink
+is now pulled back by a random factor U(0.90, 0.995) drawn from its own RNG
+stream, so parts that never needed shrinking are byte-identical. Assertion A1b
+(now 24/24 passing) checks the cap rule catches under 1%.
+
+**2. Methodology fixes in the code**, which move the decision-layer and
+explainability numbers:
+
+- Score fusion normalised against good parts of *all* lots (test labels); now
+  against training-lot parts with no labels. Recall unchanged to 2 dp.
+- The six-tier policy sent 1 of 60 centre-hiders to REVIEW. The joint detector
+  (robust Mahalanobis) now has its own 2% review branch: 35.0% of Type III reach
+  REVIEW, test-lot defects held rise from 86.4% to 92.0%, good parts held rise
+  from 0.66% to 1.69%.
+- FIXTURE_SUSPECT ("do not reject") excused 12 genuine test-lot defects on board
+  clustering alone. It now also requires the part's own thermal signature since
+  0 h (leakage up, delay up, vth down). Now 0.
+- The explanation layer's joint-distance reference used each lot's ground-truth
+  labels; now a pooled training-lot reference.
+- Counterfactuals were validated only on the checkpoint they edited; now against
+  every checkpoint, which is why fewer are offered.
+- Previously orphaned results now have generators (`isoforest_feature_width.csv`,
+  `c4_curated_members.json`, the SHAP-vs-Huber comparison), and the binary-OR
+  fusion row is calibrated on validation lots and reported at its own yield loss.
+
+**Unchanged:** cumulative ladder recall C1 54.33%, C2 79.86%, C3 92.74%,
+C4 92.27%; escape 45.67% to 7.26%; Arrhenius AF 77.66; all split counts.
+Type VI static-vs-dynamic moves from 359 vs 0 to **358 vs 0**.
+
+Every figure that moved by more than 1e-9:
+
+| figure | v1.1 | v1.2 | delta |
+|---|---|---|---|
+| Cumulative C1 PR-AUC | 0.264 | 0.258 | -0.01 |
+| Cumulative C2 PR-AUC | 0.711 | 0.708 | -0.00 |
+| Cumulative C3 PR-AUC | 0.800 | 0.798 | -0.00 |
+| Cumulative C4 PR-AUC | 0.805 | 0.803 | -0.00 |
+| L3a_MCD recall @93% yield (%) | 64.87 | 64.64 | -0.23 |
+| L4a_IForest recall @93% yield (%) | 68.15 | 67.68 | -0.47 |
+| L4e_UnionRank recall @93% yield (%) | 92.97 | 92.74 | -0.23 |
+| L4a_IForest_dirtyfit recall @93% yield (%) | 74.94 | 74.00 | -0.94 |
+| Module B MAE iddq_ua | 0.6087 | 0.6103 | +0.00 |
+| Module B MAE defective iddq_ua | 7.743 | 7.753 | +0.01 |
+| Module B MAE leakage_na | 1.2959 | 1.2975 | +0.00 |
+| Module B MAE defective leakage_na | 11.622 | 11.642 | +0.02 |
+| Module B MAE prop_delay_ns | 0.0675 | 0.0674 | -0.00 |
+| Module B MAE defective prop_delay_ns | 0.397 | 0.387 | -0.01 |
+| Module B MAE supply_current_ma | 0.6768 | 0.6771 | +0.00 |
+| Module B MAE defective supply_current_ma | 3.784 | 3.786 | +0.00 |
+| Module B MAE vth_shift_mv | 0.8434 | 0.8415 | -0.00 |
+| Module B MAE defective vth_shift_mv | 4.266 | 4.231 | -0.04 |
+| Safety rule d_upper_datasheet recall (%) | 1.41 | 0.94 | -0.47 |
+| Safety rule d_upper_lotsafe recall (%) | 17.10 | 16.16 | -0.94 |
+| Conformal fused: yield loss at alpha=0.01 (%) | 42.66 | 39.02 | -3.65 |
+| Conformal fused: yield loss at alpha=0.05 (%) | 11.62 | 11.63 | +0.01 |
+| Conformal fused: yield loss at alpha=0.1 (%) | 4.44 | 4.44 | +0.00 |
+| Counterfactual offered (%) | 26.71 | 7.88 | -18.84 |
+| Explanation stability (%) | 91.46 | 90.00 | -1.46 |
+| Completeness, flagged (%) | 69.52 | 68.84 | -0.68 |
+| Reason correctness II_STEP_DEFECT (%) | 73.33 | 76.67 | +3.33 |
+| Reason correctness IV_CORRELATION_BREAK (%) | 95.00 | 100.00 | +5.00 |
+| Reason correctness Vb_EXTREME_LEVEL (%) | 88.33 | 93.33 | +5.00 |
+| Reason correctness VII_FIXTURE_ARTIFACT (%) | 100.00 | 93.33 | -6.67 |
+| Reason correctness Va_MILDLY_HIGH_STABLE (%) | 55.00 | 51.67 | -3.33 |
+| Reason correctness JOINT_POOLED_III_IV (%) | 95.12 | 100.00 | +4.88 |
+
+---
+
+## v1.0 to v1.1
 
 For the presentation team. Every figure that moved, with old value, new value
 and delta. Machine-readable version: `changed_numbers.csv` (129 changed cells).

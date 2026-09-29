@@ -6,9 +6,9 @@ Lot-relative level:  +8.9 robust sigma vs lot median on leakage_na (median 27.26
 Drift 0h to 24h:     +18.364 nA (+90.4%) on leakage_na; lot median drift +1.281 nA (+5.5%), part is +14.4 robust sigma on the lot's drift distribution
 Drift rate:          0.7652 nA/h (lot median 0.0534 nA/h, 14.3x)
 Max interval jump:   +29.4 robust sigma on leakage_na; largest interval change is 1.6x the median of the others (spread -> progressive drift)
-Predicted 168h:      45.443 nA (leakage_na, from 0h and 24h only)
-95% upper bound:     76.075 nA -> EXCEEDS lot-derived safe limit 64.182 nA
-Joint anomaly:       Mahalanobis D2 = 224.6 (good-part 99th pct = 14.5); largest contribution leakage_na at 81% of the total
+Predicted 168h:      45.708 nA (leakage_na, from 0h and 24h only)
+95% upper bound:     75.478 nA -> EXCEEDS lot-derived safe limit 64.182 nA
+Joint anomaly:       Mahalanobis D2 = 224.6 (good-part 99th pct = 19.2); largest contribution leakage_na at 81% of the total
 Leakage/delay sign:  leakage +8.9 sigma, delay -0.2 sigma -- consistent with the lot's process locus
 Spatial check:       no neighbour clustering on board LOT203-B03 (3/64 flagged), component-specific
 Data quality:        all checkpoints valid

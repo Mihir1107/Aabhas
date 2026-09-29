@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evaluation &amp; reproduction | Burn-in screening</title>
+<meta name="description" content="How it was evaluated, and how to reproduce it">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html" aria-current="page"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 9</p>
+<h1>How it was evaluated, and how to reproduce it</h1>
+<div class="col">
+<h2>Evaluation protocol</h2>
+<ul>
+<li><strong>Split by lot, in production order.</strong> Train on lots 0&#8211;143, calibrate
+thresholds on 144&#8211;191, report on 192&#8211;239. <a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/evaluation.py"><code>modulea/evaluation.py</code></a> returns lot ids,
+not row indices, so a row-wise split cannot be expressed.</li>
+<li><strong>Labels.</strong> Defective means Types I, II, III, IV and Vb. The traps are good, so
+flagging one costs yield.</li>
+<li><strong>Metrics.</strong> Recall and escape rate at a fixed yield loss (threshold set on good
+parts only), PR-AUC first and AUROC for comparability with ITC 2020, a 1000:1 cost for an escape
+against a scrapped part, and Wilson intervals on small classes. Accuracy is refused by the harness.</li>
+<li><strong>Fitting policy.</strong> Covariances and densities are fitted on good parts of training
+lots; the contaminated-fit variant is reported alongside. Module B trains on survivors of training
+lots and never on a latent value.</li>
+<li><strong>A self-tested harness.</strong> <a href="https://github.com/Mihir1107/Aabhas/blob/main/modulea/test_harness.py"><code>modulea/test_harness.py</code></a> checks the metric code on
+cases with known answers, and statically checks that every runner calls functions that exist.</li>
+</ul>
+
+<h2>Reproduce every number</h2>
+<p>Stages run in order; each reads the previous one's output from <code>results/</code>.</p>
+<div class="tbl"><table><thead><tr><th class="num"></th><th>Command</th><th>Produces</th></tr></thead><tbody><tr><td class="num">1</td><td><code>python generate_data.py</code></td><td>writes data/ (optional: data/ is committed)</td></tr><tr><td class="num">2</td><td><code>python validate_dataset.py</code></td><td>24 hard assertions, calibration tables, verdict</td></tr><tr><td class="num">3</td><td><code>python run_ablation.py</code></td><td>Module A rungs L0&#8211;L4: scores, flags, per-type, cross-checks</td></tr><tr><td class="num">4</td><td><code>python run_cumulative.py</code></td><td>cumulative ladder C0&#8211;C4, fusion comparison, member selection</td></tr><tr><td class="num">5</td><td><code>python run_module_b.py</code></td><td>Module B ladder, upper bounds, survivorship (needs lightgbm)</td></tr><tr><td class="num">6</td><td><code>python run_slopes.py</code></td><td>the safety-slope rules</td></tr><tr><td class="num">7</td><td><code>python run_conformal.py</code></td><td>conformal risk control sweep and significance</td></tr><tr><td class="num">8</td><td><code>python make_report.py</code></td><td>Module A tables and figures 1&#8211;5</td></tr><tr><td class="num">9</td><td><code>python make_mb_report.py</code></td><td>Module B tables and figures 6, 7, 10</td></tr><tr><td class="num">10</td><td><code>python run_explainability.py</code></td><td>explainability metrics, decision-layer table, attribution check</td></tr><tr><td class="num">11</td><td><code>python make_reports.py</code></td><td>the five disposition PDFs (needs svglib)</td></tr><tr><td class="num">12</td><td><code>python make_demo_data.py &amp;&amp; build_demo.py</code></td><td>the offline inspector page</td></tr><tr><td class="num">13</td><td><code>python make_docs.py</code></td><td>this site</td></tr></tbody></table></div>
+<pre><code>pip install -r requirements.txt
+python -m modulea.test_harness</code></pre>
+<p>The full chain takes about 20 minutes on a laptop. Module B records which gradient-boosting
+backend actually ran in <code>results/module_b_provenance.json</code>; this build used
+<strong>lightgbm</strong> 4.7.0 and
+quantile-forest. The dataset regenerates identically from its seed. A clean re-run
+of the whole pipeline reproduces every Module A figure exactly; only the quantile-forest rung moves,
+in the third decimal, from multithreaded tree building.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="demo.html"><small>Previous</small>Inspector demo</a><a class="next" href="limitations.html"><small>Next</small>Limitations &amp; audit</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

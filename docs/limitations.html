@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Limitations &amp; audit | Burn-in screening</title>
+<meta name="description" content="What is not solved, and what the final audit changed">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html" aria-current="page"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Limitations &amp; audit</p>
+<h1>What is not solved, and what the final audit changed</h1>
+<div class="col">
+<h2>Known limitations</h2>
+<ul>
+<li><strong>Validation is synthetic.</strong> No public dataset has this shape. The generator is
+grounded in Arrhenius and implements a published industrial finding, and the traps stop the numbers
+flattering us, but a pilot on real data is a dependency, not a formality.</li>
+<li><strong>Survivorship bias is measured, not fixed.</strong> A censored-regression loss is next.</li>
+<li><strong>Small classes.</strong> 60 Type III parts in total and 8 in the test lots; Type VI has
+none in the test lots. Such figures are all-lots and carry intervals.</li>
+<li><strong>The centre-hider is only partly held by the deployed tiers.</strong> Even with the joint
+review branch, 35.0% of Type III reach review. Lowering the threshold
+buys more at a direct cost in Va trap holds.</li>
+<li><strong>The Va trap is expensive.</strong> A level rule flags a benign high part too often; the
+cost is on the page, not hidden.</li>
+<li><strong>The autoencoder is small.</strong> A scikit-learn MLP fitted X&#8594;X, not a modern deep model.</li>
+</ul>
+
+<h2>The final audit</h2>
+<p>Before submission the whole repository was re-read, re-run from a clean copy, and every quoted
+number re-derived from the code. These were found and fixed:</p>
+<div class="tbl"><table><thead><tr><th>Found</th><th>Fix</th></tr></thead><tbody><tr><td>Shrunk defects landed exactly on <code>limit &#8722; margin</code> (158 readings at 97.000 nA); an "equals the cap" rule caught ~12% of defects at ~0% yield loss.</td><td>Generator pulls active shrinks back by a random factor from a separate stream. Dataset re-versioned to dataset-v1.2; assertion A1b added. Headline ladder numbers unchanged.</td></tr><tr><td>The deployed tiers sent 1 of 60 centre-hiders to review: the fused score's 2% threshold is set by ten detectors' tails.</td><td>The joint detector gets its own review branch at the same budget.</td></tr><tr><td>12 genuine test-lot defects were labelled fixture suspect ("do not reject") because their board was clustered.</td><td>Fixture suspect now also requires the part's own thermal signature. Now: 0.</td></tr><tr><td>Score fusion normalised against good parts of all lots, test labels included.</td><td>Normalised against training-lot parts, no labels. Identical recall to two decimals.</td></tr><tr><td>The explanation layer's joint-distance reference used each lot's ground-truth labels.</td><td>Replaced by a pooled reference from training-lot good parts.</td></tr><tr><td>Counterfactual validity was checked with the same rule used to find it (a tautology).</td><td>Validated against every checkpoint; wording states the rule-layer scope.</td></tr><tr><td>The disposition PDFs had no chart (svglib missing and undeclared), a stale version string and, on the worked example, the wrong focus parameter.</td><td>svglib pinned, missing chart is now an error, version from git, focus on the governing parameter.</td></tr><tr><td>The demo printed raw Python dictionaries as mechanism hypotheses, and called a re-tested defect an escape.</td><td>Rendered as text; re-test is its own outcome.</td></tr><tr><td>Several results had no generating script, and some documents quoted stale v1.0 numbers.</td><td>Generators added; this site is generated from results so it cannot drift.</td></tr></tbody></table></div>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="method.html"><small>Previous</small>Evaluation &amp; reproduction</a><a class="next" href="reference.html"><small>Next</small>Reference</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

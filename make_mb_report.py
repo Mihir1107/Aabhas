@@ -1,5 +1,6 @@
 """Module B + conformal reports and plots."""
 from __future__ import annotations
+import json
 from pathlib import Path
 import numpy as np, pandas as pd
 from modulea import evaluation as ev, plots as pl, moduleb as mb
@@ -95,9 +96,23 @@ def main():
         ["parameter", "MAE", "MAE_good", "MAE_defective"]].copy()
     gd["ratio"] = gd.MAE_defective / gd.MAE_good
 
+    # Every figure quoted in the prose is computed here. The v1.1 text had
+    # them typed in, and they went stale the first time the pipeline re-ran.
+    cv = cov.pivot_table(index="parameter", columns="model", values="upper95_coverage")
+    qa, qf = cv["5a_lgbm_q95"], cv["5b_quantile_forest"]
+    hub_i, gbm_i = lad.loc["3_huber", "iddq_ua"], lad.loc["4_gbm_mae", "iddq_ua"]
+    sv = surv.set_index("parameter")
+    def _b(pp):
+        return abs(sv.loc[pp, "bias_on_censored_survfit"]), sv.loc[pp, "bias_%_of_limit"]
+    rec = (sv.MAE_censored_survfit - sv.MAE_censored_censfit)
+    sl = slopes.set_index("rule")
+    def _r(k, c):
+        return float(sl.loc[k, c])
+    version = json.loads((Path("data") / "config.json").read_text()).get("version", "dataset")
+
     body = [
         "# Module B: drift prediction", "",
-        "Dataset `dataset-v1.1`. Lot-grouped chronological split, reusing the "
+        f"Dataset `{version}`. Lot-grouped chronological split, reusing the "
         f"Module A harness: {sp.describe()}. All figures on TEST lots.", "",
         "**Early-warning mode is the headline** and uses 0 h and 24 h ONLY. "
         "`assert_no_leak` refuses to build an early feature matrix containing any "
@@ -116,7 +131,7 @@ def main():
         ", ".join(f"{pp} {float(early[(early.model=='2_power_law') & (early.parameter==pp)]['beta'].iloc[0]):.3f}"
                   for pp in params) + ".", "",
         "**LightGBM does not beat Huber.** On `iddq_ua` Huber is marginally "
-        "better (0.6044 vs 0.6087); LightGBM wins by a similar hair on the other "
+        f"better ({hub_i:.4f} vs {gbm_i:.4f}); LightGBM wins by a similar hair on the other "
         "four. The two are a tie for practical purposes, and the honest reading "
         "is that once the power-law structure is in the features, the remaining "
         "signal is close to linear in them. Huber is the better default: it is "
@@ -126,16 +141,16 @@ def main():
         "power law halves the error, and power law to Huber halves it again.", "",
         "## MAE, good vs defective parts", "",
         md(gd), "",
-        "**Errors on defective parts are 5.5x to 16x larger than on good parts**, "
+        f"**Errors on defective parts are {gd.ratio.min():.1f}x to {gd.ratio.max():.1f}x larger than on good parts**, "
         "and the aggregate MAE hides this completely. That is not a failure of "
         "the model: defective parts are the ones whose drift departs from the "
         "population the model learned. It does mean a single headline MAE is a "
         "misleading summary for a safety application.", "",
         "## Prediction intervals: coverage is BELOW nominal", "",
         md(cov), "",
-        "Nominal is 0.95. LightGBM's quantile objective delivers **0.928 to "
-        "0.946** (mean 0.936) and the quantile forest **0.936 to 0.954** (mean "
-        "0.944). Both are miscalibrated, both in the optimistic direction — the "
+        f"Nominal is 0.95. LightGBM's quantile objective delivers **{qa.min():.3f} to "
+        f"{qa.max():.3f}** (mean {qa.mean():.3f}) and the quantile forest **{qf.min():.3f} to {qf.max():.3f}** (mean "
+        f"{qf.mean():.3f}). Both are miscalibrated, both in the optimistic direction — the "
         "interval is too narrow, so the true value exceeds the 'worst case' more "
         "often than advertised. This is reported rather than presented as "
         "calibrated, and it is precisely the gap the conformal layer closes: "
@@ -143,28 +158,28 @@ def main():
         "quantile objective gives only an asymptotic hope.", "",
         "## Early vs mid-test mode", "",
         md(mid.reset_index()), "",
-        "Adding the 96 h checkpoint improves MAE by **21% to 28%**. The two modes "
+        f"Adding the 96 h checkpoint improves MAE by **{mid['improvement_%'].min():.0f}% to {mid['improvement_%'].max():.0f}%**. The two modes "
         "are never blended.", "",
         "## Survivorship bias, in absolute units", "",
         md(surv[["parameter", "n_censored_test", "bias_on_censored_survfit",
                  "bias_%_of_limit", "MAE_censored_survfit", "MAE_censored_censfit"]]), "",
         "A model trained only on parts that survived to 168 h **under-predicts "
-        "the true 168 h value of pulled parts by 30.8 uA on Iddq — 62% of the "
-        "entire datasheet limit** — and by 40.5 nA on leakage (41% of limit), "
-        "13.5 mV on vth_shift (27%), 11.0 mA on supply current (17%) and 1.15 ns "
-        "on propagation delay (11%). Those are the parts whose drift matters "
+        f"the true 168 h value of pulled parts by {_b('iddq_ua')[0]:.1f} uA on Iddq — {_b('iddq_ua')[1]:.0f}% of the "
+        f"entire datasheet limit** — and by {_b('leakage_na')[0]:.1f} nA on leakage ({_b('leakage_na')[1]:.0f}% of limit), "
+        f"{_b('vth_shift_mv')[0]:.1f} mV on vth_shift ({_b('vth_shift_mv')[1]:.0f}%), {_b('supply_current_ma')[0]:.1f} mA on supply current ({_b('supply_current_ma')[1]:.0f}%) and {_b('prop_delay_ns')[0]:.2f} ns "
+        f"on propagation delay ({_b('prop_delay_ns')[1]:.0f}%). Those are the parts whose drift matters "
         "most, and a survivors-only pipeline is blind to all of them.", "",
         "Training with the datasheet limit as an observable lower-bound surrogate "
-        "for pulled parts recovers only **0.08 to 1.5 units** of that gap. The "
+        f"for pulled parts recovers only **{rec.min():.2f} to {rec.max():.1f} units** of that gap. The "
         "honest conclusion is that the surrogate barely helps, because the latent "
         "values sit far beyond the limit; the fix is to treat these as censored "
         "observations in the loss, not to impute a point value. That is flagged "
         "as future work rather than claimed.", "",
         "## Safety slopes, four definitions", "",
         md(slopes), "",
-        "**(a) margin consumption** and **(b) lot-derived** behave sensibly: 30.4% "
-        "and 28.1% recall at 0.54% and 0.26% yield loss.", "",
-        "**(c) mission-based** flags 63.9% of defects but at **31.4% yield loss**. "
+        f"**(a) margin consumption** and **(b) lot-derived** behave sensibly: {_r('a_margin','recall_%'):.1f}% "
+        f"and {_r('b_lot_slope','recall_%'):.1f}% recall at {_r('a_margin','yield_loss_%'):.2f}% and {_r('b_lot_slope','yield_loss_%'):.2f}% yield loss.", "",
+        f"**(c) mission-based** flags {_r('c_mission','recall_%'):.1f}% of defects but at **{_r('c_mission','yield_loss_%'):.1f}% yield loss**. "
         "This is not a broken rule, it is a different question: projecting to 15 "
         "field-years at Ea=0.7 eV asks *will this part survive the mission*, not "
         "*is this part abnormal*. It flags good parts that simply started high. "
@@ -173,13 +188,15 @@ def main():
         "rate and flagged 46-74% of everything; that was apples to oranges, "
         "because sub-linear drift makes the early slope over-state the long-run "
         "rate. It now projects with the power law instead.)", "",
-        "**(d) confidence-adjusted against the DATASHEET limit is inert: 1.4% "
+        f"**(d) confidence-adjusted against the DATASHEET limit is inert: {_r('d_upper_datasheet','recall_%'):.1f}% "
         "recall.** This is the dataset's central premise showing through rather "
         "than a modelling failure — every injected defect is inside spec at every "
         "checkpoint by construction, so a predicted bound essentially never "
         "crosses an engineering limit. Against a **lot-derived L_safe** (the "
         "AEC-Q001 dynamic PAT limit at 168 h, clipped to the datasheet limit) the "
-        "same rule gives 17.8% recall at 0.15% yield loss with 68% precision.", "",
+        f"same rule gives {_r('d_upper_lotsafe','recall_%'):.1f}% recall at {_r('d_upper_lotsafe','yield_loss_%'):.2f}% yield loss with {_r('d_upper_lotsafe','precision_%'):.0f}% precision. "
+        "The safe limit is built from PRIOR lots only: a lot's own 168 h readings do not "
+        "exist at the 24 h decision.", "",
         "The practical consequence for the deck: **Module B's value is not in "
         "predicting limit violations, because there are none to predict. It is in "
         "predicting abnormal drift rate relative to peers.** The safe limit has "

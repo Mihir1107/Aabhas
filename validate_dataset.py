@@ -60,7 +60,7 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     d = 1 + z * z / n
     c = p + z * z / (2 * n)
     h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return ((c - h) / d, (c + h) / d)
+    return (max((c - h) / d, 0.0), min((c + h) / d, 1.0))
 
 
 _GOOD_D2: list = [pd.Series(dtype=float)]
@@ -184,6 +184,29 @@ def assert_limits(ds: Dataset, rep: Report) -> None:
         rep.check("pulled parts' latent 168 h values ARE out of spec (that is why "
                   "they were pulled)", oos >= len(pulled),
                   f"{oos} out-of-spec latent values across {len(pulled)} pulled parts")
+
+
+def assert_no_cap_pileup(ds: Dataset, rep: Report) -> None:
+    """A1b. The in-spec shrink must not leave a fingerprint.
+
+    v1.1 shrank every over-limit injection to EXACTLY `limit - margin`, so 158
+    readings sat at 97.000 nA and 139 at 9.880 ns, and the rule "value equals
+    the cap" caught ~12% of defects at ~0% yield loss without detecting
+    anything. That is a construction artifact of the same family as the v1.0
+    Type III smoothness leak, so it is asserted rather than trusted.
+    """
+    h2("A1b. No pile-up of injected parts on the shrink boundary (limit - margin)")
+    frac = float(ds.cfg["config"].get("spec_margin_frac", 0.0))
+    m = ds.meas[ds.meas["measurement_status"] == "MEASURED"]
+    on_cap = pd.Series(False, index=m.index)
+    for p, (lo, hi) in ds.limits.items():
+        mg = (hi - lo) * frac
+        on_cap |= np.isclose(m[p], hi - mg, atol=1e-9) | np.isclose(m[p], lo + mg, atol=1e-9)
+    hit = on_cap.groupby(m["component_id"]).any()
+    y = ds.gt.set_index("component_id")["is_defective"].reindex(hit.index)
+    rec = 100 * float(hit[y].mean()) if y.any() else 0.0
+    rep.check("an 'exactly on the cap' rule catches < 1% of defects",
+              rec < 1.0, f"{int(on_cap.sum())} readings on a cap; rule recall {rec:.2f}%")
 
 
 def assert_lot_size(ds: Dataset, rep: Report) -> None:
@@ -1068,11 +1091,12 @@ def summary_tables(ds: Dataset) -> None:
     tot = len(ds.gt)
     for t, n in vc.items():
         kind = ("defect" if t in ("I_STEEP_DRIFTER", "II_STEP_DEFECT",
-                                  "III_CENTRE_HIDER", "IV_CORRELATION_BREAK")
+                                  "III_CENTRE_HIDER", "IV_CORRELATION_BREAK",
+                                  "Vb_EXTREME_LEVEL")
                 else "TRAP (labelled good)" if t != "GOOD" else "good")
         print(f"  {t:<24s} {n:>6d}  {100 * n / tot:7.4f}%  {n / tot * 1e6:9.1f} DPPM  {kind}")
     gen = ds.gt["is_defective"].sum()
-    print(f"\n  genuine contamination (I-IV): {gen} parts = {100 * gen / tot:.4f}%  "
+    print(f"\n  genuine contamination (I-IV + Vb): {gen} parts = {100 * gen / tot:.4f}%  "
           f"({gen / tot * 1e6:.0f} DPPM)")
 
     h2("Mean drift 0h -> 168h by defect type (measured survivors only)")
@@ -1104,6 +1128,7 @@ def main() -> None:
     h1("HARD ASSERTIONS")
     assert_no_label_leak(ds, rep)
     assert_limits(ds, rep)
+    assert_no_cap_pileup(ds, rep)
     assert_lot_size(ds, rep)
     assert_type3_band(ds, rep)
     assert_trap_labels(ds, rep)

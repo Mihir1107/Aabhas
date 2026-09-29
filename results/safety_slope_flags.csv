@@ -592,7 +592,7 @@ LOT001-C0089,False,False,False,False,False,False
 LOT001-C0090,False,False,False,True,False,False
 LOT001-C0091,False,False,False,False,False,False
 LOT001-C0092,False,False,False,True,False,False
-LOT001-C0093,False,False,False,True,False,True
+LOT001-C0093,False,False,False,True,False,False
 LOT001-C0094,False,False,False,False,False,False
 LOT001-C0095,False,False,False,False,False,False
 LOT001-C0096,False,False,False,False,False,False
@@ -842,7 +842,7 @@ LOT001-C0339,False,False,False,True,False,False
 LOT001-C0340,False,False,False,False,False,False
 LOT001-C0341,False,False,False,False,False,False
 LOT001-C0342,False,False,False,True,False,False
-LOT001-C0343,False,False,False,True,False,True
+LOT001-C0343,False,False,False,True,False,False
 LOT001-C0344,False,False,False,True,False,False
 LOT001-C0345,False,False,False,False,False,False
 LOT001-C0346,False,False,False,False,False,False
@@ -2313,7 +2313,7 @@ LOT004-C0310,False,False,False,True,False,False
 LOT004-C0311,False,False,False,False,False,False
 LOT004-C0312,False,False,False,False,False,False
 LOT004-C0313,False,False,False,False,False,False
-LOT004-C0314,True,True,True,True,True,True
+LOT004-C0314,True,True,True,True,False,True
 LOT004-C0315,False,False,False,True,False,False
 LOT004-C0316,False,False,False,False,False,False
 LOT004-C0317,False,False,False,False,False,False
@@ -2589,7 +2589,7 @@ LOT005-C0086,False,False,False,False,False,False
 LOT005-C0087,False,False,False,False,False,False
 LOT005-C0088,False,False,False,False,False,False
 LOT005-C0089,False,False,False,False,False,False
-LOT005-C0090,False,False,False,True,False,True
+LOT005-C0090,False,False,False,False,False,True
 LOT005-C0091,True,True,True,True,False,False
 LOT005-C0092,False,False,False,False,False,False
 LOT005-C0093,False,False,False,False,False,False
@@ -2834,7 +2834,7 @@ LOT005-C0331,False,False,False,False,False,False
 LOT005-C0332,False,False,False,False,False,False
 LOT005-C0333,False,False,False,False,False,False
 LOT005-C0334,False,False,False,True,False,False
-LOT005-C0335,True,True,True,True,True,True
+LOT005-C0335,True,True,True,True,False,True
 LOT005-C0336,False,False,False,True,False,False
 LOT005-C0337,False,False,False,False,False,False
 LOT005-C0338,False,False,False,True,False,False
@@ -3419,7 +3419,7 @@ LOT006-C0416,False,False,False,False,False,False
 LOT006-C0417,False,False,False,False,False,False
 LOT006-C0418,False,False,False,False,False,False
 LOT006-C0419,False,False,False,False,False,False
-LOT006-C0420,False,False,False,True,False,False
+LOT006-C0420,False,False,False,True,False,True
 LOT006-C0421,False,False,False,True,False,False
 LOT006-C0422,False,False,False,False,False,False
 LOT006-C0423,False,False,False,True,False,False
@@ -3999,7 +3999,7 @@ LOT007-C0496,False,False,False,True,False,False
 LOT007-C0497,False,False,False,False,False,False
 LOT007-C0498,False,False,False,True,False,False
 LOT007-C0499,False,False,False,False,False,False
-LOT008-C0000,True,True,True,True,False,False
+LOT008-C0000,True,True,True,True,False,True
 LOT008-C0001,True,True,True,True,False,False
 LOT008-C0002,True,True,True,True,False,False
 LOT008-C0003,True,True,True,True,False,False
@@ -4009,7 +4009,7 @@ LOT008-C0006,True,True,True,True,False,False
 LOT008-C0007,True,True,True,True,False,False
 LOT008-C0008,True,True,True,True,False,False
 LOT008-C0009,True,True,True,True,False,False
-LOT008-C0010,True,True,True,True,True,True
+LOT008-C0010,True,True,True,True,False,True
 LOT008-C0011,True,True,True,True,False,False
 LOT008-C0012,False,False,False,True,False,False
 LOT008-C0013,True,True,True,True,False,False
@@ -4039,7 +4039,7 @@ LOT008-C0036,False,False,False,True,False,False
 LOT008-C0037,False,False,False,True,False,False
 LOT008-C0038,False,False,False,True,False,False
 LOT008-C0039,True,True,True,True,False,False
-LOT008-C0040,True,True,True,True,False,False
+LOT008-C0040,True,True,True,True,False,True
 LOT008-C0041,False,True,True,True,False,False
 LOT008-C0042,True,False,False,True,False,False
 LOT008-C0043,True,False,False,True,False,False
@@ -4738,7 +4738,7 @@ LOT009-C0235,False,False,False,False,False,False
 LOT009-C0236,False,False,False,True,False,False
 LOT009-C0237,False,False,False,False,False,False
 LOT009-C0238,False,False,False,False,False,False
-LOT009-C0239,False,False,False,False,False,False
+LOT009-C0239,False,False,False,True,False,False
 LOT009-C0240,False,False,False,True,False,False
 LOT009-C0241,False,False,False,True,False,False
 LOT009-C0242,False,False,False,True,False,False
@@ -6264,7 +6264,7 @@ LOT012-C0261,False,False,False,False,False,False
 LOT012-C0262,False,False,False,True,False,False
 LOT012-C0263,False,False,False,True,False,False
 LOT012-C0264,False,False,False,False,False,False
-LOT012-C0265,True,True,True,True,True,True
+LOT012-C0265,True,True,True,True,False,False
 LOT012-C0266,False,False,False,False,False,False
 LOT012-C0267,False,False,False,False,False,False
 LOT012-C0268,False,False,False,False,False,False
@@ -6317,7 +6317,7 @@ LOT012-C0314,False,False,False,False,False,False
 LOT012-C0315,False,False,False,True,False,False
 LOT012-C0316,False,False,False,False,False,False
 LOT012-C0317,False,False,False,False,False,False
-LOT012-C0318,True,True,True,True,False,True
+LOT012-C0318,True,True,True,True,False,False
 LOT012-C0319,False,False,False,True,False,False
 LOT012-C0320,False,False,False,False,False,False
 LOT012-C0321,False,False,False,True,False,False
@@ -6542,7 +6542,7 @@ LOT013-C0039,False,False,False,False,False,False
 LOT013-C0040,False,False,False,False,False,False
 LOT013-C0041,False,False,False,False,False,False
 LOT013-C0042,False,False,False,False,False,False
-LOT013-C0043,False,False,False,True,False,True
+LOT013-C0043,False,False,False,False,False,True
 LOT013-C0044,False,False,False,False,False,False
 LOT013-C0045,False,False,False,False,False,False
 LOT013-C0046,False,False,False,False,False,False
@@ -6936,7 +6936,7 @@ LOT013-C0433,False,False,False,False,False,False
 LOT013-C0434,False,False,False,False,False,False
 LOT013-C0435,False,False,False,False,False,False
 LOT013-C0436,False,False,False,True,False,False
-LOT013-C0437,True,False,False,True,False,False
+LOT013-C0437,False,False,False,True,False,False
 LOT013-C0438,False,False,False,False,False,False
 LOT013-C0439,False,False,False,False,False,False
 LOT013-C0440,False,False,False,False,False,False
@@ -7509,7 +7509,7 @@ LOT015-C0006,False,False,False,True,False,False
 LOT015-C0007,False,False,False,False,False,False
 LOT015-C0008,False,False,False,False,False,False
 LOT015-C0009,False,False,False,False,False,False
-LOT015-C0010,True,False,False,True,False,True
+LOT015-C0010,False,False,False,True,False,True
 LOT015-C0011,False,False,False,False,False,False
 LOT015-C0012,False,False,False,False,False,False
 LOT015-C0013,False,False,False,False,False,False
@@ -8896,7 +8896,7 @@ LOT017-C0393,False,False,False,False,False,False
 LOT017-C0394,False,False,False,False,False,False
 LOT017-C0395,False,False,False,True,False,False
 LOT017-C0396,False,False,False,False,False,False
-LOT017-C0397,False,False,False,True,False,True
+LOT017-C0397,False,False,False,False,False,True
 LOT017-C0398,False,False,False,False,False,False
 LOT017-C0399,False,False,False,False,False,False
 LOT017-C0400,False,False,False,False,False,False
@@ -9337,7 +9337,7 @@ LOT018-C0334,False,False,False,False,False,False
 LOT018-C0335,False,False,False,False,False,False
 LOT018-C0336,False,False,False,False,False,False
 LOT018-C0337,False,False,False,False,False,False
-LOT018-C0338,True,False,False,True,False,True
+LOT018-C0338,False,False,False,False,False,True
 LOT018-C0339,False,False,False,False,False,False
 LOT018-C0340,False,False,False,True,False,False
 LOT018-C0341,False,False,False,False,False,False
@@ -10432,7 +10432,7 @@ LOT020-C0429,False,False,False,False,False,False
 LOT020-C0430,False,False,False,False,False,False
 LOT020-C0431,False,False,False,False,False,False
 LOT020-C0432,False,False,False,True,False,False
-LOT020-C0433,True,False,False,True,False,True
+LOT020-C0433,False,False,False,False,False,True
 LOT020-C0434,True,False,False,True,False,False
 LOT020-C0435,False,False,False,True,False,False
 LOT020-C0436,False,False,False,False,False,False
@@ -10790,7 +10790,7 @@ LOT021-C0287,False,False,False,False,False,False
 LOT021-C0288,False,False,False,True,False,False
 LOT021-C0289,True,False,False,True,False,False
 LOT021-C0290,False,False,False,False,False,False
-LOT021-C0291,True,True,True,True,False,True
+LOT021-C0291,True,True,True,True,True,True
 LOT021-C0292,False,False,False,True,False,False
 LOT021-C0293,False,False,False,False,False,False
 LOT021-C0294,False,False,False,False,False,False
@@ -11035,7 +11035,7 @@ LOT022-C0032,False,False,False,False,False,False
 LOT022-C0033,False,False,False,False,False,False
 LOT022-C0034,False,False,False,False,False,False
 LOT022-C0035,False,False,False,False,False,False
-LOT022-C0036,True,False,False,True,False,True
+LOT022-C0036,False,False,False,True,False,True
 LOT022-C0037,False,False,False,True,False,False
 LOT022-C0038,False,False,False,False,False,False
 LOT022-C0039,False,False,False,False,False,False
@@ -11743,7 +11743,7 @@ LOT023-C0240,False,False,False,False,False,False
 LOT023-C0241,False,False,False,False,False,False
 LOT023-C0242,False,False,False,True,False,False
 LOT023-C0243,False,False,False,False,False,False
-LOT023-C0244,True,False,False,True,False,True
+LOT023-C0244,False,False,False,True,False,True
 LOT023-C0245,False,False,False,False,False,False
 LOT023-C0246,False,False,False,False,False,False
 LOT023-C0247,False,False,False,False,False,False
@@ -12369,7 +12369,7 @@ LOT024-C0366,False,False,False,False,False,False
 LOT024-C0367,False,False,False,False,False,False
 LOT024-C0368,False,False,False,True,False,False
 LOT024-C0369,False,False,False,False,False,False
-LOT024-C0370,True,False,False,True,False,False
+LOT024-C0370,False,False,False,True,False,False
 LOT024-C0371,False,False,False,False,False,False
 LOT024-C0372,False,False,False,False,False,False
 LOT024-C0373,False,False,False,False,False,False
@@ -12377,7 +12377,7 @@ LOT024-C0374,False,False,False,False,False,False
 LOT024-C0375,False,False,False,False,False,False
 LOT024-C0376,False,False,False,False,False,False
 LOT024-C0377,False,False,False,True,False,False
-LOT024-C0378,True,False,True,True,False,False
+LOT024-C0378,True,False,False,True,False,False
 LOT024-C0379,False,False,False,True,False,False
 LOT024-C0380,False,False,False,False,False,False
 LOT024-C0381,False,False,False,True,False,False
@@ -12953,7 +12953,7 @@ LOT025-C0450,False,False,False,False,False,False
 LOT025-C0451,False,False,False,False,False,False
 LOT025-C0452,False,False,False,False,False,False
 LOT025-C0453,False,False,False,False,False,False
-LOT025-C0454,False,False,False,False,False,False
+LOT025-C0454,False,False,False,True,False,False
 LOT025-C0455,False,False,False,True,False,False
 LOT025-C0456,False,False,False,False,False,False
 LOT025-C0457,False,False,False,False,False,False
@@ -13094,7 +13094,7 @@ LOT026-C0091,False,False,False,False,False,False
 LOT026-C0092,False,False,False,True,False,False
 LOT026-C0093,False,False,False,False,False,False
 LOT026-C0094,False,False,False,False,False,False
-LOT026-C0095,True,False,False,True,False,True
+LOT026-C0095,True,False,False,True,False,False
 LOT026-C0096,False,False,False,True,False,False
 LOT026-C0097,False,False,False,False,False,False
 LOT026-C0098,True,True,True,True,False,False
@@ -14700,7 +14700,7 @@ LOT029-C0197,False,False,False,False,False,False
 LOT029-C0198,False,False,False,False,False,False
 LOT029-C0199,False,False,False,False,False,False
 LOT029-C0200,False,False,False,False,False,False
-LOT029-C0201,True,False,False,True,False,True
+LOT029-C0201,False,False,False,True,False,True
 LOT029-C0202,False,False,False,False,False,False
 LOT029-C0203,False,False,False,False,False,False
 LOT029-C0204,False,False,False,False,False,False
@@ -15592,7 +15592,7 @@ LOT031-C0089,False,False,False,False,False,False
 LOT031-C0090,False,False,False,False,False,False
 LOT031-C0091,False,False,False,False,False,False
 LOT031-C0092,False,False,False,False,False,False
-LOT031-C0093,True,True,True,True,False,True
+LOT031-C0093,True,True,True,True,False,False
 LOT031-C0094,False,False,False,True,False,False
 LOT031-C0095,False,False,False,False,False,False
 LOT031-C0096,False,False,False,False,False,False
@@ -15600,7 +15600,7 @@ LOT031-C0097,False,False,False,False,False,False
 LOT031-C0098,False,False,False,False,False,False
 LOT031-C0099,False,False,False,False,False,False
 LOT031-C0100,False,False,False,False,False,False
-LOT031-C0101,True,False,False,True,False,True
+LOT031-C0101,False,False,False,True,False,True
 LOT031-C0102,False,False,False,False,False,False
 LOT031-C0103,False,False,False,False,False,False
 LOT031-C0104,False,False,False,True,False,False
@@ -17434,7 +17434,7 @@ LOT034-C0431,False,False,False,False,False,False
 LOT034-C0432,False,False,False,True,False,False
 LOT034-C0433,False,False,False,False,False,False
 LOT034-C0434,False,False,False,False,False,False
-LOT034-C0435,True,False,False,True,False,True
+LOT034-C0435,False,False,False,True,False,True
 LOT034-C0436,False,False,False,False,False,False
 LOT034-C0437,False,False,False,False,False,False
 LOT034-C0438,False,False,False,True,False,False
@@ -17830,7 +17830,7 @@ LOT035-C0327,False,False,False,False,False,False
 LOT035-C0328,False,False,False,False,False,False
 LOT035-C0329,False,False,False,False,False,False
 LOT035-C0330,False,False,False,False,False,False
-LOT035-C0331,True,False,False,True,False,True
+LOT035-C0331,False,False,False,True,False,True
 LOT035-C0332,False,False,False,False,False,False
 LOT035-C0333,False,False,False,False,False,False
 LOT035-C0334,False,False,False,True,False,False
@@ -17960,7 +17960,7 @@ LOT035-C0457,False,False,False,True,False,False
 LOT035-C0458,False,False,False,False,False,False
 LOT035-C0459,False,False,False,False,False,False
 LOT035-C0460,False,False,False,False,False,False
-LOT035-C0461,True,False,False,True,False,True
+LOT035-C0461,False,False,False,True,False,True
 LOT035-C0462,False,False,False,False,False,False
 LOT035-C0463,False,False,False,False,False,False
 LOT035-C0464,False,False,False,False,False,False
@@ -18852,7 +18852,7 @@ LOT037-C0349,False,False,False,True,False,False
 LOT037-C0350,False,False,False,True,False,False
 LOT037-C0351,False,False,False,False,False,False
 LOT037-C0352,False,False,False,False,False,False
-LOT037-C0353,True,False,False,True,False,True
+LOT037-C0353,False,False,False,True,False,True
 LOT037-C0354,False,False,False,True,False,False
 LOT037-C0355,False,False,False,False,False,False
 LOT037-C0356,False,False,False,True,False,False
@@ -19392,7 +19392,7 @@ LOT038-C0389,False,False,False,False,False,False
 LOT038-C0390,False,False,False,False,False,False
 LOT038-C0391,False,False,False,True,False,False
 LOT038-C0392,False,False,False,False,False,False
-LOT038-C0393,True,True,True,True,False,True
+LOT038-C0393,True,True,True,True,False,False
 LOT038-C0394,False,False,False,False,False,False
 LOT038-C0395,False,False,False,True,False,False
 LOT038-C0396,False,False,False,False,False,False
@@ -19601,7 +19601,7 @@ LOT039-C0098,False,False,False,False,False,False
 LOT039-C0099,False,False,False,True,False,False
 LOT039-C0100,False,False,False,True,False,False
 LOT039-C0101,False,False,False,False,False,False
-LOT039-C0102,False,False,False,True,False,True
+LOT039-C0102,False,False,False,True,False,False
 LOT039-C0103,False,False,False,False,False,False
 LOT039-C0104,False,False,False,False,False,False
 LOT039-C0105,False,False,False,False,False,False
@@ -20097,7 +20097,7 @@ LOT040-C0094,False,False,False,False,False,False
 LOT040-C0095,True,False,False,True,False,False
 LOT040-C0096,False,False,False,False,False,False
 LOT040-C0097,False,False,False,False,False,False
-LOT040-C0098,False,False,False,True,False,False
+LOT040-C0098,False,False,False,False,False,False
 LOT040-C0099,False,False,False,False,False,False
 LOT040-C0100,False,False,False,False,False,False
 LOT040-C0101,False,False,False,True,False,False
@@ -20182,7 +20182,7 @@ LOT040-C0179,False,False,False,False,False,False
 LOT040-C0180,False,False,False,True,False,False
 LOT040-C0181,False,False,False,True,False,False
 LOT040-C0182,True,False,False,True,False,False
-LOT040-C0183,False,False,False,True,False,True
+LOT040-C0183,False,False,False,False,False,False
 LOT040-C0184,False,False,False,True,False,False
 LOT040-C0185,False,False,False,False,False,False
 LOT040-C0186,False,False,False,True,False,False
@@ -20190,7 +20190,7 @@ LOT040-C0187,False,False,False,False,False,False
 LOT040-C0188,False,False,False,True,False,False
 LOT040-C0189,True,False,False,True,False,False
 LOT040-C0190,False,False,False,True,False,False
-LOT040-C0191,False,False,False,True,False,True
+LOT040-C0191,False,False,False,False,False,False
 LOT040-C0192,False,False,False,True,False,False
 LOT040-C0193,False,False,False,False,False,False
 LOT040-C0194,False,False,False,True,False,False
@@ -20204,7 +20204,7 @@ LOT040-C0201,False,False,False,True,False,False
 LOT040-C0202,True,False,False,True,False,False
 LOT040-C0203,False,False,False,False,False,False
 LOT040-C0204,False,False,False,False,False,False
-LOT040-C0205,False,False,False,True,False,True
+LOT040-C0205,False,False,False,False,False,False
 LOT040-C0206,False,False,False,True,False,False
 LOT040-C0207,False,False,False,False,False,False
 LOT040-C0208,False,False,False,True,False,False
@@ -20227,7 +20227,7 @@ LOT040-C0224,False,False,False,False,False,False
 LOT040-C0225,False,False,False,True,False,False
 LOT040-C0226,False,False,False,False,False,False
 LOT040-C0227,True,False,False,True,False,False
-LOT040-C0228,True,False,False,True,False,False
+LOT040-C0228,False,False,False,True,False,False
 LOT040-C0229,False,False,False,True,False,False
 LOT040-C0230,True,False,False,True,False,False
 LOT040-C0231,False,False,False,True,False,False
@@ -20421,7 +20421,7 @@ LOT040-C0418,False,False,False,True,False,False
 LOT040-C0419,True,False,False,True,False,False
 LOT040-C0420,False,False,False,False,False,False
 LOT040-C0421,False,False,False,False,False,False
-LOT040-C0422,True,False,False,True,False,False
+LOT040-C0422,False,False,False,True,False,False
 LOT040-C0423,False,False,False,True,False,False
 LOT040-C0424,True,False,False,True,False,False
 LOT040-C0425,False,False,False,False,False,False
@@ -20728,7 +20728,7 @@ LOT041-C0225,False,False,False,True,False,False
 LOT041-C0226,False,False,False,False,False,False
 LOT041-C0227,False,False,False,False,False,False
 LOT041-C0228,False,False,False,False,False,False
-LOT041-C0229,True,False,False,True,False,True
+LOT041-C0229,False,False,False,True,False,True
 LOT041-C0230,False,False,False,True,False,False
 LOT041-C0231,False,False,False,False,False,False
 LOT041-C0232,False,False,False,False,False,False
@@ -21245,7 +21245,7 @@ LOT042-C0242,False,False,False,True,False,False
 LOT042-C0243,False,False,False,False,False,False
 LOT042-C0244,False,False,False,False,False,False
 LOT042-C0245,False,False,False,True,False,False
-LOT042-C0246,True,False,False,True,True,True
+LOT042-C0246,True,False,False,True,False,False
 LOT042-C0247,False,False,False,False,False,False
 LOT042-C0248,False,False,False,True,False,False
 LOT042-C0249,False,False,False,False,False,False
@@ -22008,7 +22008,7 @@ LOT044-C0005,False,False,False,True,False,False
 LOT044-C0006,False,False,False,False,False,False
 LOT044-C0007,False,False,False,False,False,False
 LOT044-C0008,False,False,False,False,False,False
-LOT044-C0009,True,False,False,True,False,True
+LOT044-C0009,True,False,False,True,False,False
 LOT044-C0010,False,False,False,False,False,False
 LOT044-C0011,False,False,False,True,False,False
 LOT044-C0012,False,False,False,False,False,False
@@ -22085,7 +22085,7 @@ LOT044-C0082,False,False,False,False,False,False
 LOT044-C0083,False,False,False,True,False,False
 LOT044-C0084,False,False,False,False,False,False
 LOT044-C0085,False,False,False,False,False,False
-LOT044-C0086,True,False,False,True,False,True
+LOT044-C0086,False,False,False,True,False,True
 LOT044-C0087,False,False,False,False,False,False
 LOT044-C0088,False,False,False,True,False,False
 LOT044-C0089,False,False,False,False,False,False
@@ -22341,7 +22341,7 @@ LOT044-C0338,False,False,False,False,False,False
 LOT044-C0339,False,False,False,True,False,False
 LOT044-C0340,False,False,False,False,False,False
 LOT044-C0341,False,False,False,False,False,False
-LOT044-C0342,True,True,True,True,False,True
+LOT044-C0342,True,True,True,True,False,False
 LOT044-C0343,False,False,False,True,False,False
 LOT044-C0344,False,False,False,True,False,False
 LOT044-C0345,False,False,False,False,False,False
@@ -22849,7 +22849,7 @@ LOT045-C0346,False,False,False,False,False,False
 LOT045-C0347,False,False,False,False,False,False
 LOT045-C0348,False,False,False,True,False,False
 LOT045-C0349,False,False,False,True,False,False
-LOT045-C0350,True,True,True,True,False,True
+LOT045-C0350,True,True,True,True,False,False
 LOT045-C0351,False,False,False,False,False,False
 LOT045-C0352,False,False,False,False,False,False
 LOT045-C0353,False,False,False,False,False,False
@@ -23181,7 +23181,7 @@ LOT046-C0178,False,False,False,False,False,False
 LOT046-C0179,False,False,False,False,False,False
 LOT046-C0180,False,False,False,True,False,False
 LOT046-C0181,False,False,False,False,False,False
-LOT046-C0182,False,False,False,True,False,True
+LOT046-C0182,False,False,False,False,False,True
 LOT046-C0183,False,False,False,False,False,False
 LOT046-C0184,False,False,False,False,False,False
 LOT046-C0185,False,False,False,False,False,False
@@ -23701,7 +23701,7 @@ LOT047-C0198,False,False,False,True,False,False
 LOT047-C0199,False,False,False,True,False,False
 LOT047-C0200,False,False,False,True,False,False
 LOT047-C0201,False,False,False,False,False,False
-LOT047-C0202,True,False,False,True,True,True
+LOT047-C0202,True,False,False,True,False,False
 LOT047-C0203,False,False,False,False,False,False
 LOT047-C0204,False,False,False,True,False,False
 LOT047-C0205,False,False,False,False,False,False
@@ -23949,7 +23949,7 @@ LOT047-C0446,False,False,False,True,False,False
 LOT047-C0447,False,False,False,False,False,False
 LOT047-C0448,False,False,False,False,False,False
 LOT047-C0449,False,False,False,False,False,False
-LOT047-C0450,True,True,True,True,False,False
+LOT047-C0450,True,False,False,True,False,False
 LOT047-C0451,False,False,False,True,False,False
 LOT047-C0452,False,False,False,False,False,False
 LOT047-C0453,False,False,False,True,False,False
@@ -24613,7 +24613,7 @@ LOT049-C0110,False,False,False,False,False,False
 LOT049-C0111,False,False,False,False,False,False
 LOT049-C0112,False,False,False,False,False,False
 LOT049-C0113,False,False,False,False,False,False
-LOT049-C0114,True,False,False,True,False,False
+LOT049-C0114,False,False,False,True,False,False
 LOT049-C0115,False,False,False,False,False,False
 LOT049-C0116,False,False,False,True,False,False
 LOT049-C0117,False,False,False,False,False,False
@@ -24648,9 +24648,9 @@ LOT049-C0145,False,False,False,True,False,False
 LOT049-C0146,False,False,False,False,False,False
 LOT049-C0147,False,False,False,False,False,False
 LOT049-C0148,False,False,False,False,False,False
-LOT049-C0149,False,False,False,False,False,True
+LOT049-C0149,False,False,False,False,False,False
 LOT049-C0150,False,False,False,False,False,False
-LOT049-C0151,False,False,False,True,False,False
+LOT049-C0151,False,False,False,False,False,False
 LOT049-C0152,False,False,False,True,False,False
 LOT049-C0153,False,False,False,False,False,False
 LOT049-C0154,False,False,False,False,False,False
@@ -24667,7 +24667,7 @@ LOT049-C0164,False,False,False,False,False,False
 LOT049-C0165,False,False,False,False,False,False
 LOT049-C0166,False,False,False,False,False,False
 LOT049-C0167,False,False,False,False,False,False
-LOT049-C0168,False,False,False,True,False,False
+LOT049-C0168,False,False,False,False,False,False
 LOT049-C0169,False,False,False,False,False,False
 LOT049-C0170,False,False,False,True,False,False
 LOT049-C0171,False,False,False,False,False,False
@@ -24712,7 +24712,7 @@ LOT049-C0209,False,False,False,True,False,False
 LOT049-C0210,False,False,False,True,False,False
 LOT049-C0211,False,False,False,True,False,False
 LOT049-C0212,False,False,False,False,False,False
-LOT049-C0213,True,False,False,True,False,False
+LOT049-C0213,False,False,False,True,False,False
 LOT049-C0214,False,False,False,False,False,False
 LOT049-C0215,False,False,False,False,False,False
 LOT049-C0216,False,False,False,False,False,False
@@ -24944,7 +24944,7 @@ LOT049-C0441,False,False,False,False,False,False
 LOT049-C0442,False,False,False,False,False,False
 LOT049-C0443,False,False,False,False,False,False
 LOT049-C0444,False,False,False,False,False,False
-LOT049-C0445,False,False,False,True,False,False
+LOT049-C0445,False,False,False,False,False,False
 LOT049-C0446,False,False,False,False,False,False
 LOT049-C0447,False,False,False,True,False,False
 LOT049-C0448,False,False,False,True,False,False
@@ -24991,12 +24991,12 @@ LOT049-C0488,False,False,False,False,False,False
 LOT049-C0489,False,False,False,True,False,False
 LOT049-C0490,False,False,False,True,False,False
 LOT049-C0491,False,False,False,False,False,False
-LOT049-C0492,True,False,False,True,False,False
+LOT049-C0492,False,False,False,True,False,False
 LOT049-C0493,False,False,False,False,False,False
 LOT049-C0494,False,False,False,False,False,False
-LOT049-C0495,True,False,False,True,False,False
+LOT049-C0495,False,False,False,True,False,False
 LOT049-C0496,False,False,False,True,False,False
-LOT049-C0497,True,False,False,True,False,False
+LOT049-C0497,False,False,False,True,False,False
 LOT049-C0498,False,False,False,False,False,False
 LOT049-C0499,False,False,False,True,False,False
 LOT050-C0000,False,False,False,False,False,False
@@ -26346,13 +26346,13 @@ LOT052-C0343,False,False,False,False,False,False
 LOT052-C0344,False,False,False,False,False,False
 LOT052-C0345,False,False,False,False,False,False
 LOT052-C0346,False,False,False,False,False,False
-LOT052-C0347,True,False,False,True,True,True
+LOT052-C0347,True,False,False,True,False,False
 LOT052-C0348,False,False,False,False,False,False
 LOT052-C0349,False,False,False,True,False,False
 LOT052-C0350,False,False,False,False,False,False
 LOT052-C0351,False,False,False,True,False,False
 LOT052-C0352,False,False,False,True,False,False
-LOT052-C0353,True,False,False,True,True,True
+LOT052-C0353,True,False,False,True,False,False
 LOT052-C0354,False,False,False,True,False,False
 LOT052-C0355,False,False,False,True,False,False
 LOT052-C0356,False,False,False,False,False,False
@@ -28237,7 +28237,7 @@ LOT056-C0234,False,False,False,False,False,False
 LOT056-C0235,False,False,False,False,False,False
 LOT056-C0236,False,False,False,False,False,False
 LOT056-C0237,False,False,False,True,False,False
-LOT056-C0238,False,False,False,True,False,True
+LOT056-C0238,False,False,False,False,False,True
 LOT056-C0239,False,False,False,False,False,False
 LOT056-C0240,False,False,False,False,False,False
 LOT056-C0241,False,False,False,True,False,False
@@ -32939,7 +32939,7 @@ LOT065-C0436,False,False,False,False,False,False
 LOT065-C0437,False,False,False,True,False,False
 LOT065-C0438,False,False,False,True,False,False
 LOT065-C0439,False,False,False,False,False,False
-LOT065-C0440,True,True,True,True,False,False
+LOT065-C0440,True,True,True,True,False,True
 LOT065-C0441,False,False,False,False,False,False
 LOT065-C0442,False,False,False,True,False,False
 LOT065-C0443,False,False,False,False,False,False
@@ -34299,7 +34299,7 @@ LOT068-C0296,False,False,False,False,False,False
 LOT068-C0297,False,False,False,False,False,False
 LOT068-C0298,False,False,False,False,False,False
 LOT068-C0299,False,False,False,True,False,False
-LOT068-C0300,True,False,False,True,True,True
+LOT068-C0300,True,False,False,True,False,False
 LOT068-C0301,False,False,False,False,False,False
 LOT068-C0302,False,False,False,True,False,False
 LOT068-C0303,False,False,False,True,False,False
@@ -34891,7 +34891,7 @@ LOT069-C0388,False,False,False,False,False,False
 LOT069-C0389,False,False,False,True,False,False
 LOT069-C0390,False,False,False,True,False,False
 LOT069-C0391,False,False,False,False,False,False
-LOT069-C0392,False,False,False,True,False,True
+LOT069-C0392,False,False,False,False,False,True
 LOT069-C0393,False,False,False,True,False,False
 LOT069-C0394,False,False,False,False,False,False
 LOT069-C0395,False,False,False,True,False,False
@@ -35181,7 +35181,7 @@ LOT070-C0178,False,False,False,False,False,False
 LOT070-C0179,False,False,False,False,False,False
 LOT070-C0180,False,False,False,False,False,False
 LOT070-C0181,False,False,False,True,False,False
-LOT070-C0182,True,True,True,True,False,True
+LOT070-C0182,True,True,True,True,False,False
 LOT070-C0183,False,False,False,False,False,False
 LOT070-C0184,False,False,False,True,False,False
 LOT070-C0185,False,False,False,False,False,False
@@ -35673,7 +35673,7 @@ LOT071-C0170,False,False,False,True,False,False
 LOT071-C0171,False,False,False,False,False,False
 LOT071-C0172,False,False,False,False,False,False
 LOT071-C0173,False,False,False,True,False,False
-LOT071-C0174,True,False,False,True,False,True
+LOT071-C0174,False,False,False,True,False,True
 LOT071-C0175,False,False,False,True,False,False
 LOT071-C0176,False,False,False,False,False,False
 LOT071-C0177,False,False,False,True,False,False
@@ -35756,7 +35756,7 @@ LOT071-C0253,False,False,False,True,False,False
 LOT071-C0254,False,False,False,True,False,False
 LOT071-C0255,False,False,False,True,False,False
 LOT071-C0256,False,False,False,False,False,False
-LOT071-C0257,False,False,False,True,False,False
+LOT071-C0257,False,False,False,True,False,True
 LOT071-C0258,False,False,False,False,False,False
 LOT071-C0259,False,False,False,False,False,False
 LOT071-C0260,False,False,False,False,False,False
@@ -36279,7 +36279,7 @@ LOT072-C0276,False,False,False,False,False,False
 LOT072-C0277,False,False,False,True,False,False
 LOT072-C0278,False,False,False,False,False,False
 LOT072-C0279,False,False,False,False,False,False
-LOT072-C0280,False,False,False,True,False,True
+LOT072-C0280,False,False,False,False,False,True
 LOT072-C0281,False,False,False,False,False,False
 LOT072-C0282,False,False,False,False,False,False
 LOT072-C0283,False,False,False,False,False,False
@@ -37754,7 +37754,7 @@ LOT075-C0251,False,False,False,False,False,False
 LOT075-C0252,False,False,False,True,False,False
 LOT075-C0253,False,False,False,False,False,False
 LOT075-C0254,False,False,False,False,False,False
-LOT075-C0255,False,False,False,True,False,True
+LOT075-C0255,False,False,False,False,False,True
 LOT075-C0256,False,False,False,True,False,False
 LOT075-C0257,False,False,False,False,False,False
 LOT075-C0258,False,False,False,False,False,False
@@ -40872,7 +40872,7 @@ LOT081-C0369,False,False,False,False,False,False
 LOT081-C0370,False,False,False,False,False,False
 LOT081-C0371,False,False,False,False,False,False
 LOT081-C0372,False,False,False,False,False,False
-LOT081-C0373,False,False,False,True,False,True
+LOT081-C0373,False,False,False,False,False,True
 LOT081-C0374,False,False,False,True,False,False
 LOT081-C0375,False,False,False,False,False,False
 LOT081-C0376,False,False,False,False,False,False
@@ -41235,7 +41235,7 @@ LOT082-C0232,False,False,False,False,False,False
 LOT082-C0233,False,False,False,False,False,False
 LOT082-C0234,False,False,False,True,False,False
 LOT082-C0235,False,False,False,True,False,False
-LOT082-C0236,False,False,False,True,False,True
+LOT082-C0236,False,False,False,False,False,True
 LOT082-C0237,False,False,False,True,False,False
 LOT082-C0238,False,False,False,False,False,False
 LOT082-C0239,False,False,False,True,False,False
@@ -41740,7 +41740,7 @@ LOT083-C0237,False,False,False,False,False,False
 LOT083-C0238,False,False,False,False,False,False
 LOT083-C0239,False,False,False,True,False,False
 LOT083-C0240,False,False,False,False,False,False
-LOT083-C0241,True,True,True,True,False,False
+LOT083-C0241,True,False,False,True,False,False
 LOT083-C0242,False,False,False,True,False,False
 LOT083-C0243,False,False,False,False,False,False
 LOT083-C0244,False,False,False,True,False,False
@@ -43455,7 +43455,7 @@ LOT086-C0452,False,False,False,False,False,False
 LOT086-C0453,False,False,False,False,False,False
 LOT086-C0454,False,False,False,False,False,False
 LOT086-C0455,False,False,False,True,False,False
-LOT086-C0456,True,True,True,True,False,True
+LOT086-C0456,True,True,True,True,False,False
 LOT086-C0457,True,False,False,True,False,False
 LOT086-C0458,False,False,False,False,False,False
 LOT086-C0459,False,False,False,False,False,False
@@ -43572,8 +43572,8 @@ LOT087-C0069,False,False,False,True,False,False
 LOT087-C0070,False,False,False,True,False,False
 LOT087-C0071,False,False,False,True,False,False
 LOT087-C0072,False,False,False,False,False,False
-LOT087-C0073,False,False,False,False,False,True
-LOT087-C0074,False,False,False,False,False,True
+LOT087-C0073,False,False,False,False,False,False
+LOT087-C0074,False,False,False,False,False,False
 LOT087-C0075,False,False,False,True,False,False
 LOT087-C0076,False,False,False,True,False,False
 LOT087-C0077,False,False,False,False,False,False
@@ -43991,7 +43991,7 @@ LOT087-C0488,False,False,False,False,False,False
 LOT087-C0489,False,False,False,True,False,False
 LOT087-C0490,False,False,False,False,False,False
 LOT087-C0491,False,False,False,False,False,False
-LOT087-C0492,False,False,False,False,False,True
+LOT087-C0492,False,False,False,False,False,False
 LOT087-C0493,False,False,False,False,False,False
 LOT087-C0494,False,False,False,False,False,False
 LOT087-C0495,False,False,False,False,False,False
@@ -45237,7 +45237,7 @@ LOT090-C0234,False,False,False,False,False,False
 LOT090-C0235,False,False,False,False,False,False
 LOT090-C0236,False,False,False,False,False,False
 LOT090-C0237,False,False,False,True,False,False
-LOT090-C0238,True,True,True,True,False,True
+LOT090-C0238,True,True,True,True,False,False
 LOT090-C0239,False,False,False,False,False,False
 LOT090-C0240,False,False,False,False,False,False
 LOT090-C0241,False,False,False,False,False,False
@@ -46181,7 +46181,7 @@ LOT092-C0178,False,False,False,False,False,False
 LOT092-C0179,False,False,False,False,False,False
 LOT092-C0180,False,False,False,False,False,False
 LOT092-C0181,False,False,False,True,False,False
-LOT092-C0182,False,False,False,True,False,True
+LOT092-C0182,False,False,False,False,False,True
 LOT092-C0183,False,False,False,False,False,False
 LOT092-C0184,False,False,False,True,False,False
 LOT092-C0185,False,False,False,False,False,False
@@ -46451,7 +46451,7 @@ LOT092-C0448,False,False,False,True,False,False
 LOT092-C0449,False,False,False,False,False,False
 LOT092-C0450,False,False,False,False,False,False
 LOT092-C0451,False,False,False,False,False,False
-LOT092-C0452,True,True,True,True,False,True
+LOT092-C0452,True,True,True,True,False,False
 LOT092-C0453,False,False,False,False,False,False
 LOT092-C0454,False,False,False,False,False,False
 LOT092-C0455,False,False,False,False,False,False
@@ -46671,7 +46671,7 @@ LOT093-C0168,False,False,False,True,False,False
 LOT093-C0169,False,False,False,True,False,False
 LOT093-C0170,True,False,False,True,False,False
 LOT093-C0171,True,True,True,True,False,False
-LOT093-C0172,True,True,True,True,False,False
+LOT093-C0172,True,True,True,True,False,True
 LOT093-C0173,True,False,False,True,False,True
 LOT093-C0174,False,False,False,True,False,False
 LOT093-C0175,False,False,False,True,False,False
@@ -46792,7 +46792,7 @@ LOT093-C0289,False,False,False,False,False,False
 LOT093-C0290,False,False,False,False,False,False
 LOT093-C0291,False,False,False,False,False,False
 LOT093-C0292,False,False,False,False,False,False
-LOT093-C0293,False,False,False,True,False,True
+LOT093-C0293,False,False,False,False,False,True
 LOT093-C0294,False,False,False,True,False,False
 LOT093-C0295,False,False,False,False,False,False
 LOT093-C0296,False,False,False,False,False,False
@@ -46933,7 +46933,7 @@ LOT093-C0430,False,False,False,True,False,False
 LOT093-C0431,False,False,False,True,False,False
 LOT093-C0432,False,False,False,False,False,False
 LOT093-C0433,False,False,False,True,False,False
-LOT093-C0434,True,True,True,True,False,False
+LOT093-C0434,True,True,True,True,False,True
 LOT093-C0435,False,False,False,False,False,False
 LOT093-C0436,False,False,False,False,False,False
 LOT093-C0437,False,False,False,True,False,False
@@ -47341,7 +47341,7 @@ LOT094-C0338,False,False,False,False,False,False
 LOT094-C0339,False,False,False,False,False,False
 LOT094-C0340,False,False,False,False,False,False
 LOT094-C0341,False,False,False,False,False,False
-LOT094-C0342,True,True,True,True,False,False
+LOT094-C0342,True,False,False,True,False,False
 LOT094-C0343,False,False,False,False,False,False
 LOT094-C0344,False,False,False,False,False,False
 LOT094-C0345,False,False,False,False,False,False
@@ -47564,8 +47564,8 @@ LOT095-C0061,False,False,False,False,False,False
 LOT095-C0062,False,False,False,False,False,False
 LOT095-C0063,False,False,False,False,False,False
 LOT095-C0064,False,False,False,False,False,False
-LOT095-C0065,True,False,False,True,True,True
-LOT095-C0066,True,False,False,True,True,True
+LOT095-C0065,True,False,False,True,False,False
+LOT095-C0066,True,False,False,True,False,False
 LOT095-C0067,False,False,False,True,False,False
 LOT095-C0068,False,False,False,False,False,False
 LOT095-C0069,False,False,False,False,False,False
@@ -47786,7 +47786,7 @@ LOT095-C0283,False,False,False,False,False,False
 LOT095-C0284,False,False,False,True,False,False
 LOT095-C0285,False,False,False,False,False,False
 LOT095-C0286,False,False,False,True,False,False
-LOT095-C0287,True,True,True,True,False,False
+LOT095-C0287,True,False,True,True,False,False
 LOT095-C0288,False,False,False,False,False,False
 LOT095-C0289,True,False,False,True,False,False
 LOT095-C0290,False,False,False,True,False,False
@@ -49357,7 +49357,7 @@ LOT098-C0354,False,False,False,False,False,False
 LOT098-C0355,False,False,False,False,False,False
 LOT098-C0356,False,False,False,False,False,False
 LOT098-C0357,False,False,False,True,False,False
-LOT098-C0358,False,False,False,True,False,False
+LOT098-C0358,False,False,False,True,False,True
 LOT098-C0359,False,False,False,True,False,False
 LOT098-C0360,False,False,False,False,False,False
 LOT098-C0361,False,False,False,False,False,False
@@ -49538,7 +49538,7 @@ LOT099-C0035,False,False,False,True,False,False
 LOT099-C0036,False,False,False,True,False,False
 LOT099-C0037,False,False,False,False,False,False
 LOT099-C0038,False,False,False,False,False,False
-LOT099-C0039,False,False,False,True,False,True
+LOT099-C0039,False,False,False,False,False,True
 LOT099-C0040,False,False,False,False,False,False
 LOT099-C0041,False,False,False,False,False,False
 LOT099-C0042,False,False,False,False,False,False
@@ -51755,7 +51755,7 @@ LOT103-C0252,False,False,False,True,False,False
 LOT103-C0253,False,False,False,False,False,False
 LOT103-C0254,False,False,False,False,False,False
 LOT103-C0255,False,False,False,False,False,False
-LOT103-C0256,True,True,True,True,False,True
+LOT103-C0256,True,True,True,True,False,False
 LOT103-C0257,False,False,False,True,False,False
 LOT103-C0258,False,False,False,False,False,False
 LOT103-C0259,False,False,False,False,False,False
@@ -52722,7 +52722,7 @@ LOT105-C0219,False,False,False,True,False,False
 LOT105-C0220,False,False,False,False,False,False
 LOT105-C0221,False,False,False,False,False,False
 LOT105-C0222,False,False,False,False,False,False
-LOT105-C0223,False,False,False,False,False,True
+LOT105-C0223,False,False,False,False,False,False
 LOT105-C0224,False,False,False,False,False,False
 LOT105-C0225,False,False,False,False,False,False
 LOT105-C0226,False,False,False,True,False,False
@@ -53697,7 +53697,7 @@ LOT107-C0194,False,False,False,True,False,False
 LOT107-C0195,False,False,False,False,False,False
 LOT107-C0196,False,False,False,False,False,False
 LOT107-C0197,False,False,False,False,False,False
-LOT107-C0198,False,False,False,True,False,True
+LOT107-C0198,False,False,False,False,False,True
 LOT107-C0199,False,False,False,False,False,False
 LOT107-C0200,False,False,False,False,False,False
 LOT107-C0201,False,False,False,True,False,False
@@ -54218,7 +54218,7 @@ LOT108-C0215,False,False,False,True,False,False
 LOT108-C0216,False,False,False,False,False,False
 LOT108-C0217,False,False,False,True,False,False
 LOT108-C0218,False,False,False,False,False,False
-LOT108-C0219,True,False,False,True,True,True
+LOT108-C0219,True,False,False,True,False,False
 LOT108-C0220,False,False,False,True,False,False
 LOT108-C0221,False,False,False,False,False,False
 LOT108-C0222,False,False,False,False,False,False
@@ -54327,7 +54327,7 @@ LOT108-C0324,False,False,False,False,False,False
 LOT108-C0325,False,False,False,False,False,False
 LOT108-C0326,False,False,False,False,False,False
 LOT108-C0327,False,False,False,False,False,False
-LOT108-C0328,True,True,True,True,False,False
+LOT108-C0328,True,True,True,True,False,True
 LOT108-C0329,False,False,False,False,False,False
 LOT108-C0330,False,False,False,True,False,False
 LOT108-C0331,False,False,False,True,False,False
@@ -54728,7 +54728,7 @@ LOT109-C0225,False,False,False,True,False,False
 LOT109-C0226,False,False,False,True,False,False
 LOT109-C0227,False,False,False,False,False,False
 LOT109-C0228,False,False,False,True,False,False
-LOT109-C0229,False,False,False,False,False,False
+LOT109-C0229,False,False,False,False,False,True
 LOT109-C0230,False,False,False,False,False,False
 LOT109-C0231,False,False,False,True,False,False
 LOT109-C0232,False,False,False,True,False,False
@@ -55126,7 +55126,7 @@ LOT110-C0123,False,False,False,True,False,False
 LOT110-C0124,False,False,False,False,False,False
 LOT110-C0125,False,False,False,False,False,False
 LOT110-C0126,False,False,False,False,False,False
-LOT110-C0127,True,False,False,True,False,True
+LOT110-C0127,False,False,False,True,False,True
 LOT110-C0128,False,False,False,False,False,False
 LOT110-C0129,False,False,False,False,False,False
 LOT110-C0130,False,False,False,False,False,False
@@ -55486,7 +55486,7 @@ LOT110-C0483,False,False,False,False,False,False
 LOT110-C0484,False,False,False,False,False,False
 LOT110-C0485,False,False,False,True,False,False
 LOT110-C0486,False,False,False,True,False,False
-LOT110-C0487,True,False,False,True,False,True
+LOT110-C0487,False,False,False,True,False,True
 LOT110-C0488,False,False,False,False,False,False
 LOT110-C0489,False,False,False,False,False,False
 LOT110-C0490,False,False,False,False,False,False
@@ -55543,7 +55543,7 @@ LOT111-C0040,False,False,False,False,False,False
 LOT111-C0041,False,False,False,False,False,False
 LOT111-C0042,False,False,False,False,False,False
 LOT111-C0043,False,False,False,False,False,False
-LOT111-C0044,True,True,True,True,False,True
+LOT111-C0044,True,True,True,True,False,False
 LOT111-C0045,False,False,False,False,False,False
 LOT111-C0046,False,False,False,False,False,False
 LOT111-C0047,False,False,False,False,False,False
@@ -55744,7 +55744,7 @@ LOT111-C0241,False,False,False,False,False,False
 LOT111-C0242,False,False,False,False,False,False
 LOT111-C0243,False,False,False,True,False,False
 LOT111-C0244,False,False,False,False,False,False
-LOT111-C0245,True,False,False,True,False,True
+LOT111-C0245,False,False,False,True,False,True
 LOT111-C0246,False,False,False,False,False,False
 LOT111-C0247,False,False,False,False,False,False
 LOT111-C0248,False,False,False,False,False,False
@@ -56376,7 +56376,7 @@ LOT112-C0373,False,False,False,True,False,False
 LOT112-C0374,False,False,False,False,False,False
 LOT112-C0375,False,False,False,False,False,False
 LOT112-C0376,False,False,False,False,False,False
-LOT112-C0377,False,False,False,True,False,False
+LOT112-C0377,False,False,False,True,False,True
 LOT112-C0378,False,False,False,False,False,False
 LOT112-C0379,False,False,False,True,False,False
 LOT112-C0380,False,False,False,True,False,False
@@ -56486,7 +56486,7 @@ LOT112-C0483,False,False,False,False,False,False
 LOT112-C0484,False,False,False,True,False,False
 LOT112-C0485,False,False,False,True,False,False
 LOT112-C0486,False,False,False,True,False,False
-LOT112-C0487,False,False,False,True,False,False
+LOT112-C0487,False,False,False,True,False,True
 LOT112-C0488,False,False,False,False,False,False
 LOT112-C0489,False,False,False,False,False,False
 LOT112-C0490,False,False,False,False,False,False
@@ -57853,7 +57853,7 @@ LOT115-C0350,False,False,False,True,False,False
 LOT115-C0351,False,False,False,False,False,False
 LOT115-C0352,False,False,False,True,False,False
 LOT115-C0353,False,False,False,False,False,False
-LOT115-C0354,True,False,False,True,False,True
+LOT115-C0354,False,False,False,True,False,True
 LOT115-C0355,False,False,False,True,False,False
 LOT115-C0356,False,False,False,False,False,False
 LOT115-C0357,False,False,False,True,False,False
@@ -59214,7 +59214,7 @@ LOT118-C0211,False,False,False,False,False,False
 LOT118-C0212,False,False,False,True,False,False
 LOT118-C0213,False,False,False,True,False,False
 LOT118-C0214,False,False,False,False,False,False
-LOT118-C0215,False,False,False,False,False,False
+LOT118-C0215,False,False,False,True,False,False
 LOT118-C0216,False,False,False,False,False,False
 LOT118-C0217,False,False,False,True,False,False
 LOT118-C0218,False,False,False,False,False,False
@@ -59263,7 +59263,7 @@ LOT118-C0260,False,False,False,False,False,False
 LOT118-C0261,False,False,False,True,False,False
 LOT118-C0262,False,False,False,True,False,False
 LOT118-C0263,False,False,False,False,False,False
-LOT118-C0264,True,True,True,True,False,False
+LOT118-C0264,True,False,False,True,False,False
 LOT118-C0265,False,False,False,True,False,False
 LOT118-C0266,False,False,False,True,False,False
 LOT118-C0267,False,False,False,True,False,False
@@ -60778,7 +60778,7 @@ LOT121-C0275,False,False,False,False,False,False
 LOT121-C0276,False,False,False,False,False,False
 LOT121-C0277,False,False,False,False,False,False
 LOT121-C0278,False,False,False,False,False,False
-LOT121-C0279,False,False,False,True,False,True
+LOT121-C0279,False,False,False,False,False,True
 LOT121-C0280,False,False,False,True,False,False
 LOT121-C0281,False,False,False,False,False,False
 LOT121-C0282,False,False,False,False,False,False
@@ -62165,7 +62165,7 @@ LOT124-C0162,False,False,False,False,False,False
 LOT124-C0163,False,False,False,False,False,False
 LOT124-C0164,False,False,False,True,False,False
 LOT124-C0165,False,False,False,False,False,False
-LOT124-C0166,False,False,False,False,False,False
+LOT124-C0166,False,False,False,True,False,False
 LOT124-C0167,False,False,False,False,False,False
 LOT124-C0168,False,False,False,True,False,False
 LOT124-C0169,False,False,False,False,False,False
@@ -63287,7 +63287,7 @@ LOT126-C0284,False,False,False,False,False,False
 LOT126-C0285,True,False,False,True,False,False
 LOT126-C0286,False,False,False,False,False,False
 LOT126-C0287,False,False,False,True,False,False
-LOT126-C0288,True,True,True,True,True,True
+LOT126-C0288,True,True,True,True,False,True
 LOT126-C0289,False,False,False,True,False,False
 LOT126-C0290,False,False,False,True,False,False
 LOT126-C0291,False,False,False,False,False,False
@@ -63351,7 +63351,7 @@ LOT126-C0348,False,False,False,False,False,False
 LOT126-C0349,False,False,False,True,False,False
 LOT126-C0350,False,False,False,False,False,False
 LOT126-C0351,False,False,False,True,False,False
-LOT126-C0352,False,False,False,False,False,True
+LOT126-C0352,False,False,False,False,False,False
 LOT126-C0353,False,False,False,False,False,False
 LOT126-C0354,False,False,False,False,False,False
 LOT126-C0355,False,False,False,True,False,False
@@ -63414,7 +63414,7 @@ LOT126-C0411,False,False,False,True,False,False
 LOT126-C0412,False,False,False,False,False,False
 LOT126-C0413,False,False,False,True,False,False
 LOT126-C0414,False,False,False,False,False,False
-LOT126-C0415,False,False,False,False,False,False
+LOT126-C0415,False,False,False,False,False,True
 LOT126-C0416,False,False,False,True,False,False
 LOT126-C0417,False,False,False,True,False,False
 LOT126-C0418,False,False,False,True,False,False
@@ -63811,7 +63811,7 @@ LOT127-C0308,False,False,False,False,False,False
 LOT127-C0309,False,False,False,False,False,False
 LOT127-C0310,False,False,False,False,False,False
 LOT127-C0311,False,False,False,False,False,False
-LOT127-C0312,True,False,False,True,False,False
+LOT127-C0312,False,False,False,True,False,False
 LOT127-C0313,False,False,False,False,False,False
 LOT127-C0314,False,False,False,False,False,False
 LOT127-C0315,False,False,False,False,False,False
@@ -64208,7 +64208,7 @@ LOT128-C0205,False,False,False,False,False,False
 LOT128-C0206,False,False,False,False,False,False
 LOT128-C0207,False,False,False,False,False,False
 LOT128-C0208,False,False,False,True,False,False
-LOT128-C0209,True,False,False,True,False,False
+LOT128-C0209,False,False,False,True,False,False
 LOT128-C0210,False,False,False,True,False,False
 LOT128-C0211,False,False,False,False,False,False
 LOT128-C0212,False,False,False,True,False,False
@@ -66970,7 +66970,7 @@ LOT133-C0467,False,False,False,False,False,False
 LOT133-C0468,False,False,False,True,False,False
 LOT133-C0469,False,False,False,False,False,False
 LOT133-C0470,False,False,False,True,False,False
-LOT133-C0471,True,True,True,True,False,True
+LOT133-C0471,True,True,True,True,False,False
 LOT133-C0472,False,False,False,False,False,False
 LOT133-C0473,False,False,False,False,False,False
 LOT133-C0474,False,False,False,True,False,False
@@ -70642,7 +70642,7 @@ LOT141-C0139,False,False,False,False,False,False
 LOT141-C0140,False,False,False,True,False,False
 LOT141-C0141,False,False,False,False,False,False
 LOT141-C0142,False,False,False,False,False,False
-LOT141-C0143,True,True,True,True,False,True
+LOT141-C0143,True,True,True,True,False,False
 LOT141-C0144,False,False,False,True,False,False
 LOT141-C0145,False,False,False,False,False,False
 LOT141-C0146,False,False,False,False,False,False
@@ -73116,7 +73116,7 @@ LOT146-C0113,False,False,False,False,False,False
 LOT146-C0114,False,False,False,False,False,False
 LOT146-C0115,False,False,False,False,False,False
 LOT146-C0116,False,False,False,False,False,False
-LOT146-C0117,False,False,False,False,False,False
+LOT146-C0117,False,False,False,True,False,False
 LOT146-C0118,False,False,False,True,False,False
 LOT146-C0119,False,False,False,True,False,False
 LOT146-C0120,False,False,False,False,False,False
@@ -73712,9 +73712,9 @@ LOT147-C0209,False,False,False,True,False,False
 LOT147-C0210,False,False,False,True,False,False
 LOT147-C0211,False,False,False,True,False,False
 LOT147-C0212,False,False,False,True,False,False
-LOT147-C0213,True,False,False,True,True,True
+LOT147-C0213,True,False,False,True,False,False
 LOT147-C0214,True,True,True,True,False,False
-LOT147-C0215,True,True,True,True,False,False
+LOT147-C0215,True,True,True,True,False,True
 LOT147-C0216,True,True,True,True,False,False
 LOT147-C0217,False,False,False,True,False,False
 LOT147-C0218,False,False,False,True,False,False
@@ -73747,12 +73747,12 @@ LOT147-C0244,True,True,True,True,False,False
 LOT147-C0245,False,True,True,True,False,False
 LOT147-C0246,True,True,True,True,False,False
 LOT147-C0247,True,True,True,True,False,False
-LOT147-C0248,True,True,True,True,True,True
+LOT147-C0248,True,True,True,True,False,True
 LOT147-C0249,True,True,True,True,False,False
 LOT147-C0250,True,True,True,True,False,True
 LOT147-C0251,True,True,True,True,False,False
 LOT147-C0252,True,True,True,True,False,False
-LOT147-C0253,True,True,True,True,True,True
+LOT147-C0253,True,True,True,True,False,False
 LOT147-C0254,True,True,True,True,False,False
 LOT147-C0255,True,True,True,True,False,True
 LOT147-C0256,False,False,False,False,False,False
@@ -74127,7 +74127,7 @@ LOT148-C0124,False,False,False,False,False,False
 LOT148-C0125,False,False,False,False,False,False
 LOT148-C0126,False,False,False,False,False,False
 LOT148-C0127,False,False,False,False,False,False
-LOT148-C0128,True,False,False,True,False,True
+LOT148-C0128,False,False,False,True,False,True
 LOT148-C0129,False,False,False,False,False,False
 LOT148-C0130,False,False,False,True,False,False
 LOT148-C0131,False,False,False,True,False,False
@@ -75633,7 +75633,7 @@ LOT151-C0130,True,True,True,True,False,False
 LOT151-C0131,True,True,True,True,False,False
 LOT151-C0132,False,True,True,True,False,False
 LOT151-C0133,True,True,True,True,False,True
-LOT151-C0134,True,True,True,True,False,True
+LOT151-C0134,True,True,True,True,False,False
 LOT151-C0135,True,True,True,True,False,True
 LOT151-C0136,True,True,True,True,False,False
 LOT151-C0137,True,True,True,True,False,False
@@ -75642,7 +75642,7 @@ LOT151-C0139,False,True,True,True,False,False
 LOT151-C0140,False,True,True,True,False,False
 LOT151-C0141,False,True,True,True,False,False
 LOT151-C0142,True,True,True,True,False,False
-LOT151-C0143,True,True,True,True,False,True
+LOT151-C0143,True,True,True,True,False,False
 LOT151-C0144,True,True,True,True,False,False
 LOT151-C0145,True,True,True,True,False,False
 LOT151-C0146,False,False,False,True,False,False
@@ -75670,7 +75670,7 @@ LOT151-C0167,True,True,True,True,False,False
 LOT151-C0168,True,True,True,True,False,False
 LOT151-C0169,False,True,True,True,False,False
 LOT151-C0170,False,False,False,True,False,False
-LOT151-C0171,True,False,False,True,False,True
+LOT151-C0171,True,False,False,True,False,False
 LOT151-C0172,False,False,False,True,False,False
 LOT151-C0173,False,False,False,True,False,False
 LOT151-C0174,True,True,True,True,False,False
@@ -75685,7 +75685,7 @@ LOT151-C0182,True,True,True,True,False,False
 LOT151-C0183,True,True,True,True,False,False
 LOT151-C0184,True,True,True,True,False,True
 LOT151-C0185,True,True,True,True,False,True
-LOT151-C0186,True,True,True,True,False,False
+LOT151-C0186,True,True,True,True,False,True
 LOT151-C0187,True,True,True,True,False,False
 LOT151-C0188,True,True,True,True,False,False
 LOT151-C0189,True,True,True,True,False,False
@@ -75952,7 +75952,7 @@ LOT151-C0449,False,False,False,False,False,False
 LOT151-C0450,False,False,False,False,False,False
 LOT151-C0451,False,False,False,False,False,False
 LOT151-C0452,False,False,False,False,False,False
-LOT151-C0453,False,False,False,False,False,True
+LOT151-C0453,False,False,False,False,False,False
 LOT151-C0454,False,False,False,False,False,False
 LOT151-C0455,False,False,False,True,False,False
 LOT151-C0456,False,False,False,False,False,False
@@ -76239,7 +76239,7 @@ LOT152-C0236,False,False,False,False,False,False
 LOT152-C0237,False,False,False,False,False,False
 LOT152-C0238,False,False,False,False,False,False
 LOT152-C0239,False,False,False,True,False,False
-LOT152-C0240,True,False,False,True,False,True
+LOT152-C0240,False,False,False,True,False,True
 LOT152-C0241,False,False,False,False,False,False
 LOT152-C0242,False,False,False,False,False,False
 LOT152-C0243,False,False,False,False,False,False
@@ -77018,7 +77018,7 @@ LOT154-C0015,False,False,False,True,False,False
 LOT154-C0016,False,False,False,True,False,False
 LOT154-C0017,False,False,False,False,False,False
 LOT154-C0018,False,False,False,False,False,False
-LOT154-C0019,True,True,True,True,True,True
+LOT154-C0019,True,True,True,True,False,False
 LOT154-C0020,False,False,False,True,False,False
 LOT154-C0021,False,False,False,True,False,False
 LOT154-C0022,False,False,False,False,False,False
@@ -78749,7 +78749,7 @@ LOT157-C0246,False,False,False,False,False,False
 LOT157-C0247,False,False,False,False,False,False
 LOT157-C0248,False,False,False,False,False,False
 LOT157-C0249,False,False,False,False,False,False
-LOT157-C0250,True,True,True,True,False,False
+LOT157-C0250,True,False,True,True,False,False
 LOT157-C0251,False,False,False,True,False,False
 LOT157-C0252,False,False,False,False,False,False
 LOT157-C0253,False,False,False,False,False,False
@@ -80215,7 +80215,7 @@ LOT160-C0212,False,False,False,False,False,False
 LOT160-C0213,False,False,False,True,False,False
 LOT160-C0214,False,False,False,True,False,False
 LOT160-C0215,False,False,False,False,False,False
-LOT160-C0216,True,True,True,True,False,True
+LOT160-C0216,True,True,True,True,False,False
 LOT160-C0217,False,False,False,False,False,False
 LOT160-C0218,False,False,False,False,False,False
 LOT160-C0219,False,False,False,True,False,False
@@ -81534,7 +81534,7 @@ LOT163-C0031,False,False,False,True,False,False
 LOT163-C0032,False,False,False,False,False,False
 LOT163-C0033,False,False,False,True,False,False
 LOT163-C0034,False,False,False,False,False,False
-LOT163-C0035,False,False,False,True,False,True
+LOT163-C0035,False,False,False,False,False,True
 LOT163-C0036,False,False,False,False,False,False
 LOT163-C0037,False,False,False,False,False,False
 LOT163-C0038,False,False,False,True,False,False
@@ -82606,7 +82606,7 @@ LOT165-C0103,False,False,False,True,False,False
 LOT165-C0104,False,False,False,True,False,False
 LOT165-C0105,False,False,False,True,False,False
 LOT165-C0106,False,False,False,False,False,False
-LOT165-C0107,True,True,True,True,False,True
+LOT165-C0107,True,True,True,True,False,False
 LOT165-C0108,False,False,False,True,False,False
 LOT165-C0109,False,False,False,True,False,False
 LOT165-C0110,False,False,False,False,False,False
@@ -82627,19 +82627,19 @@ LOT165-C0124,False,False,False,False,False,False
 LOT165-C0125,False,False,False,True,False,False
 LOT165-C0126,False,False,False,False,False,False
 LOT165-C0127,False,False,False,False,False,False
-LOT165-C0128,True,True,True,True,False,True
+LOT165-C0128,True,True,True,True,False,False
 LOT165-C0129,True,True,True,True,False,True
 LOT165-C0130,True,True,True,True,False,False
 LOT165-C0131,True,True,True,True,False,False
-LOT165-C0132,True,True,True,True,True,True
-LOT165-C0133,True,True,True,True,False,False
+LOT165-C0132,True,True,True,True,False,False
+LOT165-C0133,True,True,True,True,False,True
 LOT165-C0134,True,True,True,True,False,False
 LOT165-C0135,True,True,True,True,False,False
 LOT165-C0136,True,True,True,True,False,False
 LOT165-C0137,True,True,True,True,False,False
-LOT165-C0138,True,True,True,True,True,True
+LOT165-C0138,True,True,True,True,False,False
 LOT165-C0139,True,True,True,True,False,False
-LOT165-C0140,True,False,False,True,True,True
+LOT165-C0140,True,False,False,True,False,False
 LOT165-C0141,False,True,True,True,False,False
 LOT165-C0142,True,True,True,True,False,False
 LOT165-C0143,True,True,True,True,False,False
@@ -82659,7 +82659,7 @@ LOT165-C0156,False,False,False,True,False,False
 LOT165-C0157,False,False,False,True,False,False
 LOT165-C0158,False,True,True,True,False,False
 LOT165-C0159,True,True,True,True,False,False
-LOT165-C0160,True,True,True,True,True,True
+LOT165-C0160,True,True,True,True,False,False
 LOT165-C0161,False,True,True,True,False,False
 LOT165-C0162,False,False,False,True,False,False
 LOT165-C0163,False,False,False,True,False,False
@@ -82675,22 +82675,22 @@ LOT165-C0172,False,False,False,True,False,False
 LOT165-C0173,False,False,False,True,False,False
 LOT165-C0174,False,False,False,True,False,False
 LOT165-C0175,True,True,True,True,False,False
-LOT165-C0176,True,True,True,True,False,True
+LOT165-C0176,True,True,True,True,False,False
 LOT165-C0177,True,True,True,True,False,False
 LOT165-C0178,True,True,True,True,False,False
 LOT165-C0179,False,False,False,True,False,False
-LOT165-C0180,True,True,True,True,False,False
+LOT165-C0180,True,True,True,True,False,True
 LOT165-C0181,False,True,True,True,False,False
 LOT165-C0182,True,True,True,True,False,False
 LOT165-C0183,True,True,True,True,False,False
-LOT165-C0184,True,True,True,True,False,False
+LOT165-C0184,True,True,True,True,False,True
 LOT165-C0185,True,True,True,True,False,False
 LOT165-C0186,True,True,True,True,False,False
 LOT165-C0187,True,True,True,True,False,False
 LOT165-C0188,True,True,True,True,False,False
 LOT165-C0189,True,True,True,True,False,False
 LOT165-C0190,True,True,True,True,False,False
-LOT165-C0191,True,True,True,True,True,True
+LOT165-C0191,True,True,True,True,False,True
 LOT165-C0192,False,False,False,False,False,False
 LOT165-C0193,False,False,False,False,False,False
 LOT165-C0194,False,False,False,False,False,False
@@ -82905,7 +82905,7 @@ LOT165-C0402,False,False,False,True,False,False
 LOT165-C0403,False,False,False,False,False,False
 LOT165-C0404,False,False,False,True,False,False
 LOT165-C0405,False,False,False,True,False,False
-LOT165-C0406,False,False,False,True,False,True
+LOT165-C0406,False,False,False,True,False,False
 LOT165-C0407,False,False,False,True,False,False
 LOT165-C0408,False,False,False,True,False,False
 LOT165-C0409,False,False,False,True,False,False
@@ -84687,7 +84687,7 @@ LOT169-C0184,False,False,False,True,False,False
 LOT169-C0185,False,False,False,False,False,False
 LOT169-C0186,False,False,False,True,False,False
 LOT169-C0187,False,False,False,False,False,False
-LOT169-C0188,False,False,False,True,False,True
+LOT169-C0188,False,False,False,False,False,True
 LOT169-C0189,False,False,False,True,False,False
 LOT169-C0190,False,False,False,False,False,False
 LOT169-C0191,False,False,False,True,False,False
@@ -84840,7 +84840,7 @@ LOT169-C0337,False,False,False,True,False,False
 LOT169-C0338,True,True,True,True,False,False
 LOT169-C0339,True,True,True,True,False,False
 LOT169-C0340,False,False,False,False,False,False
-LOT169-C0341,True,True,True,True,False,False
+LOT169-C0341,True,True,True,True,False,True
 LOT169-C0342,False,True,True,True,False,False
 LOT169-C0343,False,False,False,True,False,False
 LOT169-C0344,True,False,False,True,False,False
@@ -84902,7 +84902,7 @@ LOT169-C0399,False,False,False,False,False,False
 LOT169-C0400,False,False,False,True,False,False
 LOT169-C0401,False,False,False,True,False,False
 LOT169-C0402,False,False,False,False,False,False
-LOT169-C0403,True,False,False,True,False,False
+LOT169-C0403,False,False,False,True,False,False
 LOT169-C0404,False,False,False,False,False,False
 LOT169-C0405,False,False,False,True,False,False
 LOT169-C0406,False,False,False,False,False,False
@@ -85084,7 +85084,7 @@ LOT170-C0081,False,False,False,True,False,False
 LOT170-C0082,False,False,False,False,False,False
 LOT170-C0083,False,False,False,True,False,False
 LOT170-C0084,False,False,False,False,False,False
-LOT170-C0085,True,True,True,True,False,False
+LOT170-C0085,True,True,True,True,False,True
 LOT170-C0086,False,False,False,False,False,False
 LOT170-C0087,False,False,False,False,False,False
 LOT170-C0088,False,False,False,False,False,False
@@ -85135,7 +85135,7 @@ LOT170-C0132,False,False,False,False,False,False
 LOT170-C0133,False,False,False,False,False,False
 LOT170-C0134,False,False,False,True,False,False
 LOT170-C0135,False,False,False,True,False,False
-LOT170-C0136,True,False,False,True,False,True
+LOT170-C0136,False,False,False,True,False,True
 LOT170-C0137,False,False,False,False,False,False
 LOT170-C0138,False,False,False,True,False,False
 LOT170-C0139,False,False,False,False,False,False
@@ -85787,7 +85787,7 @@ LOT171-C0284,False,False,False,False,False,False
 LOT171-C0285,False,False,False,False,False,False
 LOT171-C0286,False,False,False,False,False,False
 LOT171-C0287,False,False,False,False,False,False
-LOT171-C0288,True,False,False,True,True,True
+LOT171-C0288,True,False,False,True,False,False
 LOT171-C0289,False,False,False,False,False,False
 LOT171-C0290,False,False,False,False,False,False
 LOT171-C0291,False,False,False,True,False,False
@@ -86525,7 +86525,7 @@ LOT173-C0022,False,False,False,True,False,False
 LOT173-C0023,False,False,False,False,False,False
 LOT173-C0024,False,False,False,True,False,False
 LOT173-C0025,False,False,False,False,False,False
-LOT173-C0026,True,False,False,True,False,True
+LOT173-C0026,False,False,False,True,False,True
 LOT173-C0027,False,False,False,False,False,False
 LOT173-C0028,False,False,False,False,False,False
 LOT173-C0029,False,False,False,False,False,False
@@ -87048,7 +87048,7 @@ LOT174-C0045,True,True,True,True,False,False
 LOT174-C0046,False,False,False,True,False,False
 LOT174-C0047,False,False,False,False,False,False
 LOT174-C0048,False,False,False,True,False,False
-LOT174-C0049,False,False,False,False,False,False
+LOT174-C0049,False,False,False,True,False,False
 LOT174-C0050,False,False,False,True,False,False
 LOT174-C0051,False,False,False,True,False,False
 LOT174-C0052,False,False,False,False,False,False
@@ -88415,7 +88415,7 @@ LOT176-C0412,False,False,False,False,False,False
 LOT176-C0413,False,False,False,False,False,False
 LOT176-C0414,False,False,False,True,False,False
 LOT176-C0415,False,False,False,True,False,False
-LOT176-C0416,True,True,True,True,False,False
+LOT176-C0416,True,True,True,True,False,True
 LOT176-C0417,False,False,False,False,False,False
 LOT176-C0418,False,False,False,False,False,False
 LOT176-C0419,False,False,False,True,False,False
@@ -89109,7 +89109,7 @@ LOT178-C0106,False,False,False,False,False,False
 LOT178-C0107,False,False,False,False,False,False
 LOT178-C0108,False,False,False,False,False,False
 LOT178-C0109,False,False,False,False,False,False
-LOT178-C0110,False,False,False,False,False,False
+LOT178-C0110,False,False,False,False,False,True
 LOT178-C0111,False,False,False,False,False,False
 LOT178-C0112,False,False,False,True,False,False
 LOT178-C0113,False,False,False,False,False,False
@@ -89424,7 +89424,7 @@ LOT178-C0421,False,False,False,False,False,False
 LOT178-C0422,False,False,False,False,False,False
 LOT178-C0423,False,False,False,False,False,False
 LOT178-C0424,False,False,False,False,False,False
-LOT178-C0425,True,False,False,True,False,True
+LOT178-C0425,False,False,False,False,False,True
 LOT178-C0426,False,False,False,False,False,False
 LOT178-C0427,False,False,False,False,False,False
 LOT178-C0428,False,False,False,False,False,False
@@ -90030,7 +90030,7 @@ LOT180-C0027,False,False,False,True,False,False
 LOT180-C0028,False,False,False,True,False,False
 LOT180-C0029,False,False,False,True,False,False
 LOT180-C0030,False,False,False,False,False,False
-LOT180-C0031,True,True,True,True,False,False
+LOT180-C0031,True,True,True,True,True,True
 LOT180-C0032,False,False,False,False,False,False
 LOT180-C0033,False,False,False,False,False,False
 LOT180-C0034,False,False,False,False,False,False
@@ -90570,7 +90570,7 @@ LOT181-C0067,True,True,True,True,False,True
 LOT181-C0068,True,True,True,True,False,False
 LOT181-C0069,True,True,True,True,False,False
 LOT181-C0070,True,True,True,True,False,False
-LOT181-C0071,True,True,True,True,True,True
+LOT181-C0071,True,True,True,True,False,True
 LOT181-C0072,True,True,True,True,False,False
 LOT181-C0073,True,True,True,True,False,True
 LOT181-C0074,True,True,True,True,False,False
@@ -90610,7 +90610,7 @@ LOT181-C0107,False,False,False,True,False,False
 LOT181-C0108,False,False,False,True,False,False
 LOT181-C0109,False,False,False,True,False,False
 LOT181-C0110,True,True,True,True,False,False
-LOT181-C0111,True,True,True,True,False,False
+LOT181-C0111,True,True,True,True,True,True
 LOT181-C0112,True,True,True,True,False,False
 LOT181-C0113,True,True,True,True,False,True
 LOT181-C0114,True,True,True,True,False,False
@@ -90618,7 +90618,7 @@ LOT181-C0115,True,False,False,True,False,False
 LOT181-C0116,True,False,False,True,False,False
 LOT181-C0117,True,True,True,True,False,False
 LOT181-C0118,True,True,True,True,False,True
-LOT181-C0119,True,True,True,True,False,False
+LOT181-C0119,True,True,True,True,False,True
 LOT181-C0120,True,True,True,True,False,True
 LOT181-C0121,True,True,True,True,False,True
 LOT181-C0122,True,True,True,True,False,False
@@ -91230,7 +91230,7 @@ LOT182-C0227,False,False,False,True,False,False
 LOT182-C0228,False,False,False,True,False,False
 LOT182-C0229,False,False,False,True,False,False
 LOT182-C0230,False,False,True,True,False,False
-LOT182-C0231,True,True,True,True,True,True
+LOT182-C0231,True,True,True,True,False,False
 LOT182-C0232,True,True,True,True,False,False
 LOT182-C0233,True,True,True,True,False,False
 LOT182-C0234,False,False,False,True,False,False
@@ -91249,7 +91249,7 @@ LOT182-C0246,True,True,True,True,False,False
 LOT182-C0247,True,True,True,True,False,True
 LOT182-C0248,True,True,True,True,False,True
 LOT182-C0249,True,True,True,True,False,True
-LOT182-C0250,True,True,True,True,False,False
+LOT182-C0250,True,True,True,True,False,True
 LOT182-C0251,True,True,True,True,False,False
 LOT182-C0252,True,True,True,True,False,False
 LOT182-C0253,True,True,True,True,False,False
@@ -93272,7 +93272,7 @@ LOT186-C0269,False,False,False,False,False,False
 LOT186-C0270,False,False,False,False,False,False
 LOT186-C0271,False,False,False,False,False,False
 LOT186-C0272,False,False,False,False,False,False
-LOT186-C0273,True,False,False,True,False,True
+LOT186-C0273,False,False,False,True,False,True
 LOT186-C0274,False,False,False,False,False,False
 LOT186-C0275,False,False,False,False,False,False
 LOT186-C0276,False,False,False,True,False,False
@@ -94449,7 +94449,7 @@ LOT188-C0446,False,False,False,False,False,False
 LOT188-C0447,False,False,False,True,False,False
 LOT188-C0448,False,False,False,False,False,False
 LOT188-C0449,False,False,False,True,False,False
-LOT188-C0450,True,True,True,True,False,False
+LOT188-C0450,True,True,True,True,False,True
 LOT188-C0451,False,False,False,True,False,False
 LOT188-C0452,False,False,False,False,False,False
 LOT188-C0453,False,False,False,True,False,False
@@ -96390,7 +96390,7 @@ LOT192-C0387,False,False,False,False,False,False
 LOT192-C0388,False,False,False,False,False,False
 LOT192-C0389,False,False,False,False,False,False
 LOT192-C0390,False,False,False,False,False,False
-LOT192-C0391,False,False,False,False,False,False
+LOT192-C0391,False,False,False,True,False,False
 LOT192-C0392,False,False,False,False,False,False
 LOT192-C0393,False,False,False,True,False,False
 LOT192-C0394,False,False,False,False,False,False
@@ -97169,7 +97169,7 @@ LOT194-C0166,False,False,False,True,False,False
 LOT194-C0167,False,False,False,False,False,False
 LOT194-C0168,False,False,False,False,False,False
 LOT194-C0169,False,False,False,True,False,False
-LOT194-C0170,False,False,False,False,False,False
+LOT194-C0170,False,False,False,False,False,True
 LOT194-C0171,False,False,False,True,False,False
 LOT194-C0172,False,False,False,True,False,False
 LOT194-C0173,False,False,False,False,False,False
@@ -97679,7 +97679,7 @@ LOT195-C0176,False,False,False,False,False,False
 LOT195-C0177,False,False,False,False,False,False
 LOT195-C0178,False,False,False,False,False,False
 LOT195-C0179,False,False,False,False,False,False
-LOT195-C0180,True,True,True,True,False,True
+LOT195-C0180,True,True,True,True,False,False
 LOT195-C0181,False,False,False,False,False,False
 LOT195-C0182,False,False,False,False,False,False
 LOT195-C0183,False,False,False,False,False,False
@@ -100183,7 +100183,7 @@ LOT200-C0180,False,False,False,False,False,False
 LOT200-C0181,False,False,False,False,False,False
 LOT200-C0182,False,False,False,True,False,False
 LOT200-C0183,False,False,False,True,False,False
-LOT200-C0184,False,False,False,False,False,False
+LOT200-C0184,False,False,False,True,False,False
 LOT200-C0185,False,False,False,False,False,False
 LOT200-C0186,False,False,False,False,False,False
 LOT200-C0187,False,False,False,False,False,False
@@ -102047,7 +102047,7 @@ LOT204-C0044,False,False,False,False,False,False
 LOT204-C0045,False,False,False,True,False,False
 LOT204-C0046,False,False,False,True,False,False
 LOT204-C0047,False,False,False,False,False,False
-LOT204-C0048,False,False,False,True,False,True
+LOT204-C0048,False,False,False,True,False,False
 LOT204-C0049,False,False,False,False,False,False
 LOT204-C0050,False,False,False,True,False,False
 LOT204-C0051,False,False,False,False,False,False
@@ -103276,7 +103276,7 @@ LOT206-C0273,False,False,False,False,False,False
 LOT206-C0274,False,False,False,True,False,False
 LOT206-C0275,False,False,False,True,False,True
 LOT206-C0276,False,False,False,False,False,False
-LOT206-C0277,True,True,True,True,False,True
+LOT206-C0277,True,True,True,True,False,False
 LOT206-C0278,False,False,False,True,False,False
 LOT206-C0279,False,False,False,True,False,False
 LOT206-C0280,False,False,False,False,False,False
@@ -103682,7 +103682,7 @@ LOT207-C0179,False,False,False,False,False,False
 LOT207-C0180,True,False,False,True,False,False
 LOT207-C0181,False,False,False,False,False,False
 LOT207-C0182,False,False,False,False,False,False
-LOT207-C0183,True,True,True,True,False,False
+LOT207-C0183,True,True,True,True,False,True
 LOT207-C0184,False,False,False,False,False,False
 LOT207-C0185,False,False,False,False,False,False
 LOT207-C0186,False,False,False,False,False,False
@@ -103888,7 +103888,7 @@ LOT207-C0385,False,False,False,True,False,False
 LOT207-C0386,False,False,False,False,False,False
 LOT207-C0387,False,False,False,False,False,False
 LOT207-C0388,False,False,False,False,False,False
-LOT207-C0389,False,False,False,True,False,True
+LOT207-C0389,False,False,False,False,False,True
 LOT207-C0390,False,False,False,False,False,False
 LOT207-C0391,False,False,False,False,False,False
 LOT207-C0392,False,False,False,False,False,False
@@ -104083,7 +104083,7 @@ LOT208-C0080,False,False,False,False,False,False
 LOT208-C0081,False,False,False,True,False,False
 LOT208-C0082,False,False,False,False,False,False
 LOT208-C0083,False,False,False,False,False,False
-LOT208-C0084,True,True,True,True,False,True
+LOT208-C0084,True,True,True,True,False,False
 LOT208-C0085,False,False,False,True,False,False
 LOT208-C0086,False,False,False,False,False,False
 LOT208-C0087,False,False,False,False,False,False
@@ -104876,7 +104876,7 @@ LOT209-C0373,False,False,False,False,False,False
 LOT209-C0374,False,False,False,False,False,False
 LOT209-C0375,False,False,False,False,False,False
 LOT209-C0376,False,False,False,False,False,False
-LOT209-C0377,True,False,False,True,False,False
+LOT209-C0377,False,False,False,True,False,False
 LOT209-C0378,False,False,False,False,False,False
 LOT209-C0379,False,False,False,False,False,False
 LOT209-C0380,False,False,False,False,False,False
@@ -105408,7 +105408,7 @@ LOT210-C0405,False,False,False,True,False,False
 LOT210-C0406,False,False,False,False,False,False
 LOT210-C0407,False,False,False,True,False,False
 LOT210-C0408,False,False,False,True,False,False
-LOT210-C0409,True,True,True,True,True,True
+LOT210-C0409,True,True,True,True,False,True
 LOT210-C0410,False,False,False,False,False,False
 LOT210-C0411,False,False,False,False,False,False
 LOT210-C0412,False,False,False,True,False,False
@@ -106183,7 +106183,7 @@ LOT212-C0180,False,False,False,True,False,False
 LOT212-C0181,False,False,False,False,False,False
 LOT212-C0182,False,False,False,False,False,False
 LOT212-C0183,False,False,False,True,False,False
-LOT212-C0184,True,False,False,True,False,True
+LOT212-C0184,False,False,False,True,False,True
 LOT212-C0185,False,False,False,False,False,False
 LOT212-C0186,False,False,False,False,False,False
 LOT212-C0187,False,False,False,True,False,False
@@ -106763,7 +106763,7 @@ LOT213-C0260,True,True,True,True,False,False
 LOT213-C0261,True,True,True,True,False,True
 LOT213-C0262,True,True,True,True,False,False
 LOT213-C0263,True,True,True,True,False,True
-LOT213-C0264,True,True,True,True,False,False
+LOT213-C0264,True,True,True,True,False,True
 LOT213-C0265,True,True,True,True,False,False
 LOT213-C0266,True,False,False,True,False,False
 LOT213-C0267,False,True,True,True,False,False
@@ -107022,7 +107022,7 @@ LOT214-C0019,False,False,False,False,False,False
 LOT214-C0020,False,False,False,False,False,False
 LOT214-C0021,False,False,False,False,False,False
 LOT214-C0022,False,False,False,False,False,False
-LOT214-C0023,False,False,False,False,False,False
+LOT214-C0023,False,False,False,False,False,True
 LOT214-C0024,False,False,False,False,False,False
 LOT214-C0025,False,False,False,False,False,False
 LOT214-C0026,False,False,False,True,False,False
@@ -107049,7 +107049,7 @@ LOT214-C0046,False,False,False,False,False,False
 LOT214-C0047,False,False,False,True,False,False
 LOT214-C0048,False,False,False,False,False,False
 LOT214-C0049,False,False,False,False,False,False
-LOT214-C0050,True,False,False,True,False,False
+LOT214-C0050,False,False,False,True,False,False
 LOT214-C0051,False,False,False,False,False,False
 LOT214-C0052,False,False,False,False,False,False
 LOT214-C0053,False,False,False,False,False,False
@@ -108260,7 +108260,7 @@ LOT216-C0257,False,False,False,False,False,False
 LOT216-C0258,False,False,False,False,False,False
 LOT216-C0259,False,False,False,False,False,False
 LOT216-C0260,False,False,False,False,False,False
-LOT216-C0261,True,True,True,True,True,True
+LOT216-C0261,True,True,True,True,False,True
 LOT216-C0262,False,False,False,True,False,False
 LOT216-C0263,False,False,False,False,False,False
 LOT216-C0264,False,False,False,False,False,False
@@ -108828,7 +108828,7 @@ LOT217-C0325,False,False,False,False,False,False
 LOT217-C0326,False,False,False,True,False,False
 LOT217-C0327,False,False,False,False,False,False
 LOT217-C0328,False,False,False,True,False,False
-LOT217-C0329,False,False,False,False,False,True
+LOT217-C0329,False,False,False,False,False,False
 LOT217-C0330,False,False,False,True,False,False
 LOT217-C0331,False,False,False,True,False,False
 LOT217-C0332,False,False,False,False,False,False
@@ -110706,7 +110706,7 @@ LOT221-C0203,False,False,False,False,False,False
 LOT221-C0204,False,False,False,False,False,False
 LOT221-C0205,False,False,False,False,False,False
 LOT221-C0206,False,False,False,False,False,False
-LOT221-C0207,False,False,False,True,False,True
+LOT221-C0207,False,False,False,False,False,True
 LOT221-C0208,False,False,False,False,False,False
 LOT221-C0209,False,False,False,False,False,False
 LOT221-C0210,False,False,False,False,False,False
@@ -112419,7 +112419,7 @@ LOT224-C0416,False,False,False,False,False,False
 LOT224-C0417,False,False,False,False,False,False
 LOT224-C0418,False,False,False,False,False,False
 LOT224-C0419,False,False,False,False,False,False
-LOT224-C0420,True,True,True,True,False,True
+LOT224-C0420,True,True,True,True,False,False
 LOT224-C0421,False,False,False,False,False,False
 LOT224-C0422,False,False,False,False,False,False
 LOT224-C0423,False,False,False,False,False,False
@@ -112674,7 +112674,7 @@ LOT225-C0171,False,False,False,False,False,False
 LOT225-C0172,False,False,False,False,False,False
 LOT225-C0173,False,False,False,False,False,False
 LOT225-C0174,False,False,False,False,False,False
-LOT225-C0175,False,False,False,False,False,False
+LOT225-C0175,False,False,False,False,False,True
 LOT225-C0176,False,False,False,False,False,False
 LOT225-C0177,False,False,False,True,False,False
 LOT225-C0178,False,False,False,False,False,False
@@ -113731,7 +113731,7 @@ LOT227-C0228,False,False,False,True,False,False
 LOT227-C0229,False,False,False,False,False,False
 LOT227-C0230,False,False,False,False,False,False
 LOT227-C0231,False,False,False,False,False,False
-LOT227-C0232,True,True,True,True,False,False
+LOT227-C0232,True,False,False,True,False,False
 LOT227-C0233,False,False,False,True,False,False
 LOT227-C0234,False,False,False,False,False,False
 LOT227-C0235,False,False,False,False,False,False
@@ -113764,7 +113764,7 @@ LOT227-C0261,False,False,False,False,False,False
 LOT227-C0262,False,False,False,False,False,False
 LOT227-C0263,False,False,False,False,False,False
 LOT227-C0264,False,False,False,False,False,False
-LOT227-C0265,False,False,False,True,False,True
+LOT227-C0265,False,False,False,False,False,True
 LOT227-C0266,False,False,False,False,False,False
 LOT227-C0267,False,False,False,False,False,False
 LOT227-C0268,False,False,False,False,False,False
@@ -115488,7 +115488,7 @@ LOT230-C0485,False,False,False,False,False,False
 LOT230-C0486,False,False,False,True,False,False
 LOT230-C0487,False,False,False,False,False,False
 LOT230-C0488,False,False,False,False,False,False
-LOT230-C0489,False,False,False,False,False,False
+LOT230-C0489,False,False,False,True,False,False
 LOT230-C0490,False,False,False,False,False,False
 LOT230-C0491,False,False,False,False,False,False
 LOT230-C0492,False,False,False,True,False,False
@@ -117762,7 +117762,7 @@ LOT235-C0259,False,False,False,False,False,False
 LOT235-C0260,False,False,False,False,False,False
 LOT235-C0261,False,False,False,False,False,False
 LOT235-C0262,False,False,False,False,False,False
-LOT235-C0263,False,False,False,True,False,True
+LOT235-C0263,False,False,False,True,False,False
 LOT235-C0264,False,False,False,False,False,False
 LOT235-C0265,False,False,False,False,False,False
 LOT235-C0266,False,False,False,False,False,False
@@ -118555,7 +118555,7 @@ LOT237-C0052,False,False,False,False,False,False
 LOT237-C0053,False,False,False,False,False,False
 LOT237-C0054,False,False,False,False,False,False
 LOT237-C0055,False,False,False,True,False,False
-LOT237-C0056,False,False,False,False,False,False
+LOT237-C0056,False,False,False,False,False,True
 LOT237-C0057,False,False,False,False,False,False
 LOT237-C0058,False,False,False,False,False,False
 LOT237-C0059,False,False,False,False,False,False
@@ -118889,7 +118889,7 @@ LOT237-C0386,False,False,False,False,False,False
 LOT237-C0387,False,False,False,False,False,False
 LOT237-C0388,False,False,False,True,False,False
 LOT237-C0389,False,False,False,False,False,False
-LOT237-C0390,False,False,False,False,False,False
+LOT237-C0390,False,False,False,True,False,False
 LOT237-C0391,False,False,False,False,False,False
 LOT237-C0392,False,False,False,False,False,False
 LOT237-C0393,False,False,False,False,False,False
@@ -119357,7 +119357,7 @@ LOT238-C0354,True,True,True,True,False,False
 LOT238-C0355,True,True,True,True,False,False
 LOT238-C0356,True,True,True,True,False,True
 LOT238-C0357,True,True,True,True,False,False
-LOT238-C0358,True,True,True,True,False,False
+LOT238-C0358,True,True,True,True,False,True
 LOT238-C0359,False,False,False,True,False,False
 LOT238-C0360,False,False,False,True,False,False
 LOT238-C0361,False,False,False,True,False,False
@@ -119765,7 +119765,7 @@ LOT239-C0262,False,False,False,False,False,False
 LOT239-C0263,False,False,False,True,False,False
 LOT239-C0264,False,False,False,False,False,False
 LOT239-C0265,False,False,False,False,False,False
-LOT239-C0266,False,False,False,True,False,True
+LOT239-C0266,False,False,False,False,False,True
 LOT239-C0267,False,False,False,False,False,False
 LOT239-C0268,False,False,False,False,False,False
 LOT239-C0269,False,False,False,True,False,False

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Escape-rate bound | Burn-in screening</title>
+<meta name="description" content="A bounded escape rate: conformal risk control">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html" aria-current="page"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 5</p>
+<h1>A bounded escape rate: conformal risk control</h1>
+<div class="col">
+<p class="lede">Most screens are tuned for high recall and hope. Conformal risk control gives a
+distribution-free, finite-sample bound on the <em>expected</em> escape rate of the screen itself.</p>
+
+<h2>The mechanism</h2>
+<p>Following Angelopoulos, Bates, Fisch, Lei and Schuster (ICLR 2024), with a detector score where
+higher means more anomalous and a part flagged when <code>score &#8805; &#955;</code>:</p>
+<pre><code>L(&#955;)  = fraction of defective calibration parts with score &lt; &#955;
+&#955;&#770;     = the largest &#955; with (n&#183;L(&#955;) + 1) / (n + 1) &#8804; &#945;
+then  E[ escape rate at &#955;&#770; ] &#8804; &#945;   on future exchangeable parts</code></pre>
+<p><code>n</code> is the number of <em>defective</em> calibration parts, not the calibration set
+size; at 1.75% prevalence getting that wrong would silently loosen the bound.</p>
+<div class="note mask"><b>Exchangeability is the whole assumption.</b> Parts in one lot share a lot effect, so calibration and evaluation are always split by lot, and training lots are excluded entirely: a part the detector was fitted on is not exchangeable with one it has never seen.</div>
+
+<h2>Does it hold?</h2>
+<p>Eight target rates from 1% to 20%, three scores (the fused Module A score, LOF alone, and the Module B
+bound margin), 40 random lot-grouped calibration/evaluation splits of the validation and test lots each.
+A one-sided t-test asks whether any mean escape rate exceeds its target by more than the split-to-split
+spread explains. <strong>0 of 24 show a significant violation</strong>;
+the smallest p-value is 0.34 and the largest overshoot is 0.4 standard errors.</p>
+<figure><div class="plate"><img src="assets/fig/fig8_conformal_guarantee.svg" alt="Measured escape rate against the target" loading="lazy"></div><figcaption>Measured escape rate against the target &#945;, mean and 90th percentile over 40 splits. On or under the diagonal is the guarantee holding.</figcaption></figure>
+
+<h2>What the guarantee costs</h2>
+<div class="tbl"><table><caption>Fused Module A score. Source: results/conformal_summary.csv and conformal_sweep.csv.</caption><thead><tr><th>Target &#945;</th><th class="num">Measured escape rate</th><th class="num">Yield loss</th><th class="num">Splits individually above &#945;</th></tr></thead><tbody><tr><td>1%</td><td class="num">0.82%</td><td class="num">39.0%</td><td class="num">30%</td></tr><tr><td>2%</td><td class="num">1.76%</td><td class="num">23.8%</td><td class="num">35%</td></tr><tr><td>3%</td><td class="num">2.95%</td><td class="num">18.2%</td><td class="num">48%</td></tr><tr><td>5%</td><td class="num">5.00%</td><td class="num">11.6%</td><td class="num">50%</td></tr><tr><td>7.5%</td><td class="num">7.62%</td><td class="num">7.0%</td><td class="num">57%</td></tr><tr><td>10%</td><td class="num">9.90%</td><td class="num">4.4%</td><td class="num">52%</td></tr><tr><td>15%</td><td class="num">14.68%</td><td class="num">1.6%</td><td class="num">32%</td></tr><tr><td>20%</td><td class="num">19.48%</td><td class="num">1.0%</td><td class="num">45%</td></tr></tbody></table></div>
+<p>A 1% bound costs 39.0% of good parts; 5% costs
+11.6%; 10% costs 4.4%. The curve is steep
+at the low end because mild-severity defects sit right at the edge of the good population. Where to
+sit on it is a programme decision set by the cost of an escape against the cost of a scrapped part,
+not a model decision. The fused score dominates LOF at tight targets (39.0%
+against 86.6% yield loss at 1%), the reverse of their PR-AUC order:
+conformal at low &#945; lives entirely in the extreme high-recall tail.</p>
+<div class="note heat"><b>Read the bound correctly.</b> It bounds the <em>expected</em> escape rate. Individual lots or calibration draws can and do exceed &#945;, as the last column shows; that is how an expectation behaves, and it is why the evidence is 40 splits rather than one.</div>
+<figure><div class="plate"><img src="assets/fig/fig9_conformal_tradeoff.svg" alt="Yield loss at each guaranteed escape rate" loading="lazy"></div><figcaption>The honest counterpart: yield loss at each guaranteed escape rate.</figcaption></figure>
+<p>MIL-STD-883 already uses PDA (Percent Defective Allowable) as a statistical bound on lot
+quality. Conformal risk control is the same class of bound, applied to the escape rate of the
+screening system itself.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="module-b.html"><small>Previous</small>Module B</a><a class="next" href="decisions.html"><small>Next</small>Decision layer</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

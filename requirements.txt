@@ -19,6 +19,7 @@ PyYAML==6.0.3
 lightgbm==4.7.0
 streamlit==1.58.0
 reportlab==5.0.1
+svglib==2.2.0
 
 # streamlit runs the QA inspector demo:  streamlit run demo/app.py
 # It loads the pipeline live rather than a frozen export, so the app reflects
@@ -34,3 +35,9 @@ reportlab==5.0.1
 # implementation over sklearn's RandomForest, and the 5b MAE and interval
 # coverage both shift.
 quantile-forest==1.4.2
+
+# svglib is REQUIRED by make_reports.py: it converts each part's trajectory SVG
+# into the vector chart at the centre of the disposition PDF. It was undeclared,
+# the import is guarded, and the v1.1 PDFs were built on a machine without it --
+# so they shipped with no chart at all. explain/report.py now refuses to build
+# a PDF without the chart instead of degrading silently.

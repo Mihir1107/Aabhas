@@ -165,6 +165,21 @@ def main() -> None:
     # ---------------- L4 ----------------
     log("L4a IsolationForest")
     scores["L4a_IForest"] = mv.isolation_forest(X, fit_clean, contamination=0.02)
+    # Is Isolation Forest's weakness a dimensionality artifact? Refit on the
+    # narrow level-only block (5 params x 4 checkpoints = 20 features) and
+    # compare. This used to exist only in a session transcript.
+    log("L4a IsolationForest, narrow level-only features")
+    Xn = zlvl.replace([np.inf, -np.inf], np.nan).fillna(0.0)
+    s_narrow = mv.isolation_forest(Xn, fit_clean, contamination=0.02)
+    iso_rows = []
+    for nm, sc, nf in (("narrow_level_only", s_narrow, Xn.shape[1]),
+                       ("wide_full_design", scores["L4a_IForest"], X.shape[1])):
+        m = ev.metrics_from_score(y[te], sc[te], YL_MAIN)
+        iso_rows.append({"feature_set": nm, "n_features": nf,
+                         "recall@93%yield_%": m["recall@93%yield"],
+                         "PR_AUC": m["PR_AUC"], "AUROC": m["AUROC"]})
+    pd.DataFrame(iso_rows).to_csv(OUT / "isoforest_feature_width.csv", index=False)
+
     log("L4b LOF")
     scores["L4b_LOF"] = mv.lof(X, fit_clean, contamination=0.02)
     log("L4c OneClassSVM")
@@ -178,7 +193,8 @@ def main() -> None:
     log("L4e union ensemble")
     members = {k: scores[k] for k in
                ("L2_both", "L3a_MCD", "L3b_Q", "L4a_IForest", "L4d_AutoEnc")}
-    ens_flag = mv.union_ensemble(members, good & te, YL_MAIN / len(members))
+    # per-member thresholds from VALIDATION good parts, never test labels
+    ens_flag = mv.union_ensemble(members, good & va, YL_MAIN / len(members))
     flags["L4e_Union"] = ens_flag
     notes["L4e_Union"] = ("union of L2_both, L3a_MCD, L3b_Q, IForest, AutoEnc; "
                           f"each member at {100 * YL_MAIN / len(members):.2f}% yield loss "

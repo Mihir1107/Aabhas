@@ -72,6 +72,7 @@ import pandas as pd
 
 K_BOLTZMANN_EV_PER_K = 8.617e-5   # eV/K
 HOURS_PER_YEAR = 8766.0           # 365.25 * 24
+DATASET_VERSION = "dataset-v1.2"  # v1.2: shrunk parts no longer pile up on limit - margin
 
 
 def arrhenius_af(ea_ev: float, t_use_c: float, t_stress_c: float) -> float:
@@ -568,6 +569,23 @@ class BurnInGenerator:
         s = np.minimum(np.nanmin(s_hi, axis=(1, 2)), np.nanmin(s_lo, axis=(1, 2)))
         return np.clip(s, 0.0, 1.0)
 
+    def _unpin(self, s: np.ndarray | float, rng: np.random.Generator):
+        """Pull an ACTIVE shrink back by a random fraction.
+
+        `_fit_inside_limits` returns the exact s at which the binding
+        checkpoint touches `limit - margin`. Used as-is, every shrunk part lands
+        on precisely that value -- v1.1 had 158 readings of exactly 97.000 nA
+        and 139 of exactly 9.880 ns -- and "value equals the cap" became a
+        label shortcut worth ~12% recall at ~0% yield loss. Scaling an active
+        shrink by U(0.90, 0.995) spreads those parts continuously inside the
+        margin. Parts that never needed shrinking (s == 1) are untouched, and
+        the draws come from their own stream, so nothing else moves.
+        """
+        arr = np.atleast_1d(np.asarray(s, dtype=float)).copy()
+        act = arr < 1.0
+        arr[act] *= rng.uniform(0.90, 0.995, size=int(act.sum()))
+        return arr if np.ndim(s) else float(arr[0])
+
     # -- assignment --------------------------------------------------------
     def _assign_types(self, idx: pd.DataFrame):
         """Reserve Type VI lots and Type VII boards first, then draw Types
@@ -776,6 +794,7 @@ class BurnInGenerator:
         x_inj = self._trajectory(v0, lam, beta_i, eps, accel) + fixture_level
         x = x_good.copy()
         moved = np.where(dtype != "GOOD")[0]
+        rng_unpin = self._rng(20)
         if len(moved):
             # Anchor the in-spec shrink on the part's LOT MEDIAN trajectory, not
             # on the part's own good-part baseline. With log-normal parameters a
@@ -792,7 +811,7 @@ class BurnInGenerator:
                 med_traj[l] = np.median(x_good[src], axis=0)
             base = med_traj[lot_index[moved]]
             off = x_inj[moved] - base
-            s = self._fit_inside_limits(base, off)
+            s = self._unpin(self._fit_inside_limits(base, off), rng_unpin)
             x[moved] = base + s[:, None, None] * off
             for k, i in enumerate(moved):
                 if s[k] < 1.0:
@@ -809,7 +828,8 @@ class BurnInGenerator:
                 jmag = float(rng.uniform(*cfg.type2_jump_range_in_D))
                 step = np.zeros((self.nT, self.P))
                 step[after:, :] = jmag * self.drift_end * w
-                s = float(self._fit_inside_limits(x[i:i + 1], step[None, ...])[0])
+                s = self._unpin(float(self._fit_inside_limits(
+                    x[i:i + 1], step[None, ...])[0]), rng_unpin)
                 x[i] = x[i] + s * step
                 mech_w[i] = w
                 mechanism[i] = f"DISCRETE_STEP:{mech}"
@@ -840,7 +860,8 @@ class BurnInGenerator:
                 # log-normal and linear parameters alike
                 want = self.offset_sd(lot_base[i], target_z)
                 off = np.tile(want - v0_g[i], (self.nT, 1))
-                s = float(self._fit_inside_limits(x[i:i + 1], off[None, ...])[0])
+                s = self._unpin(float(self._fit_inside_limits(
+                    x[i:i + 1], off[None, ...])[0]), rng_unpin)
                 x[i] = x[i] + s * off
                 mechanism[i] = "CORRELATION_INVERSION"
                 realized[int(i)] = {"severity": tier, "factor_score": round(score, 3),
@@ -1244,6 +1265,7 @@ def main() -> None:
     gt.to_csv(out / "ground_truth.csv", index=False)
 
     meta = {
+        "version": DATASET_VERSION,
         "config": cfg.to_dict(),
         "parameters": [dataclasses.asdict(p) for p in gen.params],
         "failure_mechanisms": FAILURE_MECHANISMS,

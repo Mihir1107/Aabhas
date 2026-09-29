@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module A | Burn-in screening</title>
+<meta name="description" content="Module A: screening each part against its own lot">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html" aria-current="page"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 3</p>
+<h1>Module A: screening each part against its own lot</h1>
+<div class="col">
+<p class="lede">A ladder of detectors, each rung asking a question the one below cannot. Every
+rung is measured on the same 48 unseen test lots at the same
+yield loss, so the comparison is fair.</p>
+
+<h2>The operating point</h2>
+<p>We report <strong>recall at 93% yield</strong>: the threshold is set so that exactly 7% of
+<em>good</em> test parts are rejected, and we count how many defective parts are caught. The
+threshold is computed on good parts only, so the budget really is yield loss. The 7% point is
+ITC 2020's reference; the 1% column shows the tighter regime a space-grade screen would use.
+Accuracy is never reported: at 1.75% prevalence, flagging nothing scores
+98.25%.</p>
+
+<h2>The cumulative ladder</h2>
+<p>Each rung contains everything below it, fused at score level by taking the strongest
+normalised signal (max robust z against training-lot parts).</p>
+<div class="tbl"><table><caption>Test lots, 427 defective parts. Source: results/ablation_cumulative.csv. C0 is a fixed pass/fail rule, so recall at a yield budget is undefined for it; it catches 0.0% of every injected type.</caption><thead><tr><th>Rung</th><th>Contains</th><th class="num">Recall @ 93% yield</th><th class="num">Escape rate</th><th class="num">PR-AUC</th><th class="num">Recall @ 1% yield loss</th></tr></thead><tbody><tr><td>C0</td><td>Static datasheet limits alone</td><td class="num">n/a</td><td class="num">100.00%</td><td class="num">n/a</td><td class="num">n/a</td></tr><tr><td>C1</td><td>+ L1 dynamic PAT (AEC-Q001, MAD)</td><td class="num">54.33%</td><td class="num">45.67%</td><td class="num">0.258</td><td class="num">28.1%</td></tr><tr><td>C2</td><td>+ L2 lot-relative drift features</td><td class="num">79.86%</td><td class="num">20.14%</td><td class="num">0.708</td><td class="num">73.1%</td></tr><tr class="hl"><td>C3</td><td>+ L3 robust multivariate</td><td class="num">92.74%</td><td class="num">7.26%</td><td class="num">0.798</td><td class="num">85.7%</td></tr><tr><td>C4</td><td>+ L4 unsupervised ML</td><td class="num">92.27%</td><td class="num">7.73%</td><td class="num">0.803</td><td class="num">86.4%</td></tr></tbody></table></div>
+<figure><div class="plate"><img src="assets/fig/fig5_cumulative_ladder.svg" alt="Recall against yield loss for each cumulative rung" loading="lazy"></div><figcaption>Recall against yield loss for each cumulative rung, test lots. The drift and multivariate rungs account for almost all of the gain.</figcaption></figure>
+<div class="note heat"><b>The ladder plateaus at L3.</b> C4 is 0.47 points below C3, which is 2 parts of 427, well inside sampling noise. The honest reading is that the robust multivariate layer already captures the structure in this data, not that L4 hurts. We say this before a judge finds it.</div>
+
+<h2>Every method, head to head</h2>
+<div class="tbl"><table><caption>Test lots. The last two columns set the threshold on validation lots and apply it unchanged to test, so the calibration gap is visible rather than assumed away. Source: results/all_methods.csv.</caption><thead><tr><th>Rung</th><th>Method</th><th class="num">Recall @ 93%</th><th class="num">PR-AUC</th><th class="num">AUROC</th><th class="num">Recall, val-calibrated</th><th class="num">Yield loss, val-calibrated</th></tr></thead><tbody><tr><td>L1b</td><td>DPAT dynamic, MAD</td><td class="num">54.3%</td><td class="num">0.259</td><td class="num">0.841</td><td class="num">54.3%</td><td class="num">7.0%</td></tr><tr><td>L1a</td><td>DPAT static, MAD</td><td class="num">47.3%</td><td class="num">0.186</td><td class="num">0.815</td><td class="num">45.0%</td><td class="num">6.2%</td></tr><tr><td>L2</td><td>Lot-relative drift + level</td><td class="num">79.2%</td><td class="num">0.705</td><td class="num">0.890</td><td class="num">78.5%</td><td class="num">6.4%</td></tr><tr><td>L3a</td><td>Mahalanobis + MCD</td><td class="num">64.6%</td><td class="num">0.378</td><td class="num">0.860</td><td class="num">63.0%</td><td class="num">6.5%</td></tr><tr><td>L3b</td><td>PCA T&#178;</td><td class="num">89.0%</td><td class="num">0.779</td><td class="num">0.941</td><td class="num">89.0%</td><td class="num">6.8%</td></tr><tr><td>L3b-Q</td><td>PCA Q-residual</td><td class="num">81.3%</td><td class="num">0.632</td><td class="num">0.909</td><td class="num">80.6%</td><td class="num">6.5%</td></tr><tr><td>L3c</td><td>kNN distance</td><td class="num">86.4%</td><td class="num">0.816</td><td class="num">0.937</td><td class="num">86.2%</td><td class="num">6.5%</td></tr><tr><td>L4a</td><td>Isolation Forest</td><td class="num">67.7%</td><td class="num">0.194</td><td class="num">0.876</td><td class="num">65.1%</td><td class="num">6.5%</td></tr><tr><td>L4b</td><td>Autoencoder (MLP)</td><td class="num">89.5%</td><td class="num">0.844</td><td class="num">0.964</td><td class="num">89.5%</td><td class="num">6.6%</td></tr><tr><td>L4b&#8242;</td><td>Local Outlier Factor</td><td class="num">90.2%</td><td class="num">0.882</td><td class="num">0.958</td><td class="num">90.2%</td><td class="num">7.3%</td></tr><tr><td>L4c</td><td>One-class SVM</td><td class="num">87.4%</td><td class="num">0.795</td><td class="num">0.933</td><td class="num">87.1%</td><td class="num">6.7%</td></tr></tbody></table></div>
+
+<h2>Finding: static limits scrap a shifted lot</h2>
+<div class="facts"><div class="fact bad"><div class="v">358</div><div class="l">Good parts rejected by static PAT</div><div class="c">Type VI, 3,000 parts, all lots, 6&#963;, MAD, limits from training lots</div></div><div class="fact good"><div class="v">0</div><div class="l">Rejected by dynamic PAT</div><div class="c">Same parts, same 6&#963; multiplier, limits recomputed per lot</div></div></div>
+<p>When a batch shifts as a whole, fixed historical limits scrap perfectly good parts; limits
+recomputed from the lot itself absorb the shift. At a matched 7% yield budget the contrast is
+59.1% against 5.7%. The 6&#963; row leads because 6&#963;
+is what the standard specifies and what actually gets deployed. This is an all-lots figure: the six
+shifted lots fall early in production order, and we did not move the split to make it a test number.</p>
+
+<h2>Finding: the centre-hider is invisible to every univariate method</h2>
+<div class="tbl"><table><caption>All lots (60 Type III parts, 141 mild Type IV), 7% yield loss. Source: results/per_type.csv. Only 8 Type III parts are in the test lots, so all-lots figures are used.</caption><thead><tr><th>Detector</th><th class="num">Type III caught</th><th class="num">95% CI</th><th class="num">Mild Type IV caught</th><th class="num">95% CI</th></tr></thead><tbody><tr><td>DPAT dynamic</td><td class="num">0.0%</td><td class="num">[0, 6]</td><td class="num">0.0%</td><td class="num">[0, 3]</td></tr><tr><td>Drift features</td><td class="num">0.0%</td><td class="num">[0, 6]</td><td class="num">2.8%</td><td class="num">[1, 7]</td></tr><tr><td>Mahalanobis + MCD</td><td class="num">71.7%</td><td class="num">[59, 81]</td><td class="num">90.1%</td><td class="num">[84, 94]</td></tr><tr><td>PCA Q-residual</td><td class="num">66.7%</td><td class="num">[54, 77]</td><td class="num">1.4%</td><td class="num">[0, 5]</td></tr><tr><td>PCA T&#178;</td><td class="num">1.7%</td><td class="num">[0, 9]</td><td class="num">24.8%</td><td class="num">[18, 33]</td></tr><tr><td>Isolation Forest</td><td class="num">0.0%</td><td class="num">[0, 6]</td><td class="num">2.1%</td><td class="num">[1, 6]</td></tr><tr><td>Autoencoder</td><td class="num">10.0%</td><td class="num">[5, 20]</td><td class="num">30.5%</td><td class="num">[23, 39]</td></tr><tr><td>LOF</td><td class="num">3.3%</td><td class="num">[1, 11]</td><td class="num">36.2%</td><td class="num">[29, 44]</td></tr></tbody></table></div>
+<p>Dynamic PAT and the drift features catch essentially none of Type III. Only the genuinely joint
+detectors (Mahalanobis with a Minimum Covariance Determinant estimate, and the PCA Q-residual) find
+them. On the mild correlation-break tier, a five-parameter robust statistic catches
+90.1% [84, 94] against 36.2% for
+Local Outlier Factor and 30.5% for the neural autoencoder. The intervals do not
+come close.</p>
+
+<h3>Why Isolation Forest fails here</h3>
+<p>Isolation Forest isolates points one axis at a time, and a centre-hider is central on every
+axis. It catches 0.0% of Type III. That contradicts the
+ITC 2020 benchmark, where it ranks among the strongest methods; we report the contradiction rather
+than reorder the table, and our dataset deliberately over-weights this class. It is not a
+dimensionality artifact: on the narrow 20-feature level-only
+matrix it is worse (42.2%) than on the
+83-feature design (67.7%).</p>
+
+<h2>Fusion: recall versus ranking</h2>
+<div class="tbl"><table><caption>Test lots. The binary OR runs at its own realised yield loss (each member thresholded on validation good parts), so its recall is not comparable with the 7% rows. Source: results/fusion_comparison.csv.</caption><thead><tr><th>Fusion rule</th><th class="num">PR-AUC</th><th class="num">Recall</th><th class="num">Yield loss</th></tr></thead><tbody><tr><td>binary OR (decision level, own yield loss)</td><td class="num">n/a</td><td class="num">88.8%</td><td class="num">2.4%</td></tr><tr><td>max_rank (score level)</td><td class="num">0.706</td><td class="num">92.7%</td><td class="num">7.0%</td></tr><tr><td>mean_rank (score level)</td><td class="num">0.567</td><td class="num">82.7%</td><td class="num">7.0%</td></tr><tr><td>max_z (score level)</td><td class="num">0.790</td><td class="num">92.3%</td><td class="num">7.0%</td></tr><tr><td>weighted_mean_z (score level)</td><td class="num">0.789</td><td class="num">90.2%</td><td class="num">7.0%</td></tr><tr><td>(best single member: L4d_AutoEnc)</td><td class="num">0.844</td><td class="num">89.5%</td><td class="num">7.0%</td></tr><tr><td>(best single member: L4b_LOF)</td><td class="num">0.882</td><td class="num">90.2%</td><td class="num">7.0%</td></tr></tbody></table></div>
+<p>Fusion wins on recall at a fixed operating point; a single member (LOF) wins on PR-AUC, which
+governs the quality of a ranked worklist. Under a max rule the fused ranking inherits every
+member's tail false positives. Greedy member selection on the <em>validation</em> lots picks
+L4b_LOF alone. These are two products: fusion for a gate, LOF for a worklist.</p>
+
+<h2>Estimators: a limit-placement argument, not a recall argument</h2>
+<p>AEC-Q001 specifies IQR/1.35; MAD has a higher breakdown point; a p1/p99 variant is sometimes
+used for skewed data. On our log-normal Iddq the p1/p99 limit is inflated several times harder
+by contamination than MAD, because it is computed from the top 1%, which is where defects live.
+But within one lot the estimator cannot reorder parts, so at a matched yield loss all four catch
+about the same. The defensible claim is narrower: robust estimators make a fixed, standard 6&#963;
+limit mean the same thing across lots and keep outliers from widening it.</p>
+<figure><div class="plate"><img src="assets/fig/fig2_estimator_comparison.svg" alt="Estimator comparison" loading="lazy"></div><figcaption>Estimator comparison at a fixed 6&#963; and at matched overkill. Source: results/estimator_comparison.csv.</figcaption></figure>
+
+<h2>Cross-checks</h2>
+<ul>
+<li><strong>Leave-one-lot-out.</strong> The autoencoder refitted with each of 10 held-out lots
+removed gives 92.3% mean recall (sd 8.6), consistent with the main split.</li>
+<li><strong>Clean versus contaminated fit.</strong> Unsupervised detectors are fitted on known-good
+training parts. Refitting Isolation Forest on all training parts, defects included, gives
+74.0% against 67.7%:
+the clean-reference assumption is not doing the work.</li>
+<li><strong>A label leak, measured and excluded.</strong> <code>PULLED_FAILED</code> is observable,
+but every pulled part is defective by construction. The same autoencoder with it as a feature scores
+92.3% instead of
+89.5%. It is excluded from every number.</li>
+</ul>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="dataset.html"><small>Previous</small>The dataset</a><a class="next" href="module-b.html"><small>Next</small>Module B</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

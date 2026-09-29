@@ -1,0 +1,33 @@
+figure,v1.1,v1.2,delta
+Cumulative C1 PR-AUC,0.264,0.258,-0.01
+Cumulative C2 PR-AUC,0.711,0.708,-0.00
+Cumulative C3 PR-AUC,0.800,0.798,-0.00
+Cumulative C4 PR-AUC,0.805,0.803,-0.00
+L3a_MCD recall @93% yield (%),64.87,64.64,-0.23
+L4a_IForest recall @93% yield (%),68.15,67.68,-0.47
+L4e_UnionRank recall @93% yield (%),92.97,92.74,-0.23
+L4a_IForest_dirtyfit recall @93% yield (%),74.94,74.00,-0.94
+Module B MAE iddq_ua,0.6087,0.6103,+0.00
+Module B MAE defective iddq_ua,7.743,7.753,+0.01
+Module B MAE leakage_na,1.2959,1.2975,+0.00
+Module B MAE defective leakage_na,11.622,11.642,+0.02
+Module B MAE prop_delay_ns,0.0675,0.0674,-0.00
+Module B MAE defective prop_delay_ns,0.397,0.387,-0.01
+Module B MAE supply_current_ma,0.6768,0.6771,+0.00
+Module B MAE defective supply_current_ma,3.784,3.786,+0.00
+Module B MAE vth_shift_mv,0.8434,0.8415,-0.00
+Module B MAE defective vth_shift_mv,4.266,4.231,-0.04
+Safety rule d_upper_datasheet recall (%),1.41,0.94,-0.47
+Safety rule d_upper_lotsafe recall (%),17.10,16.16,-0.94
+Conformal fused: yield loss at alpha=0.01 (%),42.66,39.02,-3.65
+Conformal fused: yield loss at alpha=0.05 (%),11.62,11.63,+0.01
+Conformal fused: yield loss at alpha=0.1 (%),4.44,4.44,+0.00
+Counterfactual offered (%),26.71,7.88,-18.84
+Explanation stability (%),91.46,90.00,-1.46
+"Completeness, flagged (%)",69.52,68.84,-0.68
+Reason correctness II_STEP_DEFECT (%),73.33,76.67,+3.33
+Reason correctness IV_CORRELATION_BREAK (%),95.00,100.00,+5.00
+Reason correctness Vb_EXTREME_LEVEL (%),88.33,93.33,+5.00
+Reason correctness VII_FIXTURE_ARTIFACT (%),100.00,93.33,-6.67
+Reason correctness Va_MILDLY_HIGH_STABLE (%),55.00,51.67,-3.33
+Reason correctness JOINT_POOLED_III_IV (%),95.12,100.00,+4.88

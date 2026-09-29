@@ -47,7 +47,7 @@ def trajectory_svg(path, checkpoints, values, lot_median, lot_lo, lot_hi,
     # lot robust envelope
     env = (" ".join(f"{sx(a):.1f},{sy(b):.1f}" for a, b in zip(t, lot_hi)) + " " +
            " ".join(f"{sx(a):.1f},{sy(b):.1f}" for a, b in zip(t[::-1], lot_lo[::-1])))
-    o.append(f'<polygon points="{env}" fill="#4a90d9" opacity="0.13"/>')
+    o.append(f'<polygon points="{env}" fill="#4a90d9" fill-opacity="0.13"/>')
     o.append('<path d="' + " ".join(
         f"{'M' if i == 0 else 'L'}{sx(a):.1f},{sy(b):.1f}"
         for i, (a, b) in enumerate(zip(t, lot_median))) +
@@ -68,7 +68,7 @@ def trajectory_svg(path, checkpoints, values, lot_median, lot_lo, lot_hi,
         if forecast_hi is not None and np.isfinite(forecast_hi):
             o.append(f'<line x1="{sx(tf):.1f}" y1="{sy(forecast_lo):.1f}" '
                      f'x2="{sx(tf):.1f}" y2="{sy(forecast_hi):.1f}" stroke="#7b3fbf" '
-                     f'stroke-width="7" opacity="0.30"/>')
+                     f'stroke-width="7" stroke-opacity="0.30"/>')
         o.append(f'<circle cx="{sx(tf):.1f}" cy="{sy(forecast):.1f}" r="4.5" '
                  f'fill="none" stroke="#7b3fbf" stroke-width="2"/>')
     # measured trajectory

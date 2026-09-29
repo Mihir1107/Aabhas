@@ -148,7 +148,7 @@ def explain(cid: str) -> dict:
     return {
         "tier": x.tier, "primary": x.primary, "secondary": x.secondary,
         "lines": [list(t) for t in x.lines],
-        "hypotheses": [h[0] if isinstance(h, (list, tuple)) else str(h)
+        "hypotheses": [f"{h['hypothesis']} [{h['confidence']}]"
                        for h in x.hypotheses],
         "board": str(x.meta["board_id"]),
         "row": int(x.meta["socket_row"]), "col": int(x.meta["socket_col"]),
@@ -222,15 +222,16 @@ test_lots = list(pol.e.split.test)
 
 st.title("Burn-In Screening \u2014 QA Inspector")
 st.markdown(
-    f'<div class="prov">{e.ds.cfg.get("version", "dataset-v1.1")} \u00b7 commit {commit} \u00b7 '
+    f'<div class="prov">{e.ds.cfg.get("version", "dataset")} \u00b7 commit {commit} \u00b7 '
     f'{len(test_lots)} held-out test lots \u00b7 {len(test_lots)*500:,} components</div>',
     unsafe_allow_html=True)
 st.markdown(
     '<div class="provnote">Every tier, evidence line, score and forecast below is '
     'produced live by the committed pipeline \u2014 the same <code>explain/</code> code '
     'that writes the PDF disposition reports. Nothing here is mocked or '
-    'pre-baked. No detector was fitted on any lot shown. Ground truth is never an '
-    'input to a decision and stays hidden until you ask for it.</div>',
+    'pre-baked. No detector was trained on any lot shown (L1 and L3a are, by design, '
+    'computed within each lot). Ground truth is never an input to a decision and '
+    'stays hidden until you ask for it.</div>',
     unsafe_allow_html=True)
 
 with st.sidebar:
@@ -262,7 +263,7 @@ for t in TIER_ORDER:
               f'{t.replace("_", " ")}</div></div>')
 st.markdown(strip + "</div>", unsafe_allow_html=True)
 
-view = df if choice == "Needs action" and False else df
+view = df
 if choice == "Needs action":
     view = df[df["tier"] != "PASS"]
 elif choice in TIER_ORDER:
@@ -364,7 +365,12 @@ with tab_part:
                 g = e.gt.loc[cid]
                 truth = str(g["defect_type"])
                 is_def = bool(e.y[cid])
+                # Three outcomes, not two. MEASUREMENT_INVALID and
+                # FIXTURE_SUSPECT both send the part to a RE-TEST: neither ships
+                # it and neither scraps it, so scoring them as "released" called
+                # a correctly withheld defect an escape.
                 held = x["tier"] in ("REVIEW", "REJECT")
+                retest = x["tier"] in ("MEASUREMENT_INVALID", "FIXTURE_SUSPECT")
                 ok = is_def == held
                 # Only Types III and IV carry a severity tier; for every
                 # other type `severity` is a float NaN, and NaN is truthy, so a
@@ -383,7 +389,12 @@ with tab_part:
                     f"{'YES' if is_def else 'no'}  "
                     f"&nbsp;&nbsp;|&nbsp;&nbsp; **Severity** &nbsp; {sev}  "
                     f"&nbsp;&nbsp;|&nbsp;&nbsp; **Mechanism** &nbsp; {mech}")
-                if ok and is_def:
+                if retest:
+                    st.info("Sent for RE-TEST, not dispositioned. "
+                            + ("It is a real defect; the re-test is where it "
+                               "would be caught." if is_def else
+                               "It is a good part; the re-test clears it."))
+                elif ok and is_def:
                     st.success("Caught. Held before it could ship.")
                 elif ok:
                     st.success("Correctly released. A good part was not scrapped.")

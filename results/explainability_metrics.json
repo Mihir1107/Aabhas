@@ -12,7 +12,7 @@
       "defect_type": "II_STEP_DEFECT",
       "n": 60,
       "expected": "STEP",
-      "primary_correct_%": 73.33333333333333,
+      "primary_correct_%": 76.66666666666667,
       "primary_or_secondary_%": 76.66666666666667,
       "top_wrong_reason": "DRIFT_RATE"
     },
@@ -28,15 +28,15 @@
       "defect_type": "IV_CORRELATION_BREAK",
       "n": 40,
       "expected": "JOINT",
-      "primary_correct_%": 95.0,
+      "primary_correct_%": 100.0,
       "primary_or_secondary_%": 100.0,
-      "top_wrong_reason": "SPATIAL"
+      "top_wrong_reason": ""
     },
     {
       "defect_type": "Vb_EXTREME_LEVEL",
       "n": 60,
       "expected": "LEVEL",
-      "primary_correct_%": 88.33333333333333,
+      "primary_correct_%": 93.33333333333333,
       "primary_or_secondary_%": 98.33333333333333,
       "top_wrong_reason": "JOINT"
     },
@@ -44,9 +44,9 @@
       "defect_type": "VII_FIXTURE_ARTIFACT",
       "n": 60,
       "expected": "SPATIAL",
-      "primary_correct_%": 100.0,
-      "primary_or_secondary_%": 100.0,
-      "top_wrong_reason": ""
+      "primary_correct_%": 93.33333333333333,
+      "primary_or_secondary_%": 93.33333333333333,
+      "top_wrong_reason": "STEP"
     },
     {
       "defect_type": "GOOD",
@@ -61,22 +61,22 @@
       "n": 60,
       "expected": "PASS (trap)",
       "primary_correct_%": 95.0,
-      "primary_or_secondary_%": 100.0,
-      "top_wrong_reason": ""
+      "primary_or_secondary_%": 98.33333333333333,
+      "top_wrong_reason": "LEVEL"
     },
     {
       "defect_type": "Va_MILDLY_HIGH_STABLE",
       "n": 60,
       "expected": "PASS (trap)",
-      "primary_correct_%": 55.00000000000001,
-      "primary_or_secondary_%": 81.66666666666667,
+      "primary_correct_%": 51.66666666666667,
+      "primary_or_secondary_%": 66.66666666666666,
       "top_wrong_reason": "LEVEL"
     },
     {
       "defect_type": "JOINT_POOLED_III_IV",
       "n": 41,
       "expected": "JOINT",
-      "primary_correct_%": 95.1219512195122,
+      "primary_correct_%": 100.0,
       "primary_or_secondary_%": 100.0,
       "top_wrong_reason": "(pooled -- quote this, not Type III alone)"
     }
@@ -84,35 +84,72 @@
   "completeness": {
     "n_explained": 461,
     "n_flagged": 292,
-    "flagged_complete_%": 69.52054794520548,
+    "flagged_complete_%": 68.83561643835617,
     "passed_complete_%": 100.0,
     "all_have_full_evidence_%": 93.27548806941431,
     "flagged_with_primary_%": 98.63013698630137,
-    "flagged_with_mechanism_%": 69.86301369863014
+    "flagged_with_mechanism_%": 69.17808219178082
   },
   "counterfactual": {
     "n_flagged": 292,
-    "cf_found_%": 26.71232876712329,
-    "cf_validated_%": 26.71232876712329,
+    "cf_found_%": 7.876712328767123,
+    "cf_validated_%": 7.876712328767123,
     "cf_validated_given_found_%": 100.0,
-    "cf_found_univariate_driven_%": 29.943502824858758,
-    "cf_found_joint_driven_%": 2.272727272727273,
-    "n_univariate_driven": 177,
-    "n_joint_driven": 44
+    "cf_found_univariate_driven_%": 11.827956989247312,
+    "cf_found_joint_driven_%": 0.0,
+    "n_univariate_driven": 186,
+    "n_joint_driven": 46
   },
   "stability": {
     "n_parts": 120,
     "n_repeats": 4,
-    "primary_reason_changed_%": 8.541666666666666,
-    "stable_%": 91.45833333333333
+    "primary_reason_changed_%": 10.0,
+    "stable_%": 90.0,
+    "scope": "measurements re-drawn at the generator's noise level and the RULE layer recomputed; detector scores, the flag pool and the tier are held at their original values"
+  },
+  "attribution": {
+    "parameter": "iddq_ua",
+    "n_features": 9,
+    "spearman_rho_shap_vs_huber": 0.6166666666666666,
+    "p_value": 0.07692880993776312,
+    "corr_v0_v24_test": 0.9871986886196555,
+    "mae_full": 0.6102814276938534,
+    "mae_without_v0": 0.6093918413358819,
+    "dropped": [
+      "iddq_ua__v0",
+      "z__iddq_ua__v0"
+    ],
+    "top3_shap": [
+      "iddq_ua__v24",
+      "iddq_ua__v0",
+      "z__iddq_ua__d1"
+    ],
+    "top3_huber": [
+      "iddq_ua__v0",
+      "iddq_ua__lotmed_t24",
+      "iddq_ua__lotmed_t0"
+    ]
+  },
+  "decision_layer": {
+    "n_test_parts": 24000,
+    "defects_held_%": 92.03747072599532,
+    "defects_retest_%": 1.1709601873536302,
+    "defects_released_%": 6.791569086651054,
+    "defects_fixture_suspect": 0,
+    "good_held_%": 1.6926144317651552,
+    "good_not_pass_%": 6.723794171297672,
+    "typeIII_review_all_lots_%": 35.0,
+    "typeIII_review_or_watch_all_lots_%": 46.666666666666664,
+    "typeIV_review_all_lots_%": 73.80952380952381,
+    "typeIV_review_or_watch_all_lots_%": 80.95238095238095
   },
   "stability_by_type": {
     "GOOD": 17.5,
     "III_CENTRE_HIDER": 0.0,
     "II_STEP_DEFECT": 0.0,
     "IV_CORRELATION_BREAK": 0.0,
-    "I_STEEP_DRIFTER": 11.5,
-    "VII_FIXTURE_ARTIFACT": 0.0,
+    "I_STEEP_DRIFTER": 9.6,
+    "VII_FIXTURE_ARTIFACT": 15.4,
     "VI_LOT_SHIFT": 25.0,
     "Va_MILDLY_HIGH_STABLE": 8.3,
     "Vb_EXTREME_LEVEL": 1.7

@@ -193,9 +193,77 @@ def main():
     by_type = (st.merge(df[["component_id", "defect_type"]], on="component_id")
                .groupby("defect_type")["changed"].mean().mul(100).round(1))
 
+    # ---------------- the decision layer itself, on every test part ------
+    # The ladder reports recall at a 7% yield-loss budget; the six-tier policy
+    # an inspector actually sees runs at 2% (REVIEW) and 7% (WATCH). This is
+    # the table that shows what the deployed tiers do to each archetype, and
+    # it is where v1.1's Type III gap (1 of 60 reached REVIEW) was found.
+    log("decision layer: tier of every test-lot part")
+    te_ids = e.gt.index[te.to_numpy()]
+    tiers = pd.Series({c: pol.decide(c, pool)["tier"] for c in te_ids}, name="tier")
+    tab = pd.crosstab(e.ty[tiers.index], tiers)
+    tab.to_csv(OUT / "decision_tiers_test.csv")
+    yv = e.y[tiers.index]
+    held = tiers.isin(["REVIEW", "REJECT"])
+    retest = tiers.isin(["MEASUREMENT_INVALID", "FIXTURE_SUSPECT"])
+    dec = {"n_test_parts": int(len(tiers)),
+           "defects_held_%": 100 * float(held[yv].mean()),
+           "defects_retest_%": 100 * float(retest[yv].mean()),
+           "defects_released_%": 100 * float((~held & ~retest)[yv].mean()),
+           "defects_fixture_suspect": int((tiers[yv] == "FIXTURE_SUSPECT").sum()),
+           "good_held_%": 100 * float(held[~yv].mean()),
+           "good_not_pass_%": 100 * float((tiers[~yv] != "PASS").mean())}
+    s_all = e.scores
+    rev = ((s_all[pol.fused_col] >= pol.thr_review[pol.fused_col])
+           | (s_all[pol.joint_col] >= pol.thr_review[pol.joint_col]))
+    watch = s_all[pol.fused_col] >= pol.thr_watch[pol.fused_col]
+    for t in ("III_CENTRE_HIDER", "IV_CORRELATION_BREAK"):
+        k = t.split("_")[0]
+        dec[f"type{k}_review_all_lots_%"] = 100 * float(rev[e.ty == t].mean())
+        dec[f"type{k}_review_or_watch_all_lots_%"] = 100 * float(
+            (rev | watch)[e.ty == t].mean())
+    print(json.dumps(dec, indent=2))
+
+    # ---------------- Layer 2: do SHAP and Huber agree? ----------------
+    # Backs the "two attribution methods disagree" finding. Before this it had
+    # no generator in the repository, and its quoted baseline MAE (0.6102) was
+    # the sklearn-fallback figure rather than the LightGBM one.
+    log("Layer 2: SHAP (LightGBM) versus Huber coefficients, iddq_ua")
+    from scipy import stats as _st
+    from explain.attribution import DriftAttribution
+    from modulea import drift_models as dm
+    p_attr = "iddq_ua"
+    da = DriftAttribution(e, p_attr).fit()
+    mae_full = da.published_mae(0.0)
+    cmp_ = da.compare(n_parts=400, seed=0)
+    rho, pv = _st.spearmanr(cmp_["rank_shap"], cmp_["rank_huber"])
+    tr_m = e.lot.isin(e.split.train).to_numpy()
+    te_m = e.lot.isin(e.split.test).to_numpy()
+    v0, v24 = e.Xb[f"{p_attr}__v0"], e.Xb[f"{p_attr}__v24"]
+    ok = (np.isfinite(v0) & np.isfinite(v24)).to_numpy() & te_m
+    corr = float(np.corrcoef(v0[ok], v24[ok])[0, 1])
+    drop = [c for c in da.cols if c in (f"{p_attr}__v0", f"z__{p_attr}__v0")]
+    keep = [c for c in da.cols if c not in drop]
+    yt = e.mb_true[p_attr].to_numpy()
+    g2 = dm.GBM(True).fit(e.Xb[keep][da._fit_mask], yt[da._fit_mask])
+    pr = g2.predict(e.Xb[keep])
+    mm = te_m & np.isfinite(yt)
+    mae_drop = float(np.nanmean(np.abs(pr[mm] - yt[mm])))
+    attr = {"parameter": p_attr, "n_features": len(cmp_),
+            "spearman_rho_shap_vs_huber": float(rho), "p_value": float(pv),
+            "corr_v0_v24_test": corr, "mae_full": mae_full,
+            "mae_without_v0": mae_drop, "dropped": drop,
+            "top3_shap": cmp_.sort_values("rank_shap").index[:3].tolist(),
+            "top3_huber": cmp_.sort_values("rank_huber").index[:3].tolist()}
+    cmp_.to_csv(OUT / "attribution_comparison.csv")
+    print(json.dumps(attr, indent=2))
+
+    stab["scope"] = ("measurements re-drawn at the generator's noise level and "
+                     "the RULE layer recomputed; detector scores, the flag pool "
+                     "and the tier are held at their original values")
     json.dump({"reason_correctness": reason.to_dict("records"),
                "completeness": comp, "counterfactual": cfm,
-               "stability": stab,
+               "stability": stab, "attribution": attr, "decision_layer": dec,
                "stability_by_type": by_type.to_dict()},
               open(OUT / "explainability_metrics.json", "w", encoding="utf-8"),
               indent=2, default=str)

@@ -49,8 +49,11 @@ MAD_TO_SIGMA = 1.4826
 class Evidence:
     """Everything needed to explain any part, loaded once."""
 
+    _d2_ref_cache: dict = {}
+
     def __init__(self, datadir: str | Path | None = None):
         datadir = DATA if datadir is None else datadir
+        self.ds_path = Path(datadir).resolve()
         self.ds = ds = ev.load(datadir)
         self.params = ds.params
         self.checkpoints = ds.checkpoints
@@ -149,10 +152,35 @@ class Evidence:
         z = row - loc
         contrib = z * (inv @ z)                      # exact additive split
         d2 = float(z @ inv @ z)
-        good = d2_all[d2_all.index.isin(
-            self.gt.index[self.gt["defect_type"] == "GOOD"])]
-        p99 = float(np.quantile(good, 0.99)) if len(good) else np.nan
-        return d2, pd.Series(contrib, index=self.params), p99
+        return d2, pd.Series(contrib, index=self.params), self.d2_reference(t)
+
+    def d2_reference(self, t: float) -> float:
+        """99th percentile of robust D^2 among good parts of the TRAINING lots.
+
+        The reference must not come from the lot being judged: in v1.1 it was
+        the 99th percentile of that lot's own parts labelled GOOD in ground
+        truth, i.e. the explanation consulted labels a deployed system cannot
+        have. Training-lot labels are legitimate (that is what training data
+        is), and one pooled constant per checkpoint is also easier for an
+        inspector to reason about than a per-lot number.
+        """
+        cache = type(self)._d2_ref_cache
+        key = (str(self.ds_path), float(t))
+        if key not in cache:
+            m = self.ds.meas
+            s = m[(m["checkpoint_h"] == t) & (m["measurement_status"] == "MEASURED")
+                  & m["lot_id"].isin(self.split.train)]
+            good = set(self.gt.index[self.gt["defect_type"] == "GOOD"])
+            vals = []
+            for _lot, g in s.groupby("lot_id"):
+                X = g[self.params].to_numpy(float)
+                if len(X) < 30:
+                    continue
+                d2 = MinCovDet(support_fraction=0.9, random_state=0).fit(X).mahalanobis(X)
+                keep = g["component_id"].isin(good).to_numpy()
+                vals.append(d2[keep])
+            cache[key] = float(np.quantile(np.concatenate(vals), 0.99))
+        return cache[key]
 
     # ---------------- spatial ----------------
     def spatial_check(self, cid: str, flagged: pd.Series) -> dict:
@@ -164,8 +192,11 @@ class Evidence:
         """
         g = self.gt
         board = g.loc[cid, "board_id"]
-        meta = self.ds.meas.drop_duplicates("component_id").set_index("component_id")
-        same = meta.index[meta["board_id"] == board]
+        # Board membership is static; building it once instead of per call
+        # turns a whole-lot disposition from minutes into seconds.
+        if getattr(self, "_board_members", None) is None:
+            self._board_members = g.groupby("board_id").groups
+        same = self._board_members[board]
         n = len(same)
         k = int(flagged.reindex(same).fillna(False).sum())
         base = float(flagged.mean())
@@ -176,6 +207,29 @@ class Evidence:
         return {"board_id": board, "n_on_board": n, "n_flagged_on_board": k,
                 "expected_flagged": expected, "p_value": p,
                 "clustered": bool(p < 0.01 and k >= 3)}
+
+    def thermal_signature(self, cid: str) -> dict:
+        """Does this part's shift since 0 h look like heat?
+
+        Heat raises leakage, slows the part and lowers threshold voltage. The
+        process corner moves leakage and delay in OPPOSITE directions, so the
+        three together are a sign test, not a magnitude test. Shifts are in
+        lot-relative robust z, last measured checkpoint minus 0 h.
+        """
+        z = self.zlvl
+        end = [t for t in sorted(self.checkpoints, reverse=True) if t > 0]
+
+        def shift(p):
+            z0 = z.at[cid, f"z__{p}__t0"]
+            for t in end:
+                v = z.at[cid, f"z__{p}__t{int(t)}"]
+                if np.isfinite(v) and np.isfinite(z0):
+                    return float(v - z0)
+            return float("nan")
+
+        dl, dd, dv = shift("leakage_na"), shift("prop_delay_ns"), shift("vth_shift_mv")
+        return {"leakage_shift_z": dl, "delay_shift_z": dd, "vth_shift_z": dv,
+                "thermal": bool(dl > 0 and dd > 0 and dv < 0)}
 
     # ---------------- data quality gate (Part 5.1) ----------------
     def data_quality(self, cid: str) -> dict:

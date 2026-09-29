@@ -23,7 +23,7 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     d = 1 + z * z / n
     c = p + z * z / (2 * n)
     h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return (100 * (c - h) / d, 100 * (c + h) / d)
+    return (max(100 * (c - h) / d, 0.0), min(100 * (c + h) / d, 100.0))
 
 
 RUNGS = [
@@ -218,7 +218,7 @@ def main() -> None:
                  "AUROC", "escape_rate_%", "cost"]
     body = [
         "# Module A ablation, L0 to L4", "",
-        f"Dataset `dataset-v1.0` (commit 8ca44bc), unmodified. "
+        f"Dataset `{ds.cfg.get('version', 'dataset')}`. "
         f"{len(y)} parts, {int(y.sum())} defective ({100 * y.mean():.2f}%).", "",
         "**Protocol.** Lot-grouped split, never row-wise: "
         f"{sp.describe()}. Detectors are fitted on GOOD parts of TRAIN lots; "
@@ -274,8 +274,8 @@ def main() -> None:
 
     cbody = [
         "# Cumulative ablation, C0 to C4", "",
-        f"Dataset `dataset-v1.1`. Each rung contains everything below it, fused "
-        f"at score level by max robust-z against the good reference. Test lots "
+        f"Dataset `{ds.cfg.get('version', 'dataset')}`. Each rung contains everything below it, fused "
+        f"at score level by max robust-z against training-lot parts (no labels). Test lots "
         f"only (n={int(te.sum())}, {int(y[te].sum())} defective). Operating "
         "point 7% yield loss.", "",
         md(cum, ["rung", "contents", "recall@93%yield", "PR_AUC", "AUROC",

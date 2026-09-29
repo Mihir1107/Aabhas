@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230B6360'/%3E%3C/svg%3E">
 <title>Burn-In Inspector</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -388,7 +394,10 @@ function detail(){
   btn.onclick=()=>{
     const t=p.truth;
     const held=(p.tier==='REVIEW'||p.tier==='REJECT');
-    const ok = t.is_defective ? held : !held;
+    // MEASUREMENT_INVALID and FIXTURE_SUSPECT send the part to a re-test:
+    // neither ships it nor scraps it, so neither is an escape or a false alarm
+    const retest=(p.tier==='MEASUREMENT_INVALID'||p.tier==='FIXTURE_SUSPECT');
+    const ok = retest || (t.is_defective ? held : !held);
     box.className='reveal shown'; box.innerHTML='';
     const gr=el('div','truthgrid');
     [['Injected type',t.defect_type],['Truly defective',t.is_defective?'YES':'no'],
@@ -400,6 +409,8 @@ function detail(){
     });
     box.appendChild(gr);
     box.appendChild(el('div','action '+(ok?'verdict-ok':'verdict-bad'),
+      retest ? (t.is_defective?'Sent for RE-TEST, not dispositioned. It is a real defect; the re-test is where it would be caught.'
+                              :'Sent for RE-TEST, not dispositioned. It is a good part; the re-test clears it.') :
       ok ? (t.is_defective?'Caught. This defect was held before it could ship.'
                           :'Correctly released. A good part was not scrapped.')
          : (t.is_defective?'MISSED — this defect escaped screening.'

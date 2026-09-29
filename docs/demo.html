@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inspector demo | Burn-in screening</title>
+<meta name="description" content="The QA inspector&#x27;s screen">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html" aria-current="page"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 8</p>
+<h1>The QA inspector's screen</h1>
+<div class="col">
+<p class="lede">Pick a test lot, work the triage list, open a part, read the evidence, decide,
+then reveal the ground truth and see whether the system was right.</p>
+<p><a class="btn" href="demo/inspector.html">Open the inspector in this browser</a></p>
+<p>The in-browser version runs the same views over LOT192, LOT198, LOT238: real pipeline output exported by
+<a href="https://github.com/Mihir1107/Aabhas/blob/main/make_demo_data.py"><code>make_demo_data.py</code></a>, with nothing mocked. It needs no server.</p>
+
+<h2>What to try</h2>
+<ul>
+<li><strong>LOT238, board map.</strong> Components on the fixture boards come back
+<em>fixture suspect</em> and visibly cluster by socket position. That is the system declining to
+scrap good parts because the anomaly tracks the oven.</li>
+<li><strong>LOT192.</strong> A chamber trip invalidates a whole board's readings, and the system
+refuses to disposition on them.</li>
+<li><strong>Any part, then reveal.</strong> Ground truth is hidden until asked for, and is never an
+input to a decision.</li>
+</ul>
+
+<h2>The live app</h2>
+<p>The Streamlit app covers all 48 test lots and calls the pipeline
+live instead of reading an export:</p>
+<pre><code>pip install -r requirements.txt
+python -m streamlit run demo/app.py     # from the repository root</code></pre>
+<p>First load takes about ten seconds while feature matrices are built and cached. See
+<a href="https://github.com/Mihir1107/Aabhas/blob/main/demo/README.md"><code>demo/README.md</code></a>.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="explainability.html"><small>Previous</small>Explainability</a><a class="next" href="method.html"><small>Next</small>Evaluation &amp; reproduction</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

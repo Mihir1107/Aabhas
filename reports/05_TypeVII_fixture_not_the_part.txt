@@ -6,11 +6,11 @@ Lot-relative level:  +4.5 robust sigma vs lot median on leakage_na (median 31.69
 Drift 0h to 24h:     +8.174 uA (+48.6%) on iddq_ua; lot median drift +0.584 uA (+4.5%), part is +12.3 robust sigma on the lot's drift distribution
 Drift rate:          0.3406 uA/h (lot median 0.0243 uA/h, 14.0x)
 Max interval jump:   +16.5 robust sigma on iddq_ua; largest interval change is 6.0x the median of the others (concentrated -> step)
-Predicted 168h:      25.013 uA (iddq_ua, from 0h and 24h only)
-95% upper bound:     32.003 uA -> EXCEEDS lot-derived safe limit 31.321 uA
-Joint anomaly:       Mahalanobis D2 = 41.2 (good-part 99th pct = 15.3); largest contribution leakage_na at 62% of the total
+Predicted 168h:      25.526 uA (iddq_ua, from 0h and 24h only)
+95% upper bound:     32.283 uA -> EXCEEDS lot-derived safe limit 31.321 uA
+Joint anomaly:       Mahalanobis D2 = 41.2 (good-part 99th pct = 19.2); largest contribution leakage_na at 62% of the total
 Leakage/delay sign:  leakage +4.5 sigma, delay -0.6 sigma -- consistent with the lot's process locus
-Spatial check:       52 of 64 components on board LOT213-B04 flagged (expected 1.7, p=3.0e-70) -- CLUSTERED, suspect fixture
+Spatial check:       52 of 64 components on board LOT213-B04 flagged (expected 1.7, p=3.0e-70); shift since 0 h: leakage +2.1, delay +0.4, vth -1.7 sigma -- THERMAL signature, suspect fixture
 Data quality:        all checkpoints valid
 
 Primary reason:      anomaly clusters by board position, not by component

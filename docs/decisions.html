@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Decision layer | Burn-in screening</title>
+<meta name="description" content="Six decision tiers, and the rules behind them">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231E5B42'/%3E%3Cg fill='%23DCEBE3'%3E%3Crect x='3' y='3' width='4' height='4'/%3E%3Crect x='9' y='3' width='4' height='4'/%3E%3Crect x='3' y='9' width='4' height='4'/%3E%3C/g%3E%3Crect x='9' y='9' width='4' height='4' fill='%23E0A24E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="frame">
+<aside class="rail">
+  <a class="brand" href="index.html"><b>Burn-in screening</b><span>SIH26170 &middot; ISRO</span></a>
+  <button class="menu" id="menu" aria-expanded="false" aria-controls="chapters">Chapters</button>
+  <nav id="chapters" aria-label="Chapters"><ol><li><a href="index.html"><span class="n"></span><span>Overview</span></a></li><li><a href="problem.html"><span class="n">1</span><span>The problem</span></a></li><li><a href="dataset.html"><span class="n">2</span><span>The dataset</span></a></li><li><a href="module-a.html"><span class="n">3</span><span>Module A</span></a></li><li><a href="module-b.html"><span class="n">4</span><span>Module B</span></a></li><li><a href="guarantee.html"><span class="n">5</span><span>Escape-rate bound</span></a></li><li><a href="decisions.html" aria-current="page"><span class="n">6</span><span>Decision layer</span></a></li><li><a href="explainability.html"><span class="n">7</span><span>Explainability</span></a></li><li><a href="demo.html"><span class="n">8</span><span>Inspector demo</span></a></li><li><a href="method.html"><span class="n">9</span><span>Evaluation &amp; reproduction</span></a></li><li aria-hidden="true"><div class="sep"></div></li><li><a href="limitations.html"><span class="n"></span><span>Limitations &amp; audit</span></a></li><li><a href="reference.html"><span class="n"></span><span>Reference</span></a></li></ol>
+  <div class="foot">Generated from <code>results/</code> by <code>make_docs.py</code><br>
+  dataset-v1.2, commit <code>2eeee48</code><br>
+  <button class="theme" id="theme" type="button">Dark theme</button></div></nav>
+</aside>
+<main id="main">
+
+<p class="chapter">Chapter 6</p>
+<h1>Six decision tiers, and the rules behind them</h1>
+<div class="col">
+<p class="lede">Pass/fail forces every ambiguous part into a wrong bucket. The decision layer is
+rule-based on purpose: a rule an inspector can read beats a weighting they cannot, and the model
+never overrides a datasheet limit in either direction.</p>
+<div class="tbl"><table><thead><tr><th>Tier</th><th>What the inspector does</th></tr></thead><tbody><tr><td><span class="chip" style="background:var(--t-pass)">Pass</span></td><td>Release to the next operation.</td></tr><tr><td><span class="chip" style="background:var(--t-watch)">Watch</span></td><td>Release, and tag the component for trend monitoring at the next screen.</td></tr><tr><td><span class="chip" style="background:var(--t-review)">Review</span></td><td>Hold, repeat the measurement, then refer to a reliability engineer with the report.</td></tr><tr><td><span class="chip" style="background:var(--t-reject)">Reject</span></td><td>Quarantine for failure analysis. Only a datasheet violation or a hard failure in the oven.</td></tr><tr><td><span class="chip" style="background:var(--t-fixture)">Fixture suspect</span></td><td>Do not reject on this evidence; investigate the board and re-test in a different socket.</td></tr><tr><td><span class="chip" style="background:var(--t-invalid)">Measurement invalid</span></td><td>Do not disposition; re-test, and check the chamber log and tester calibration.</td></tr></tbody></table></div>
+
+<h2>The rules, in order</h2>
+<ol>
+<li><strong>Data-quality gate first.</strong> A reading lost to a chamber trip or tester fault
+routes the part to <em>measurement invalid</em> before any model runs. A missing value because
+the oven tripped is a different object from one because the part failed.</li>
+<li><strong>Hard limits.</strong> A datasheet violation, or a part pulled after a hard failure,
+is <em>reject</em>.</li>
+<li><strong>Screening thresholds.</strong> <em>Review</em> when the fused Module A score passes its
+2% yield-loss threshold, <em>or</em> when the joint detector (robust Mahalanobis) passes its own 2%
+threshold. <em>Watch</em> at a 7% budget, or when the Module B upper bound crosses the lot-derived
+safe limit. All thresholds are calibrated on validation-lot good parts.</li>
+<li><strong>The oven, not the part.</strong> A flagged part becomes <em>fixture suspect</em> only
+if two things hold: flags cluster on its board beyond what chance explains (binomial p &lt; 0.01,
+at least 3 parts), <em>and</em> its own shift since 0 h carries the thermal signature, with
+leakage up, delay up and threshold voltage down together. Heat makes a part leaky and slow; the
+process makes leaky parts fast. The 0 h reading is taken on the bench before the oven, so a
+fixture effect is absent there.</li>
+</ol>
+<div class="note heat"><b>Why both conditions.</b> Clustering alone used to be enough, and a real defect sitting on a busy board was told "do not reject". The thermal-sign condition was added in the final audit; see <a href="limitations.html">Limitations &amp; audit</a>.</div>
+
+<h2>What the tiers do, on every test part</h2>
+<div class="tbl"><table><caption>All 24,000 parts of the 48 test lots. Source: results/decision_tiers_test.csv.</caption><thead><tr><th>True type</th><th class="num">pass</th><th class="num">watch</th><th class="num">review</th><th class="num">reject</th><th class="num">fixture suspect</th><th class="num">measurement invalid</th></tr></thead><tbody><tr><td>I &#183; Steep drifter</td><td class="num">0</td><td class="num">0</td><td class="num">101</td><td class="num">50</td><td class="num">0</td><td class="num">4</td></tr><tr><td>II &#183; Step defect</td><td class="num">0</td><td class="num">0</td><td class="num">85</td><td class="num">38</td><td class="num">0</td><td class="num">1</td></tr><tr><td>III &#183; Centre-hider</td><td class="num">6</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr><tr><td>IV &#183; Correlation break</td><td class="num">19</td><td class="num">3</td><td class="num">51</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Vb &#183; Extreme level, in spec</td><td class="num">0</td><td class="num">0</td><td class="num">67</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr><tr><td>Va &#183; Mildly high, stable</td><td class="num">174</td><td class="num">41</td><td class="num">142</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr><tr><td>VII &#183; Fixture artifact</td><td class="num">24</td><td class="num">6</td><td class="num">4</td><td class="num">0</td><td class="num">92</td><td class="num">2</td></tr><tr><td>Good &#183; Good part</td><td class="num">21,790</td><td class="num">818</td><td class="num">253</td><td class="num">0</td><td class="num">3</td><td class="num">221</td></tr></tbody></table></div>
+<div class="facts"><div class="fact "><div class="v">92.0%</div><div class="l">Defects held (review or reject)</div><div class="c">Test lots, at the 2% review budget</div></div><div class="fact "><div class="v">1.2%</div><div class="l">Defects sent to re-test</div><div class="c">Fixture suspect or measurement invalid; neither ships</div></div><div class="fact "><div class="v">1.69%</div><div class="l">Good parts held</div><div class="c">6.7% are not a plain pass, mostly watch</div></div><div class="fact "><div class="v">35.0%</div><div class="l">Centre-hiders sent to review</div><div class="c">All lots, 60 parts; 46.7% review or watch</div></div></div>
+<p>These are the numbers an inspector lives with, and they differ from the ladder's recall at 7%
+yield loss because the review threshold runs at a stricter 2% budget. Genuine defects labelled
+<em>fixture suspect</em> in the test lots: 0.</p>
+</div>
+
+<nav class="pager" aria-label="Chapter"><a href="guarantee.html"><small>Previous</small>Escape-rate bound</a><a class="next" href="explainability.html"><small>Next</small>Explainability</a></nav>
+</main>
+</div>
+<script>
+(function(){
+  var r=document.documentElement,b=document.getElementById('theme');
+  try{var s=localStorage.getItem('theme'); if(s) r.setAttribute('data-theme',s);}catch(e){}
+  function label(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    if(b) b.textContent=d==='dark'?'Light theme':'Dark theme';}
+  if(b){b.onclick=function(){var d=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    d=d==='dark'?'light':'dark'; r.setAttribute('data-theme',d); try{localStorage.setItem('theme',d)}catch(e){} label();};}
+  label();
+  var m=document.getElementById('menu'),rail=document.querySelector('.rail');
+  if(m) m.onclick=function(){var o=rail.classList.toggle('open'); m.setAttribute('aria-expanded',o);};
+})();
+</script>
+</body>
+</html>

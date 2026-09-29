@@ -10,7 +10,16 @@ from explain.attribution import DriftAttribution, detector_attribution
 from explain.report import build_report
 
 OUT = Path("reports"); OUT.mkdir(exist_ok=True)
-MODEL_VERSION = "dataset-v1.1 / ModuleA-d13e1ef / ModuleB-early(0h,24h)"
+def model_version(e) -> str:
+    """Dataset version and the commit the pipeline ran at -- never a literal,
+    which is how the v1.1 PDFs came to name a commit two rebuilds old."""
+    import subprocess
+    try:
+        c = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True).stdout.strip()
+    except Exception:
+        c = ""
+    return f"{e.ds.cfg.get('version', 'dataset')} / {c or 'uncommitted'} / ModuleB 0-24h"
 
 # The two that matter most are the last two: any system can explain a rejection.
 CASES = [
@@ -64,15 +73,19 @@ def main():
         cid = pick(e, pol, pool, t, want)
         x = PartExplanation(e, pol, cid, pool)
         c = cf.find(cid)
-        p = (x.signals.get("drift_param") or x.signals.get("level_param")
-             or e.params[0])
+        # The parameter that GOVERNS the disposition (stronger of level and
+        # drift), the same one the rule text forecasts. v1.1 used the
+        # drift-parameter first, so the PS worked example -- flagged on
+        # leakage at +16 sigma -- showed a vth_shift chart and SHAP in mV.
+        p = (x.signals.get("forecast_param") or x.signals.get("level_param")
+             or x.signals.get("drift_param") or e.params[0])
         if p not in das:
             das[p] = DriftAttribution(e, p).fit()
         shap = das[p].shap_for(cid)
         det = detector_attribution(e, pol, cid)
         pdf = OUT / f"{name}.pdf"
         build_report(e, pol, x, cf.text(cid, x.tier, c), det, shap, pdf,
-                     MODEL_VERSION, param_focus=p)
+                     model_version(e), param_focus=p)
         (OUT / f"{name}.txt").write_text(x.rule_text(), encoding="utf-8")
         rows.append({"case": name, "component_id": cid, "injected_type": t,
                      "decision": x.tier, "primary_reason": x.primary,

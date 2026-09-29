@@ -48,7 +48,15 @@ def main() -> None:
     y, ty, sev, lot = ds.labels(), ds.type_of(), ds.severity_of(), ds.lot_of()
     sp = ev.lot_splits(sorted(set(lot)))
     te, va = sp.mask(lot, "test"), sp.mask(lot, "val")
+    tr = sp.mask(lot, "train")
     good = ~y
+    # Reference population for the robust-z normalisation inside the fusion.
+    # v1.1 used `~y` over ALL lots, i.e. test-lot labels leaked into the fused
+    # score's scaling. It changed nothing measurable (identical recall to 2 dp),
+    # but a deployed system has no labels, so the reference is now every
+    # TRAINING-lot part, labelled or not: the median/MAD is robust to the
+    # ~1.75% contamination by construction.
+    ref = tr
     scores = pd.read_csv(OUT / "scores.csv.gz", index_col=0)
     flags = pd.read_csv(OUT / "flags.csv.gz", index_col=0)
     scores = scores.replace([np.inf, -np.inf], np.nan).fillna(0.0)
@@ -63,7 +71,7 @@ def main() -> None:
         if len(sub) == 1:
             s = list(sub.values())[0]
         else:
-            s = mv.fuse(sub, "max_z", good_mask=good)
+            s = mv.fuse(sub, "max_z", good_mask=ref)
         if rung == "C0":
             m = ev.metrics_from_flags(y[te], flags["L0"][te].astype(bool))
             rows.append({"rung": rung, "contents": RUNG_LABEL[rung],
@@ -88,14 +96,18 @@ def main() -> None:
     members = {k: scores[k] for k in
                ("L2_both", "L3a_MCD", "L3b_Q", "L4a_IForest", "L4d_AutoEnc")}
     frows = []
-    binf = mv.union_ensemble(members, good & te, YL / len(members))
+    # Per-member thresholds are calibrated on VALIDATION good parts, then
+    # applied to test. The union's realised yield loss is NOT 7% -- it lands
+    # wherever the members' errors overlap -- so it is reported in its own
+    # column and must not be read as "recall at 93% yield".
+    binf = mv.union_ensemble(members, good & va, YL / len(members))
     mb = ev.metrics_from_flags(y[te], binf[te])
-    frows.append({"fusion": "binary OR (decision level)",
+    frows.append({"fusion": "binary OR (decision level, own yield loss)",
                   "recall@93%yield": mb["recall_%"], "PR_AUC": float("nan"),
                   "AUROC": float("nan"), "yield_loss_%": mb["yield_loss_%"],
                   "escape_rate_%": mb["escape_rate_%"], "cost": mb["cost_at_op"]})
     for how in ("max_rank", "mean_rank", "max_z", "weighted_mean_z"):
-        s = mv.fuse(members, how, good_mask=good)
+        s = mv.fuse(members, how, good_mask=ref)
         m = ev.metrics_from_score(y[te], s[te], YL)
         frows.append({"fusion": how + " (score level)",
                       "recall@93%yield": m["recall@93%yield"], "PR_AUC": m["PR_AUC"],
@@ -110,6 +122,31 @@ def main() -> None:
                       "escape_rate_%": m["escape_rate_%"], "cost": m["cost_at_op"]})
     fus = pd.DataFrame(frows)
     fus.to_csv(OUT / "fusion_comparison.csv", index=False)
+
+    # ---------------- greedy member selection, on VALIDATION lots ----------
+    # Forward selection maximising validation PR-AUC. Selecting on the test
+    # lots instead would be post-hoc selection bias, which is the point of
+    # recording this: it backs the "LOF alone is the best ranker" claim.
+    pool = [k for k in RUNG_MEMBERS["C4"] if k != "L0"]
+    chosen, best = [], -np.inf
+    while True:
+        cand = {}
+        for k in pool:
+            if k in chosen:
+                continue
+            sub = {m: scores[m] for m in chosen + [k]}
+            s = (sub[k] if len(sub) == 1 else mv.fuse(sub, "max_z", good_mask=ref))
+            cand[k] = ev.metrics_from_score(y[va], s[va], YL)["PR_AUC"]
+        if not cand:
+            break
+        k, v = max(cand.items(), key=lambda kv: kv[1])
+        if v <= best:
+            break
+        chosen.append(k)
+        best = v
+    (OUT / "c4_curated_members.json").write_text(
+        json.dumps({"members": chosen, "val_pr_auc": best}, indent=2),
+        encoding="utf-8")
 
     # ---------------- per type / tier for the cumulative rungs ------------
     prows = []
