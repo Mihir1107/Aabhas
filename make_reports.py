@@ -15,7 +15,7 @@ def model_version(e) -> str:
     which is how the v1.1 PDFs came to name a commit two rebuilds old."""
     import subprocess
     try:
-        c = subprocess.run(["git", "describe", "--always", "--dirty"],
+        c = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
                            capture_output=True, text=True).stdout.strip()
     except Exception:
         c = ""

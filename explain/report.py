@@ -85,7 +85,7 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
                    title=f"{p} trajectory vs lot {e.lot[cid]}",
                    subtitle="envelope = lot median +/- 3 robust sigma (MAD); "
                             "forecast from 0 h and 24 h only")
-    drawing = _svg_drawing(svg, 100.0)      # sized so the report stays one page
+    drawing = _svg_drawing(svg, 74.0)      # sized so the report stays one page
     if drawing is None:
         # v1.1's PDFs were built without svglib and shipped with no chart at
         # all; the report's central figure must never vanish silently.
@@ -94,7 +94,7 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
 
     doc = SimpleDocTemplate(str(out_pdf), pagesize=A4,
                             leftMargin=13 * mm, rightMargin=13 * mm,
-                            topMargin=10 * mm, bottomMargin=9 * mm,
+                            topMargin=8 * mm, bottomMargin=7 * mm,
                             title=f"QA Disposition {cid}")
     S = []
     S.append(Paragraph(
@@ -205,7 +205,7 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
     S.append(Spacer(1, 4))
     sign = [["Inspector", "", "Date", ""], ["Disposition", "", "Signature", ""],
             ["Notes", "", "", ""]]
-    sg = Table(sign, colWidths=[22 * mm, 60 * mm, 20 * mm, 62 * mm], rowHeights=[9 * mm] * 3)
+    sg = Table(sign, colWidths=[22 * mm, 60 * mm, 20 * mm, 62 * mm], rowHeights=[6.5 * mm] * 3)
     sg.setStyle(TableStyle([("FONTSIZE", (0, 0), (-1, -1), 7),
                             ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#999999")),
                             ("TEXTCOLOR", (0, 0), (0, -1), colors.HexColor("#555555")),
@@ -218,4 +218,6 @@ def build_report(e, pol, x, cf_text, det_attr, shap_row, out_pdf: Path,
         "The model never overrides a hard engineering limit in either direction.",
         small))
     doc.build(S)
+    if doc.page > 1:
+        print(f"  WARNING: {out_pdf.name} runs to {doc.page} pages, not one")
     return out_pdf
